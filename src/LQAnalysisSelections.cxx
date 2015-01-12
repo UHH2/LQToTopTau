@@ -31,7 +31,7 @@ float btagging::csv_threshold(const csv_wp & wp){
     }
     // This should never happen; even if, the coompiler should warn in the switch.
     // But to avoid a compiler warning that no value is returned, include this line:
-    //throw invalid_argument("unknown working point given to btagging::csv_threshold");
+    throw invalid_argument("unknown working point given to btagging::csv_threshold");
 }
 
 NBTagSelection::NBTagSelection(int nmin_, int nmax_, btagging::csv_wp wp): nmin(nmin_), nmax(nmax_), min_csv(btagging::csv_threshold(wp)){}

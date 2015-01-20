@@ -3,6 +3,7 @@ obj/LQAnalysisSelections.o: src/LQAnalysisSelections.cxx \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/fwd.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/Selection.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/AnalysisModule.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/obj.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/registry.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/GenericEvent.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2/include/boost/optional.hpp \

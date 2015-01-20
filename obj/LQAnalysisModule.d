@@ -1,6 +1,7 @@
 obj/LQAnalysisModule.o: src/LQAnalysisModule.cxx \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/AnalysisModule.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/fwd.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/obj.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/registry.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/GenericEvent.h \
  /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2/include/boost/optional.hpp \
@@ -251,12 +252,19 @@ obj/LQAnalysisModule.o: src/LQAnalysisModule.cxx \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/GenJetWithParts.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/GenParticle.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/GenTopJet.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/Selection.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/CleaningModules.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/ObjectIdUtils.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/ElectronHists.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/Hists.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/ElectronIds.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/MuonHists.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/MuonIds.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/TauHists.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/TauIds.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/JetHists.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/JetIds.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/EventHists.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/include/LQAnalysisSelections.h \
- /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/Selection.h \
- /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/include/LQAnalysisHists.h
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/include/LQAnalysisHists.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/NSelections.h

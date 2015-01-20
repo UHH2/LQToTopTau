@@ -11,16 +11,14 @@
 
 using namespace uhh2;
 using namespace std;
-
+/*
 NJetSelection::NJetSelection(int nmin_, int nmax_): nmin(nmin_), nmax(nmax_){}
-//NJetSelection::NJetSelection(int nmin_, int nmax_, float minpt, float maxeta): nmin(nmin_), nmax(nmax_),PtEtaCut(minpt, maxeta){}
-
 bool NJetSelection::passes(const Event & event){
     int njets = event.jets->size();
     return njets >= nmin && (nmax < 0 || njets <= nmax);
 }
-
-
+*/
+/*
 // see https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation53XReReco
 float btagging::csv_threshold(const csv_wp & wp){
     using namespace btagging;
@@ -43,3 +41,18 @@ bool NBTagSelection::passes(const Event & event){
     }
     return nbtag >= nmin && (nmax < 0 || nbtag <= nmax);
 }
+*/
+
+METCut::METCut(double min_met_, double max_met_): min_met(min_met_), max_met(max_met_){}
+
+bool METCut::passes(const Event & event)
+{
+  return event.met->pt() > min_met && event.met->pt() < max_met;
+  /*double MET = event.met->pt();
+  if( MET < min_met) return false;
+  if( MET > max_met) return false;
+  return true;*/ 
+}
+
+
+

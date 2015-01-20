@@ -1,20 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
+<!ENTITY LQtoTTau300 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau300.xml">
+<!ENTITY LQtoTTau500 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau500.xml">
+<!ENTITY LQtoTTau700 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau700.xml">
+<!ENTITY LQtoTTau900 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau900.xml">
+<!ENTITY LQtoTTau1100 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau1100.xml">
+<!ENTITY LQtoTTau1300 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau1300.xml">
+<!ENTITY LQtoTTau1500 SYSTEM "/nfs/dust/cms/user/mstoev/LQAnalysis/Phys14/LQminiaod/LQToTTau1500.xml">
+<!ENTITY LQtoTTau1100csa14 SYSTEM "/nfs/dust/cms/user/mstoev/SFrame7/SFrameAnalysis/config/Samples_MINIAOD_70X/LQToTTau1100.xml">
+]>
 
 <!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
 <JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
     <Library Name="libSUHH2LQAnalysis"/>
     <Package Name="SUHH2LQAnalysis.par" />
 
-   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/" PostFix="_test" TargetLumi="19700" > 
+   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Selection/" PostFix="_test" TargetLumi="19700" > 
   <!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="2" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/" PostFix="_test" TargetLumi="19700" >  -->
 
-
+<!--
 		<InputData Lumi="6044634.2" NEventsMax="-1" Type="MC" Version="LQtoTTau900" Cacheable="False">
 		<In FileName="/nfs/dust/cms/user/mstoev/LQAnalysis/LQPreSelCycle/LQPreSelCycle.MC.LQtoTTau900_13TeV.root" Lumi="0.0"/>
                         <InputTree Name="AnalysisTree" />
 		</InputData>
-            
+-->
+
+
+<!--
+                <InputData Lumi="25621993.1" NEventsMax="-1" Type="MC" Version="LQtoTTau1100csa14" Cacheable="False">
+		  &LQtoTTau1100csa14;
+		  <InputTree Name="AnalysisTree" />
+		  <OutputTree Name="AnalysisTree" />
+		</InputData>
+-->
+
+
+<!--
+ 		<InputData Lumi="9222.1" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
+	                &LQtoTTau300;
+		        <InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData> 
+
+ 		<InputData Lumi="151209.7" NEventsMax="-1" Type="MC" Version="LQtoTTau500" Cacheable="False">
+		        &LQtoTTau500;
+                        <InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>  
+-->
+ 		<InputData Lumi="1157407.4" NEventsMax="-1" Type="MC" Version="LQtoTTau700" Cacheable="False">
+		        &LQtoTTau700;
+                        <InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData>  
+
+<!--	
+		   <InputData Lumi="6044634.2" NEventsMax="-1" Type="MC" Version="LQtoTTau900" Cacheable="False">
+	             &LQtoTTau900;
+                     <InputTree Name="AnalysisTree" />
+		     <OutputTree Name="AnalysisTree" />
+		   </InputData> 
+
+                <InputData Lumi="25621993.1" NEventsMax="-1" Type="MC" Version="LQtoTTau1100" Cacheable="False">
+		  &LQtoTTau1100;
+		  <InputTree Name="AnalysisTree" />
+		  <OutputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="93491206" NEventsMax="-1" Type="MC" Version="LQtoTTau1300" Cacheable="False">
+	                &LQtoTTau1300;
+                        <InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData> 
+
+		<InputData Lumi="311800000" NEventsMax="-1" Type="MC" Version="LQtoTTau1500" Cacheable="False">
+	                &LQtoTTau1500;
+                        <InputTree Name="AnalysisTree" />
+			<OutputTree Name="AnalysisTree" />
+		</InputData> 
+-->
+
+
 
 
 

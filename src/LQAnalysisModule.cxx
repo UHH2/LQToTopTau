@@ -135,6 +135,9 @@ bool LQAnalysisModule::process(Event & event) {
     electroncleaner->process(event);
     taucleaner->process(event);
 
+    
+    //auto met = event.met->pt();
+
     // 2. test selections and fill histograms
     
     h_nocuts->fill(event);

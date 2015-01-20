@@ -131,10 +131,15 @@ bool LQAnalysisModule::process(Event & event) {
     
     // 1. run all modules; here: only jet cleaning.
     jetcleaner->process(event);
+<<<<<<< HEAD
     muoncleaner->process(event);
     electroncleaner->process(event);
     taucleaner->process(event);
 
+=======
+    
+    //auto met = event.met->pt();
+>>>>>>> 82d9b8e4d08df0845834203bafdd380fc5743e12
     // 2. test selections and fill histograms
     
     h_nocuts->fill(event);

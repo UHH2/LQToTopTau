@@ -31,6 +31,27 @@ private:
  * 
  * This is useful for various selection modules, and thus defined outside of a particular Selection class.
  */
+  
+
+  class NJetCut: public Selection {
+  public:
+    /// In case nmax=-1, no cut on the maximum is applied.
+    explicit NJetCut(int nmin, int nmax = -1, double ptmin=0., double etamax = -1);
+    virtual bool passes(const Event & event) override;
+  private:
+    int nmin, nmax;
+    double ptmin, etamax;
+  };
+
+
+  class METCut: public Selection {
+  public:
+    explicit METCut(double min_met=0., double max_met=-1);
+    virtual bool passes(const Event & event) override;
+  private:
+    double min_met, max_met;
+  };
+
 
 namespace btagging {
     
@@ -55,15 +76,6 @@ float csv_threshold(const csv_wp & wp);
     float min_csv;
 };
 
-
-
-class METCut: public Selection {
- public:
-  METCut(double min_met, double max_met=-1);
-  virtual bool passes(const uhh2::Event & event);
- private:
-  double min_met, max_met;
-};
  
   
   class TestCut{
@@ -80,6 +92,7 @@ class METCut: public Selection {
 }
 
 
+/*
 namespace lqanalysis_sel {
   using namespace uhh2;
   class NBTags: public Selection {
@@ -96,4 +109,4 @@ namespace lqanalysis_sel {
     int nmin, nmax;
   }; 
 }
-
+*/

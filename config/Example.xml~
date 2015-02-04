@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+
+<!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
+<JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
+    <Library Name="libSUHH2bacon"/>
+    <Package Name="SUHH2bacon.par" />
+
+   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="./" PostFix="" TargetLumi="1" >
+   <!-- <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/ottjoc/proof-wd/" ProofNodes="2" OutputDirectory="./" PostFix="" TargetLumi="1" >  -->
+        <InputData Lumi="1" NEventsMax="100" Type="MC" Version="BpJ_TW_800" Cacheable="False">
+            <In FileName="/pnfs/desy.de/cms/tier2/store/user/nkovalch/BaconTree_MC/pythia8_QCD_Pt300to470_Tune4C_13TeV_pythia8_0.root" Lumi="0.0"/> 
+            <InputTree Name="Events" /> 
+            <!-- uncomment to write tree of selected events, i.e. of those events for which the AnalysisModule::process method  returns true
+                If no OutputTree is given, no events will be written. Please do use "AnalysisTree" as Name. -->
+            <!-- <OutputTree Name="AnalysisTree" /> -->
+        </InputData>
+            
+        <UserConfig>
+            <!-- tell AnalysisModuleRunner that we use a completely user-defined event format -->
+            <Item Name="userEventFormat" Value="true" />
+            
+            <!-- the class name of the AnalysisModule subclasses to run: -->
+            <Item Name="AnalysisModule" Value="TestModule" /> 
+        </UserConfig>
+    </Cycle>
+</JobConfiguration>

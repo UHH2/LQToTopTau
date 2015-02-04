@@ -19,6 +19,33 @@ bool NJetSelection::passes(const Event & event){
 }
 */
 /*
+NJetSelection::NJetSelection(int nmin_, int nmax_, const boost::optional<JetId> & jetid_): nmin(nmin_), nmax(nmax_), jetid(jetid_){}
+bool NJetSelection::passes(const Event & event){
+  return passes_minmax(*event.jets, nmin, nmax, event, jetid);
+}
+*/
+
+NJetCut::NJetCut(int nmin_, int nmax_, double ptmin_, double etamax_): nmin(nmin_), nmax(nmax_), ptmin(ptmin_), etamax(etamax_){}
+bool NJetCut::passes(const Event & event){
+  int nparticle=0;
+  for(auto & jet : *event.jets) {
+    if (jet.pt() > ptmin && fabs(jet.eta()<etamax)) nparticle++;
+  }
+  return nparticle >= nmin;
+}
+
+
+
+METCut::METCut(double min_met_, double max_met_): min_met(min_met_), max_met(max_met_){}
+bool METCut::passes(const Event & event){
+  double MET = event.met->pt();
+  if (MET < min_met) return false;
+  if (MET > max_met) return false;
+  return MET;
+}
+
+
+
 // see https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation53XReReco
 float btagging::csv_threshold(const csv_wp & wp){
     using namespace btagging;
@@ -41,18 +68,7 @@ bool NBTagSelection::passes(const Event & event){
     }
     return nbtag >= nmin && (nmax < 0 || nbtag <= nmax);
 }
-*/
 
-METCut::METCut(double min_met_, double max_met_): min_met(min_met_), max_met(max_met_){}
-
-bool METCut::passes(const Event & event)
-{
-  return event.met->pt() > min_met && event.met->pt() < max_met;
-  /*double MET = event.met->pt();
-  if( MET < min_met) return false;
-  if( MET > max_met) return false;
-  return true;*/ 
-}
 
 
 

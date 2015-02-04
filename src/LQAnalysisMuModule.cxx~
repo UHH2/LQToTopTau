@@ -28,10 +28,10 @@ using namespace uhh2;
  * This is the central class which calls other AnalysisModules, Hists or Selection classes.
  * This AnalysisModule, in turn, is called (via AnalysisModuleRunner) by SFrame.
  */
-class LQAnalysisModule: public AnalysisModule {
+class LQAnalysisMuModule: public AnalysisModule {
 public:
     
-    explicit LQAnalysisModule(Context & ctx);
+    explicit LQAnalysisMuModule(Context & ctx);
     virtual bool process(Event & event) override;
 
 private:
@@ -53,8 +53,8 @@ private:
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
   std::unique_ptr<Hists> lq_PreSelection, electron_PreSelection, muon_PreSelection, jet_PreSelection, tau_PreSelection, event_PreSelection;
   std::unique_ptr<Hists> h_ele_full, h_tau_full, h_event_full, h_lq_full, h_jet_full, h_muon_full;
-  std::unique_ptr<Hists> ele_HT1500, muon_HT1500, tau_HT1500, event_HT1500, jet_HT1500, lq_HT1500;
-  std::unique_ptr<Hists> ele_HT2000, muon_HT2000, tau_HT2000, event_HT2000, jet_HT2000, lq_HT2000;
+  std::unique_ptr<Hists> ele_HT1300, muon_HT1300, tau_HT1300, event_HT1300, jet_HT1300, lq_HT1300;
+  std::unique_ptr<Hists> ele_HT1800, muon_HT1800, tau_HT1800, event_HT1800, jet_HT1800, lq_HT1800;
 
   JetId BTagMedium, BTagTight;
 
@@ -62,12 +62,12 @@ private:
 };
 
 
-LQAnalysisModule::LQAnalysisModule(Context & ctx){
+LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
     // In the constructor, the typical tasks are to create
     // other modules like cleaners (1), selections (2) and Hist classes (3).
     // But you can do more and e.g. access the configuration, as shown below.
     
-    cout << "Hello World from LQAnalysisModule!" << endl;
+    cout << "Hello World from LQAnalysisMuModule!" << endl;
     
     // If needed, access the configuration of the module here, e.g.:
     string testvalue = ctx.get("TestKey", "<not set>");
@@ -83,7 +83,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     // 1. setup other modules.
     jetcleaner.reset(new JetCleaner(30.0, 2.4));
     muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
-    muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(20.0, 2.1))));
+    muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(20.0, 2.4))));
     electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_CSA14_50ns_medium, PtEtaCut(20.0, 2.5))));
     taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1))));
     BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
@@ -92,7 +92,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     pre_modules.push_back(std::unique_ptr<AnalysisModule>(new HTCalculator(ctx)));
 
     // 2. set up selections:
-    fivejet_sel.reset(new NJetSelection(5,-1));
+    fivejet_sel.reset(new NJetSelection(3,-1));
     ntau_sel.reset(new NTauSelection(1,-1));
     BTagM.reset(new NJetSelection(1,999,BTagMedium));
     BTagT.reset(new NJetSelection(1,999,BTagTight));
@@ -120,25 +120,25 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     h_tau_full.reset(new TauHists(ctx, "tau_fullselection"));
     h_lq_full.reset(new LQAnalysisHists(ctx, "lq_fullselection"));
 
-    ele_HT1500.reset(new ElectronHists(ctx, "ele_HT1500"));
-    muon_HT1500.reset(new MuonHists(ctx, "muon_HT1500"));
-    jet_HT1500.reset(new JetHists(ctx, "jet_HT1500"));
-    event_HT1500.reset(new EventHists(ctx, "event_HT1500"));
-    tau_HT1500.reset(new TauHists(ctx, "tau_HT1500"));
-    lq_HT1500.reset(new LQAnalysisHists(ctx, "lq_HT1500"));
+    ele_HT1300.reset(new ElectronHists(ctx, "ele_HT1300"));
+    muon_HT1300.reset(new MuonHists(ctx, "muon_HT1300"));
+    jet_HT1300.reset(new JetHists(ctx, "jet_HT1300"));
+    event_HT1300.reset(new EventHists(ctx, "event_HT1300"));
+    tau_HT1300.reset(new TauHists(ctx, "tau_HT1300"));
+    lq_HT1300.reset(new LQAnalysisHists(ctx, "lq_HT1300"));
 
-    ele_HT2000.reset(new ElectronHists(ctx, "ele_HT2000"));
-    muon_HT2000.reset(new MuonHists(ctx, "muon_HT2000"));
-    jet_HT2000.reset(new JetHists(ctx, "jet_HT2000"));
-    event_HT2000.reset(new EventHists(ctx, "event_HT2000"));
-    tau_HT2000.reset(new TauHists(ctx, "tau_HT2000"));
-    lq_HT2000.reset(new LQAnalysisHists(ctx, "lq_HT2000"));
+    ele_HT1800.reset(new ElectronHists(ctx, "ele_HT1800"));
+    muon_HT1800.reset(new MuonHists(ctx, "muon_HT1800"));
+    jet_HT1800.reset(new JetHists(ctx, "jet_HT1800"));
+    event_HT1800.reset(new EventHists(ctx, "event_HT1800"));
+    tau_HT1800.reset(new TauHists(ctx, "tau_HT1800"));
+    lq_HT1800.reset(new LQAnalysisHists(ctx, "lq_HT1800"));
 
 
 }
 
 
-bool LQAnalysisModule::process(Event & event) {
+bool LQAnalysisMuModule::process(Event & event) {
     // This is the main procedure, called for each event. Typically,
     // do some pre-processing by calling the modules' process method
     // of the modules constructed in the constructor (1).
@@ -149,7 +149,7 @@ bool LQAnalysisModule::process(Event & event) {
     // returns true, the event is kept; if it returns false, the event
     // is thrown away.
     
-    //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
+    //cout << "LQAnalysisMuModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
     
     // 1. run all modules; here: only jet cleaning.
     jetcleaner->process(event);
@@ -172,7 +172,7 @@ bool LQAnalysisModule::process(Event & event) {
     lq_PreSelection->fill(event);
 
     auto met = event.met->pt();
-    if (met<100) return false;
+    if (met<50) return false;
 
     double ht = 0.0;
     for(const auto & jet : *event.jets){
@@ -215,26 +215,24 @@ bool LQAnalysisModule::process(Event & event) {
     }
     
     if (!fivejet_sel->passes(event)) return false;
-    //if (!BTagM->passes(event)) return false;
-    if (!BTagT->passes(event)) return false;
+    if (!BTagM->passes(event)) return false;
+
+    if (st<1300) return false;
+    ele_HT1300->fill(event);
+    muon_HT1300->fill(event);
+    jet_HT1300->fill(event);
+    event_HT1300->fill(event);
+    tau_HT1300->fill(event);
+    lq_HT1300->fill(event);
 
 
-    if (st<1500) return false;
-    ele_HT1500->fill(event);
-    muon_HT1500->fill(event);
-    jet_HT1500->fill(event);
-    event_HT1500->fill(event);
-    tau_HT1500->fill(event);
-    lq_HT1500->fill(event);
-
-
-    if (st<2000) return false;
-    ele_HT2000->fill(event);
-    muon_HT2000->fill(event);
-    jet_HT2000->fill(event);
-    event_HT2000->fill(event);
-    tau_HT2000->fill(event);
-    lq_HT2000->fill(event);
+    if (st<1800) return false;
+    ele_HT1800->fill(event);
+    muon_HT1800->fill(event);
+    jet_HT1800->fill(event);
+    event_HT1800->fill(event);
+    tau_HT1800->fill(event);
+    lq_HT1800->fill(event);
 
 
 
@@ -246,4 +244,4 @@ bool LQAnalysisModule::process(Event & event) {
 
 // as we want to run the ExampleCycleNew directly with AnalysisModuleRunner,
 // make sure the LQAnalysisModule is found by class name. This is ensured by this macro:
-UHH2_REGISTER_ANALYSIS_MODULE(LQAnalysisModule)
+UHH2_REGISTER_ANALYSIS_MODULE(LQAnalysisMuModule)

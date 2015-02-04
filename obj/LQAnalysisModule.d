@@ -260,6 +260,7 @@ obj/LQAnalysisModule.o: src/LQAnalysisModule.cxx \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/ElectronIds.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/MuonHists.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/MuonIds.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/core/include/Utils.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/TauHists.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/TauIds.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/JetHists.h \
@@ -267,4 +268,5 @@ obj/LQAnalysisModule.o: src/LQAnalysisModule.cxx \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/EventHists.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/include/LQAnalysisSelections.h \
  /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/include/LQAnalysisHists.h \
- /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/NSelections.h
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/NSelections.h \
+ /afs/desy.de/user/m/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/include/EventVariables.h

@@ -33,6 +33,15 @@ private:
  */
   
 
+  class SameSignCut: public Selection{
+  public:
+    SameSignCut();
+    ~SameSignCut(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
+
+
   class NJetCut: public Selection {
   public:
     /// In case nmax=-1, no cut on the maximum is applied.
@@ -110,3 +119,14 @@ namespace lqanalysis_sel {
   }; 
 }
 */
+
+
+class ElectronIso {
+public:
+ElectronIso(double iso = 0.15);
+bool operator()(const Electron & electron, const uhh2::Event & event) const;
+private:
+double iso;
+};
+
+

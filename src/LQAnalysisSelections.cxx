@@ -25,6 +25,23 @@ bool NJetSelection::passes(const Event & event){
 }
 */
 
+
+SameSignCut::SameSignCut(){
+}
+
+ bool SameSignCut::passes(const Event & event)
+ {
+   for(const auto & muon : *event.muons)
+     {
+       for(const auto & tau : *event.taus)
+	 {
+	   if (muon.charge() == tau.charge()) return true;
+	 }     
+     }
+   return false;
+ }
+
+
 NJetCut::NJetCut(int nmin_, int nmax_, double ptmin_, double etamax_): nmin(nmin_), nmax(nmax_), ptmin(ptmin_), etamax(etamax_){}
 bool NJetCut::passes(const Event & event){
   int nparticle=0;
@@ -70,5 +87,10 @@ bool NBTagSelection::passes(const Event & event){
 }
 
 
+ElectronIso::ElectronIso(double iso_):iso(iso_){}
+bool ElectronIso::operator()(const Electron & electron, const uhh2::Event &) const {
+if(electron.relIso()>iso) return false;
+return true;
+}
 
 

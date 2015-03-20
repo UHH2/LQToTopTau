@@ -19,6 +19,43 @@
   <!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="2" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/" PostFix="_test" TargetLumi="19700" >  -->
 
 
+<!--
+ 		<InputData Lumi="73857" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau300.root" Lumi="0.0"/>
+		        <InputTree Name="AnalysisTree" />
+		</InputData> 
+
+ 		<InputData Lumi="75000" NEventsMax="-1" Type="MC" Version="LQtoTTau500" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau500.root" Lumi="0.0"/>
+                        <InputTree Name="AnalysisTree" />
+		</InputData>  
+
+ 		<InputData Lumi="74153" NEventsMax="-1" Type="MC" Version="LQtoTTau700" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau700.root" Lumi="0.0"/>
+                        <InputTree Name="AnalysisTree" />
+		</InputData>  
+
+		<InputData Lumi="75000" NEventsMax="-1" Type="MC" Version="LQtoTTau900" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau900.root" Lumi="0.0"/>
+                     <InputTree Name="AnalysisTree" />
+		   </InputData> 
+
+                <InputData Lumi="74360" NEventsMax="-1" Type="MC" Version="LQtoTTau1100" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau1100.root" Lumi="0.0"/>
+		  <InputTree Name="AnalysisTree" />
+		</InputData>
+
+		<InputData Lumi="74419" NEventsMax="-1" Type="MC" Version="LQtoTTau1300" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau1300.root" Lumi="0.0"/>
+                        <InputTree Name="AnalysisTree" />
+		</InputData> 
+
+		<InputData Lumi="73984" NEventsMax="-1" Type="MC" Version="LQtoTTau1500" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau1500.root" Lumi="0.0"/>
+                        <InputTree Name="AnalysisTree" />
+		</InputData> 
+-->
+
 
 
  		<InputData Lumi="9174.8" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
@@ -68,17 +105,6 @@
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="596.1" NEventsMax="-1" Type="MC" Version="ZJets" Cacheable="False">
-		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.ZJets.root" Lumi="0.0"/>
-			<InputTree Name="AnalysisTree" />
-		</InputData>
-
-		<InputData Lumi="162.8" NEventsMax="-1" Type="MC" Version="WJets" Cacheable="False">
-		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJets.root" Lumi="0.0"/>
-			<InputTree Name="AnalysisTree" />
-		</InputData>
-
-
 		<InputData Lumi="31.75" NEventsMax="-1" Type="MC" Version="QCD_HT500To1000" Cacheable="False">
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.QCD_HT500To1000.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -100,29 +126,74 @@
 		</InputData>
 
 
-		<InputData Lumi="2896.1" NEventsMax="-1" Type="MC" Version="WJetsHT100to200" Cacheable="False">
+		<InputData Lumi="2354.6" NEventsMax="-1" Type="MC" Version="WJetsHT100to200" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJetsHT100to200.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="10466.7" NEventsMax="-1" Type="MC" Version="WJetsHT200to400" Cacheable="False">
+		<InputData Lumi="8509" NEventsMax="-1" Type="MC" Version="WJetsHT200to400" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJetsHT200to400.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
 
-		<InputData Lumi="83448.9" NEventsMax="-1" Type="MC" Version="WJetsHT400to600" Cacheable="False">
+		<InputData Lumi="67844.9" NEventsMax="-1" Type="MC" Version="WJetsHT400to600" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJetsHT400to600.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="243585.4" NEventsMax="-1" Type="MC" Version="WJetsHT600toInf" Cacheable="False">
+		<InputData Lumi="198005.2" NEventsMax="-1" Type="MC" Version="WJetsHT600toInf" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJetsHT600toInf.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
 
+		<InputData Lumi="29334.8" NEventsMax="-1" Type="MC" Version="SingleTop_T_tch" Cacheable="False">
+ 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_T_tch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData>  
+	        
+		<InputData Lumi="27699.4" NEventsMax="-1" Type="MC" Version="SingleTop_T_tWch" Cacheable="False">
+		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_T_tWch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData>  
+	        
+		<InputData Lumi="69444.4" NEventsMax="-1" Type="MC" Version="SingleTop_T_sch" Cacheable="False">
+		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_T_sch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData> 
+	        
+		<InputData Lumi="24080.5" NEventsMax="-1" Type="MC" Version="SingleTop_Tbar_tch" Cacheable="False">
+		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_tch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData>  
+	        
+		<InputData Lumi="27297.7" NEventsMax="-1" Type="MC" Version="SingleTop_Tbar_tWch" Cacheable="False">
+		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_tWch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData>  
+	        
+		<InputData Lumi="60096.2" NEventsMax="-1" Type="MC" Version="SingleTop_Tbar_sch" Cacheable="False">
+		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_sch.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" /> 
+		</InputData>
 
+
+
+
+
+<!--
+		<InputData Lumi="162.8" NEventsMax="-1" Type="MC" Version="WJets" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.WJets.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+		</InputData>
+
+
+		<InputData Lumi="596.1" NEventsMax="-1" Type="MC" Version="ZJets" Cacheable="False">
+		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.ZJets.root" Lumi="0.0"/>
+			<InputTree Name="AnalysisTree" />
+		</InputData>
+-->
 
         <UserConfig>
             <!-- define which collections to read from the input. Only specify what you need to save I/O time -->
@@ -130,11 +201,11 @@
             <Item Name="ElectronCollection" Value="slimmedElectrons" />
             <Item Name="MuonCollection" Value="slimmedMuons" /> 
             <Item Name="TauCollection" Value="slimmedTaus" />
-            <Item Name="JetCollection" Value="slimmedJets" />
+            <Item Name="JetCollection" Value="patJetsAk4PFCHS" />
             <Item Name="METName" Value="slimmedMETs" />
             <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
-	    <Item Name="TopJetCollection" Value="patJetsCMSTopTagCHSPacked" />
-
+	    <Item Name="TopJetCollection" Value="patJetsCmsTopTagCHSPacked" />
+	    <Item Name="GenParticleCollection" Value="GenParticles" />
 
 
             <!-- The list of available collections to read in corresponds to the pointer members in event. The 'Name's to use here in the configuration are:

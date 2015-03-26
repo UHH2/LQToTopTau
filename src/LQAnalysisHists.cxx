@@ -27,8 +27,9 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   //book<TH1F>("pt_gentau_hist", "p_{T}^{gen}", 100,0,800);
   //book<TH1F>("HT_weighttest", "H_{T} Jets", 140, 0, 3500);
   //book<TH1F>("ptj1", "p_{T} first jet", 15, 0,1200);
-
-
+  book<TH1F>("M_mumu", "M_{#mu#mu}", 100, 0,1000);
+  book<TH1F>("NbJets", "Number of bjets", 7, -0.5,6.5);
+  book<TH1F>("M_btau", "M_{b#tau}", 20, 0,1000);
 
 }
 
@@ -70,8 +71,50 @@ void LQAnalysisHists::fill(const Event & event){
   hist("ST_binned")->Fill(ht+ht_lep+met, weight);
   hist("ST_testbinned")->Fill(ht+ht_lep+met, weight);
 
+  const auto muons = event.muons;
+  Muon muon1;
+  Muon muon2;
+  if(muons->size()>0) muon1=(*muons)[0];
+  if(muons->size()>1) muon2=(*muons)[1];
+  TLorentzVector Mu1;
+  TLorentzVector Mu2;
+  Mu1.SetPtEtaPhiE(muon1.pt() ,muon1.eta() ,muon1.phi() ,muon1.energy() );
+  Mu2.SetPtEtaPhiE(muon2.pt() ,muon2.eta() ,muon2.phi() ,muon2.energy() );
+  double Mmumu = (Mu1+Mu2).M();
+  hist("M_mumu")->Fill(Mmumu, weight); 
   
+  const auto taus = event.taus;
+  Tau tau1;
+  if(taus->size()>0) tau1=(*taus)[0];
+  TLorentzVector Tau1;
+  Tau1.SetPtEtaPhiE(tau1.pt() ,tau1.eta() ,tau1.phi() ,tau1.energy() );
 
+  const auto jets = event.jets;
+  vector<Jet> bjets;
+  for (unsigned int i =0; i<jets->size(); ++i) {
+    if(jets->at(i).btag_combinedSecondaryVertex()>0.244) {
+      bjets.push_back(jets->at(i));
+    }
+  }
+
+  
+  int NbJets = bjets.size();
+  hist("NbJets")-> Fill(NbJets,weight);
+  for (unsigned int i =0; i<=1; ++i) {
+    if (bjets.size()> i) {
+      Jet bjet = bjets[i];
+      TLorentzVector BJet;
+      BJet.SetPtEtaPhiE(bjet.pt() ,bjet.eta() ,bjet.phi() ,bjet.energy() );
+      hist("M_btau")->Fill((Tau1+BJet).M(),weight);
+    }
+  }
+  
+  
+  //  Jet bjet1 = bjets[0];
+  /*TLorentzVector BJet1;
+  BJet1.SetPtEtaPhiE(bjet1.pt() ,bjet1.eta() ,bjet1.phi() ,bjet1.energy() );
+  hist("M_b1tau")->Fill((Tau1+BJet1).M(),weight);
+  */
 
   /*
   Event::Handle<TTbarGen> h_ttbargen;

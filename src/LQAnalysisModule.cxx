@@ -53,7 +53,7 @@ private:
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, fivejet_sel, BTagM, BTagT, TwoBTagM, TwoBTagT, ntau_sel, muon_sel, ele_sel;
+  std::unique_ptr<Selection> njet_sel, fivejet_sel, BTagM, BTagT, TwoBTagM, TwoBTagT, TopTag, ntau_sel, muon_sel, ele_sel;
   std::vector<std::unique_ptr<Selection> > fullhad_sel;
 
   std::vector<std::unique_ptr<AnalysisModule>> pre_modules;
@@ -87,7 +87,7 @@ private:
   JetId BTagMedium, BTagTight;
   MuonId muid;
   ElectronId eleid;
-  TopJetId toptag;
+  TopJetId cmstoptag;
 
   std::unique_ptr<AnalysisModule> printer;
   std::unique_ptr<AnalysisModule> ttgenprod;
@@ -129,7 +129,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     BTagTight = CSVBTag(CSVBTag::WP_TIGHT);
     muid = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4));
     eleid = (AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(20.0, 2.5)));
-    toptag = CMSTopTag();
+    cmstoptag = CMSTopTag(50,140,250);
 
     pre_modules.push_back(std::unique_ptr<AnalysisModule>(new HTCalculator(ctx)));
 
@@ -145,6 +145,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     TwoBTagM.reset(new NJetSelection(2,999,BTagMedium));
     BTagT.reset(new NJetSelection(1,999,BTagTight));
     TwoBTagT.reset(new NJetSelection(2,999,BTagTight));
+    TopTag.reset(new NTopJetSelection(1,999,cmstoptag));
 
     muon_sel.reset(new NMuonSelection(1,-1,muid));
     ele_sel.reset(new NElectronSelection(1,-1,eleid));

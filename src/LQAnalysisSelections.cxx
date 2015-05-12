@@ -11,19 +11,29 @@
 
 using namespace uhh2;
 using namespace std;
-/*
-NJetSelection::NJetSelection(int nmin_, int nmax_): nmin(nmin_), nmax(nmax_){}
-bool NJetSelection::passes(const Event & event){
-    int njets = event.jets->size();
-    return njets >= nmin && (nmax < 0 || njets <= nmax);
+
+
+InvMass2MuVeto::InvMass2MuVeto(double m_min_, double m_max_):m_min(m_min_), m_max(m_max_){}
+bool InvMass2MuVeto::passes(const Event & event){
+  const auto muons = event.muons;
+  for(unsigned int i=0; i<muons->size(); ++i) 
+    {
+      Muon muon1 = muons->at(i);
+      TLorentzVector Mu1;
+      Mu1.SetPtEtaPhiE(muon1.pt() ,muon1.eta() ,muon1.phi() ,muon1.energy() );
+      for(unsigned int j=0; j<muons->size(); ++j) 
+	{
+	  Muon muon2 = muons->at(j);
+	  TLorentzVector Mu2;
+	  Mu2.SetPtEtaPhiE(muon2.pt() ,muon2.eta() ,muon2.phi() ,muon2.energy() );
+   	  TLorentzVector Vec =  Mu1+Mu2;
+	  double InvMass = Vec.M();    
+	  if(InvMass > m_min && InvMass < m_max) return false;
+	}
+    }
+  return true;
 }
-*/
-/*
-NJetSelection::NJetSelection(int nmin_, int nmax_, const boost::optional<JetId> & jetid_): nmin(nmin_), nmax(nmax_), jetid(jetid_){}
-bool NJetSelection::passes(const Event & event){
-  return passes_minmax(*event.jets, nmin, nmax, event, jetid);
-}
-*/
+
 
 
 SameSignCut::SameSignCut(){
@@ -41,6 +51,54 @@ SameSignCut::SameSignCut(){
    return false;
  }
 
+EleTauSameSignCut::EleTauSameSignCut(){
+}
+
+ bool EleTauSameSignCut::passes(const Event & event)
+ {
+   for(const auto & electron : *event.electrons)
+     {
+       for(const auto & tau : *event.taus)
+	 {
+	   if (electron.charge() == tau.charge()) return true;
+	 }     
+     }
+   return false;
+ }
+
+
+MbtauSelection::MbtauSelection(double minMbtau, double maxMbtau): minMbtau_(minMbtau),maxMbtau_(maxMbtau) {}
+bool MbtauSelection::passes(const Event & event){
+  const auto jets = event.jets;
+  vector<Jet> bjets;
+  for (unsigned int i =0; i<jets->size(); ++i) {
+    if(jets->at(i).btag_combinedSecondaryVertex()>0.679) {
+      bjets.push_back(jets->at(i));
+    }
+  }
+  //bool pass = false;
+  const auto taus = event.taus;
+  for (unsigned int i=0; i<=(*taus).size(); ++i){
+    if((*taus).size()>i){
+      Tau tau = (*taus)[i];
+      TLorentzVector Tau;
+      Tau.SetPtEtaPhiE(tau.pt() ,tau.eta() ,tau.phi() ,tau.energy() );
+      for (unsigned int i =0; i<=bjets.size(); ++i) {
+	if (bjets.size()> i) {
+	  Jet bjet = bjets[i];
+	  TLorentzVector BJet;
+	  BJet.SetPtEtaPhiE(bjet.pt() ,bjet.eta() ,bjet.phi() ,bjet.energy() );
+	  double invmass=(Tau+BJet).M();
+	  //return pass = invmass > minMbtau_ && (maxMbtau_ < 0 || invmass < maxMbtau_);
+	  if(invmass < minMbtau_ && (maxMbtau_ < 0 || invmass > maxMbtau_)) return false;
+	}
+      }
+    }
+  }
+  //return false;
+  return true;
+}
+
 
 NJetCut::NJetCut(int nmin_, int nmax_, double ptmin_, double etamax_): nmin(nmin_), nmax(nmax_), ptmin(ptmin_), etamax(etamax_){}
 bool NJetCut::passes(const Event & event){
@@ -55,10 +113,10 @@ bool NJetCut::passes(const Event & event){
 
 METCut::METCut(double min_met_, double max_met_): min_met(min_met_), max_met(max_met_){}
 bool METCut::passes(const Event & event){
+  bool pass = false;
   double MET = event.met->pt();
-  if (MET < min_met) return false;
-  if (MET > max_met) return false;
-  return MET;
+  pass = MET > min_met && (max_met < 0 || MET < max_met);
+  return pass;
 }
 
 

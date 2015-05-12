@@ -4,7 +4,7 @@
 #include "UHH2/common/include/Utils.h"
 
 #include "UHH2/common/include/TTbarGen.h"
-
+#include <math.h>
 #include "TH1F.h"
 #include <iostream>
 
@@ -28,8 +28,12 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   //book<TH1F>("HT_weighttest", "H_{T} Jets", 140, 0, 3500);
   //book<TH1F>("ptj1", "p_{T} first jet", 15, 0,1200);
   book<TH1F>("M_mumu", "M_{#mu#mu}", 100, 0,1000);
-  book<TH1F>("NbJets", "Number of bjets", 7, -0.5,6.5);
+  book<TH1F>("NbJetsL", "Number of bjets loose", 7, -0.5,6.5);
+  book<TH1F>("NbJetsM", "Number of bjets medium", 7, -0.5,6.5);
+  book<TH1F>("NbJetsT", "Number of bjets tight", 7, -0.5,6.5);
   book<TH1F>("M_btau", "M_{b#tau}", 20, 0,1000);
+  book<TH1F>("MT", "M_{T}(mu,missing ET)", 50,0,800);
+  //book<TH1F>("Weights", "weights", 2,0.5,2.5);
 
 }
 
@@ -42,6 +46,8 @@ void LQAnalysisHists::fill(const Event & event){
   
   // Don't forget to always use the weight when filling.
   double weight = event.weight;
+
+  //hist("Weights")->Fill(1,weight);
  
   hist("MET")->Fill(event.met->pt(), weight);
   hist("MET_binned")->Fill(event.met->pt(), weight);
@@ -71,44 +77,73 @@ void LQAnalysisHists::fill(const Event & event){
   hist("ST_binned")->Fill(ht+ht_lep+met, weight);
   hist("ST_testbinned")->Fill(ht+ht_lep+met, weight);
 
+
+
   const auto muons = event.muons;
-  Muon muon1;
-  Muon muon2;
-  if(muons->size()>0) muon1=(*muons)[0];
-  if(muons->size()>1) muon2=(*muons)[1];
-  TLorentzVector Mu1;
-  TLorentzVector Mu2;
-  Mu1.SetPtEtaPhiE(muon1.pt() ,muon1.eta() ,muon1.phi() ,muon1.energy() );
-  Mu2.SetPtEtaPhiE(muon2.pt() ,muon2.eta() ,muon2.phi() ,muon2.energy() );
-  double Mmumu = (Mu1+Mu2).M();
-  hist("M_mumu")->Fill(Mmumu, weight); 
+  if(muons->size()>1){
+    for(unsigned int i=0; i<muons->size(); ++i) 
+      {
+	Muon muon1 = muons->at(i);
+	TLorentzVector Mu1;
+	Mu1.SetPtEtaPhiE(muon1.pt() ,muon1.eta() ,muon1.phi() ,muon1.energy() );
+	for(unsigned int j=0; j<muons->size(); ++j) 
+	  {
+	    Muon muon2 = muons->at(j);
+	    TLorentzVector Mu2;
+	    Mu2.SetPtEtaPhiE(muon2.pt() ,muon2.eta() ,muon2.phi() ,muon2.energy() );
+	    TLorentzVector Vec =  Mu1+Mu2;
+	    double InvMass = Vec.M(); 
+	    hist("M_mumu")->Fill(InvMass, weight);	
+	  }
+      }
+  }
   
-  const auto taus = event.taus;
-  Tau tau1;
-  if(taus->size()>0) tau1=(*taus)[0];
-  TLorentzVector Tau1;
-  Tau1.SetPtEtaPhiE(tau1.pt() ,tau1.eta() ,tau1.phi() ,tau1.energy() );
+  if(event.muons->size() > 0){
+    const auto & muon = (*event.muons)[0];
+    hist("MT")->Fill(sqrt(2*muon.pt()*event.met->pt()* (1-cos(event.met->phi()-muon.phi())) ), weight);
+  }
 
   const auto jets = event.jets;
-  vector<Jet> bjets;
+  vector<Jet> bjetsL, bjetsM, bjetsT;
   for (unsigned int i =0; i<jets->size(); ++i) {
-    if(jets->at(i).btag_combinedSecondaryVertex()>0.244) {
-      bjets.push_back(jets->at(i));
+    if(jets->at(i).btag_combinedSecondaryVertex()>0.423) {
+      bjetsL.push_back(jets->at(i));
     }
   }
+  for (unsigned int i =0; i<jets->size(); ++i) {
+    if(jets->at(i).btag_combinedSecondaryVertex()>0.814) {
+      bjetsM.push_back(jets->at(i));
+    }
+  }
+  for (unsigned int i =0; i<jets->size(); ++i) {
+    if(jets->at(i).btag_combinedSecondaryVertex()>0.941) {
+      bjetsT.push_back(jets->at(i));
+    }
+  }
+  int NbJetsL = bjetsL.size();
+  int NbJetsM = bjetsM.size();
+  int NbJetsT = bjetsT.size();
+  hist("NbJetsL")-> Fill(NbJetsL,weight);
+  hist("NbJetsM")-> Fill(NbJetsM,weight);
+  hist("NbJetsT")-> Fill(NbJetsT,weight);
 
+  const auto taus = event.taus;
   
-  int NbJets = bjets.size();
-  hist("NbJets")-> Fill(NbJets,weight);
-  for (unsigned int i =0; i<=1; ++i) {
-    if (bjets.size()> i) {
-      Jet bjet = bjets[i];
-      TLorentzVector BJet;
-      BJet.SetPtEtaPhiE(bjet.pt() ,bjet.eta() ,bjet.phi() ,bjet.energy() );
-      hist("M_btau")->Fill((Tau1+BJet).M(),weight);
+  for (unsigned int i=0; i<=(*taus).size(); ++i){
+    if((*taus).size()>i){
+      Tau tau = (*taus)[i];
+      TLorentzVector Tau;
+      Tau.SetPtEtaPhiE(tau.pt() ,tau.eta() ,tau.phi() ,tau.energy() );
+      for (unsigned int i =0; i<=bjetsM.size(); ++i) {
+	if (bjetsM.size()> i) {
+	  Jet bjet = bjetsM[i];
+	  TLorentzVector BJet;
+	  BJet.SetPtEtaPhiE(bjet.pt() ,bjet.eta() ,bjet.phi() ,bjet.energy() );
+	  hist("M_btau")->Fill((Tau+BJet).M(),weight);
+	}
+      }
     }
   }
-  
   
   //  Jet bjet1 = bjets[0];
   /*TLorentzVector BJet1;

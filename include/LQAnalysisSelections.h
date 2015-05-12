@@ -32,6 +32,14 @@ private:
  * This is useful for various selection modules, and thus defined outside of a particular Selection class.
  */
   
+  class InvMass2MuVeto: public uhh2::Selection {
+  public:
+    explicit InvMass2MuVeto(double m_min = 81., double m_max = 101.);
+    virtual bool passes(const uhh2::Event & event);
+  private:
+    double m_min, m_max;
+  };
+
 
   class SameSignCut: public Selection{
   public:
@@ -39,6 +47,22 @@ private:
     ~SameSignCut(){};
     virtual bool passes(const Event & event);
   private:
+  };
+
+  class EleTauSameSignCut: public Selection{
+  public:
+    EleTauSameSignCut();
+    ~EleTauSameSignCut(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
+
+  class MbtauSelection: public Selection{
+  public:
+    explicit MbtauSelection(double minMbtau=0., double maxMbtau=-1);
+    virtual bool passes(const Event &);
+  private:
+    double minMbtau_, maxMbtau_;
   };
 
 
@@ -56,7 +80,7 @@ private:
   class METCut: public Selection {
   public:
     explicit METCut(double min_met=0., double max_met=-1);
-    virtual bool passes(const Event & event) override;
+    virtual bool passes(const Event &);
   private:
     double min_met, max_met;
   };

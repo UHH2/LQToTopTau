@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
+<!ENTITY LQtoTTau300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M300_20x25.xml">
+<!ENTITY LQtoTTau500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M500_20x25.xml">
+<!ENTITY LQtoTTau700 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M700_20x25.xml">
+<!ENTITY LQtoTTau900 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M900_20x25.xml">
+<!ENTITY LQtoTTau1100 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1100_20x25.xml">
+<!ENTITY LQtoTTau1300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1300_20x25.xml">
+<!ENTITY LQtoTTau1500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1500_20x25.xml">
+]>
+<JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
+    <Library Name="libSUHH2LQAnalysis"/>
+    <Package Name="SUHH2LQAnalysis.par"/>
+
+   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Gen/" PostFix="" TargetLumi="19700" >
+
+
+     <InputData Lumi="9174.8" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
+       &LQtoTTau300;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData> 
+     
+     <InputData Lumi="151209.7" NEventsMax="-1" Type="MC" Version="LQtoTTau500" Cacheable="True">
+       &LQtoTTau500;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData>  
+     
+     <InputData Lumi="1144336.4" NEventsMax="-1" Type="MC" Version="LQtoTTau700" Cacheable="True">
+       &LQtoTTau700;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData>  
+     
+     <InputData Lumi="6097561" NEventsMax="-1" Type="MC" Version="LQtoTTau900" Cacheable="True">
+       &LQtoTTau900;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData> 
+ 
+     <InputData Lumi="25553264.6" NEventsMax="-1" Type="MC" Version="LQtoTTau1100" Cacheable="False">
+       &LQtoTTau1100;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData>
+ 
+     <InputData Lumi="93491206" NEventsMax="-1" Type="MC" Version="LQtoTTau1300" Cacheable="True">
+       &LQtoTTau1300;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData> 
+     
+     <InputData Lumi="308266666.7" NEventsMax="-1" Type="MC" Version="LQtoTTau1500" Cacheable="True">
+       &LQtoTTau1500;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData> 
+     
+
+
+
+
+<UserConfig>
+    <Item Name="GenParticleCollection" Value="GenParticles" /> 
+    <Item Name="AnalysisModule" Value="LQGenModule" /> 
+    <Item Name="TestKey" Value="TestKeyValue" />
+  </UserConfig>
+   </Cycle>
+</JobConfiguration>

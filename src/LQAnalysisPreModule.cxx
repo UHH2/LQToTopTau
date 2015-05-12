@@ -210,13 +210,11 @@ bool LQAnalysisPreModule::process(Event & event) {
 
    // 1. run all modules; here: only jet cleaning.
 
-
-
+    
     //if(!nele_sel->passes(event)) return false;
     muoncleaner->process(event);
     electroncleaner->process(event);
     jetleptoncleaner->process(event);
-
     taucleaner->process(event);
     for(unsigned int i=0; i<event.jets->size(); i++){
       Jet jet = event.jets->at(i);
@@ -229,20 +227,19 @@ bool LQAnalysisPreModule::process(Event & event) {
     }
 
     jetcleaner->process(event);
-
+    
 
     //h_test2->fill(event);
     /*    
     for(const auto & tau : *event.taus){
       if(!tau.decayModeFinding() || !tau.byLooseCombinedIsolationDeltaBetaCorr3Hits()) return false;
     }
-
     h_before->fill(event);
     taucleaner->process(event);
     h_after->fill(event);
     */
 
-
+    
     // fill hists after cleaning modules 
     h_lq_cleaner->fill(event);
     h_tau_cleaner->fill(event);
@@ -254,7 +251,6 @@ bool LQAnalysisPreModule::process(Event & event) {
     // 2. test selections and fill histograms
     
     //h_nocuts->fill(event);
-
 
     // define met
     auto met = event.met->pt();
@@ -277,11 +273,8 @@ bool LQAnalysisPreModule::process(Event & event) {
     double st=0.0;
     st = ht + ht_lep + met;
 
-
     if(!nmuon_sel->passes(event)) return false;
-    if(!nele_sel->passes(event)) return false;
-    
- 
+    if(!nele_sel->passes(event)) return false;  
 
     if(!njet_sel->passes(event)) return false;
     const auto jets = event.jets;
@@ -328,9 +321,6 @@ bool LQAnalysisPreModule::process(Event & event) {
     h_jet_TauOnly->fill(event);
     h_event_TauOnly->fill(event);
     
-   
-
-
     bool complete_selection = true;
     std::vector<bool> v_accept(fullhad_sel.size());
     for (unsigned i=0; i<fullhad_sel.size(); ++i) {
@@ -340,15 +330,8 @@ bool LQAnalysisPreModule::process(Event & event) {
 	complete_selection = false;
       }
     }
-    /*if (complete_selection) {
-      h_ele_full->fill(event);
-      h_muon_full->fill(event);
-      h_jet_full->fill(event);
-      h_tau_full->fill(event);
-      h_event_full->fill(event);
-      }*/
-    
 
+    
     h_lq_PreSel->fill(event);
     h_tau_PreSel->fill(event);
     h_mu_PreSel->fill(event);
@@ -356,12 +339,16 @@ bool LQAnalysisPreModule::process(Event & event) {
     h_jet_PreSel->fill(event);
     h_event_PreSel->fill(event);
 
-
-
     
     // 3. decide whether or not to keep the current event in the output:
     return complete_selection;
+    
+
+    //return true;
+
 }
+
+
 
 // as we want to run the ExampleCycleNew directly with AnalysisModuleRunner,
 // make sure the LQAnalysisModule is found by class name. This is ensured by this macro:

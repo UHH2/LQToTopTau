@@ -7,6 +7,7 @@
 <!ENTITY LQtoTTau1100 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1100_20x25.xml">
 <!ENTITY LQtoTTau1300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1300_20x25.xml">
 <!ENTITY LQtoTTau1500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_LQ_TTau_M1500_20x25.xml">
+<!ENTITY Run2LQtoTTau800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/LQAnalysis/config/MC_Run2_LQ_TTau_M800_20x25.xml">
 ]>
 <JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
     <Library Name="libSUHH2LQAnalysis"/>
@@ -15,6 +16,15 @@
    <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Gen/" PostFix="" TargetLumi="19700" >
 
 
+
+     <InputData Lumi="6097561" NEventsMax="-1" Type="MC" Version="Run2LQtoTTau800" Cacheable="True">
+       &Run2LQtoTTau800;
+       <InputTree Name="AnalysisTree" />
+       <OutputTree Name="AnalysisTree" />
+     </InputData> 
+
+
+<!--
      <InputData Lumi="9174.8" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
        &LQtoTTau300;
        <InputTree Name="AnalysisTree" />
@@ -56,7 +66,7 @@
        <InputTree Name="AnalysisTree" />
        <OutputTree Name="AnalysisTree" />
      </InputData> 
-     
+     -->
 
 
 

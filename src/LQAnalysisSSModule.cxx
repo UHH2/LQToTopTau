@@ -54,6 +54,7 @@ private:
   std::unique_ptr<Hists> lq_PreSelection, electron_PreSelection, muon_PreSelection, jet_PreSelection, tau_PreSelection, event_PreSelection;
   std::unique_ptr<Hists> h_lq_LeadingJet150, h_tau_LeadingJet150, h_mu_LeadingJet150, h_ele_LeadingJet150, h_jet_LeadingJet150, h_event_LeadingJet150;
   std::unique_ptr<Hists> h_lq_ThreeJets, h_tau_ThreeJets, h_mu_ThreeJets, h_ele_ThreeJets, h_jet_ThreeJets, h_event_ThreeJets;
+  std::unique_ptr<Hists> h_lq_ST410, h_tau_ST410, h_mu_ST410, h_ele_ST410, h_jet_ST410, h_event_ST410;
   std::unique_ptr<Hists> h_lq_ST470, h_tau_ST470, h_mu_ST470, h_ele_ST470, h_jet_ST470, h_event_ST470;
   std::unique_ptr<Hists> h_lq_ST500, h_tau_ST500, h_mu_ST500, h_ele_ST500, h_jet_ST500, h_event_ST500;
   std::unique_ptr<Hists> h_lq_ST600, h_tau_ST600, h_mu_ST600, h_ele_ST600, h_jet_ST600, h_event_ST600;
@@ -154,6 +155,13 @@ LQAnalysisSSModule::LQAnalysisSSModule(Context & ctx){
     h_ele_LeadingJet150.reset(new ElectronHists(ctx, "LQMod_Electrons_LeadingJet150"));
     h_jet_LeadingJet150.reset(new JetHists(ctx, "LQMod_Jets_LeadingJet150"));
     h_event_LeadingJet150.reset(new EventHists(ctx, "LQMod_Events_LeadingJet150"));
+
+    h_ele_ST410.reset(new ElectronHists(ctx, "LQMod_Electrons_ST410"));
+    h_mu_ST410.reset(new MuonHists(ctx, "LQMod_Muons_ST410"));
+    h_jet_ST410.reset(new JetHists(ctx, "LQMod_Jets_ST410"));
+    h_event_ST410.reset(new EventHists(ctx, "LQMod_Events_ST410"));
+    h_tau_ST410.reset(new TauHists(ctx, "LQMod_Taus_ST410"));
+    h_lq_ST410.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST410"));
 
     h_ele_ST470.reset(new ElectronHists(ctx, "LQMod_Electrons_ST470"));
     h_mu_ST470.reset(new MuonHists(ctx, "LQMod_Muons_ST470"));
@@ -285,6 +293,11 @@ bool LQAnalysisSSModule::process(Event & event) {
     // 2. test selections and fill histograms
 
 
+    for(const auto & muon : *event.muons){
+      if( (sqrt(2*muon.pt()*event.met->pt()* (1-cos(event.met->phi()-muon.phi())) ))<40) return false;
+    }
+
+
     if(!Mmumu_cut->passes(event)) return false;
 
     electron_PreSelection->fill(event);
@@ -318,7 +331,20 @@ bool LQAnalysisSSModule::process(Event & event) {
     double st=0.0;
     st = ht + ht_lep + met;
 
- 
+
+    for(const auto & tau : *event.taus){
+      if(tau.pt()<35) return false;
+    }
+    if(!ntau_sel->passes(event)) return false;
+    if(st<410) return false;
+    h_lq_ST410->fill(event);
+    h_tau_ST410->fill(event);
+    h_mu_ST410->fill(event);
+    h_ele_ST410->fill(event);
+    h_jet_ST410->fill(event);
+    h_event_ST410->fill(event);
+
+
     for(const auto & tau : *event.taus){
       if(tau.pt()<50) return false;
     }

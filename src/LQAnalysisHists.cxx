@@ -7,6 +7,7 @@
 #include <math.h>
 #include "TH1F.h"
 #include <iostream>
+#include "TMath.h"
 
 using namespace std;
 using namespace uhh2;
@@ -34,6 +35,11 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("M_btau", "M_{b#tau}", 20, 0,1000);
   book<TH1F>("MT", "M_{T}(mu,missing ET)", 50,0,800);
   //book<TH1F>("Weights", "weights", 2,0.5,2.5);
+  book<TH1F>("eta_tilde", "|#tilde{#eta}|", 8,0,2.4);
+  book<TH1F>("eta_tilde2", "|#tilde{#eta}|", 24,0,2.4);
+  double eta_bins[3]={0,0.9,2.5};
+  book<TH1F>("eta_tilde_bin1", "|#tilde{#eta}|", 2,eta_bins);
+  book<TH1F>("eta_tilde_bin2", "|#tilde{#eta}|", 2,eta_bins);
 
 }
 
@@ -98,8 +104,8 @@ void LQAnalysisHists::fill(const Event & event){
       }
   }
   
-  if(event.muons->size() > 0){
-    const auto & muon = (*event.muons)[0];
+
+  for(const auto & muon : *event.muons){
     hist("MT")->Fill(sqrt(2*muon.pt()*event.met->pt()* (1-cos(event.met->phi()-muon.phi())) ), weight);
   }
 
@@ -144,6 +150,33 @@ void LQAnalysisHists::fill(const Event & event){
       }
     }
   }
+
+
+  double sum_ele=0;
+  double sum_mu=0;
+  double sum_tau=0;
+  for(const auto & ele : *event.electrons){
+    sum_ele+=TMath::ATan(exp(-fabs(ele.eta())));
+  }
+  for(const auto & muon : *event.muons){
+    sum_mu+=TMath::ATan(exp(-fabs(muon.eta())));
+  }
+  for(const auto & tau : *event.taus){
+    sum_tau+=TMath::ATan(exp(-fabs(tau.eta())));
+  }
+
+
+  double sum_leptons=(event.electrons->size()+event.muons->size()+event.taus->size());
+
+  //cout << 1/sum_leptons << endl;
+  double eta_halil=-TMath::Log(TMath::Tan((1/sum_leptons)*(sum_ele+sum_mu+sum_tau)));
+  //cout << eta_halil << endl;
+
+  hist("eta_tilde")->Fill( eta_halil ,weight);
+  hist("eta_tilde2")->Fill( eta_halil ,weight);
+  if(eta_halil<0.9)  hist("eta_tilde_bin1")->Fill( eta_halil ,weight);
+  if(eta_halil>=0.9)  hist("eta_tilde_bin2")->Fill( eta_halil ,weight);
+
   
   //  Jet bjet1 = bjets[0];
   /*TLorentzVector BJet1;

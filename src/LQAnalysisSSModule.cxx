@@ -56,6 +56,7 @@ private:
   std::unique_ptr<Hists> h_lq_ThreeJets, h_tau_ThreeJets, h_mu_ThreeJets, h_ele_ThreeJets, h_jet_ThreeJets, h_event_ThreeJets;
   std::unique_ptr<Hists> h_lq_ST410, h_tau_ST410, h_mu_ST410, h_ele_ST410, h_jet_ST410, h_event_ST410;
   std::unique_ptr<Hists> h_lq_ST470, h_tau_ST470, h_mu_ST470, h_ele_ST470, h_jet_ST470, h_event_ST470;
+  std::unique_ptr<Hists> h_lq_ST470_TwoBTagL, h_tau_ST470_TwoBTagL, h_mu_ST470_TwoBTagL, h_ele_ST470_TwoBTagL, h_jet_ST470_TwoBTagL, h_event_ST470_TwoBTagL;
   std::unique_ptr<Hists> h_lq_ST500, h_tau_ST500, h_mu_ST500, h_ele_ST500, h_jet_ST500, h_event_ST500;
   std::unique_ptr<Hists> h_lq_ST600, h_tau_ST600, h_mu_ST600, h_ele_ST600, h_jet_ST600, h_event_ST600;
   std::unique_ptr<Hists> h_lq_ST770, h_tau_ST770, h_mu_ST770, h_ele_ST770, h_jet_ST770, h_event_ST770;
@@ -169,6 +170,13 @@ LQAnalysisSSModule::LQAnalysisSSModule(Context & ctx){
     h_event_ST470.reset(new EventHists(ctx, "LQMod_Events_ST470"));
     h_tau_ST470.reset(new TauHists(ctx, "LQMod_Taus_ST470"));
     h_lq_ST470.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST470"));
+
+    h_ele_ST470_TwoBTagL.reset(new ElectronHists(ctx, "LQMod_Electrons_ST470_TwoBTagL"));
+    h_mu_ST470_TwoBTagL.reset(new MuonHists(ctx, "LQMod_Muons_ST470_TwoBTagL"));
+    h_jet_ST470_TwoBTagL.reset(new JetHists(ctx, "LQMod_Jets_ST470_TwoBTagL"));
+    h_event_ST470_TwoBTagL.reset(new EventHists(ctx, "LQMod_Events_ST470_TwoBTagL"));
+    h_tau_ST470_TwoBTagL.reset(new TauHists(ctx, "LQMod_Taus_ST470_TwoBTagL"));
+    h_lq_ST470_TwoBTagL.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST470_TwoBTagL"));
 
     h_ele_ST500.reset(new ElectronHists(ctx, "LQMod_Electrons_ST500"));
     h_mu_ST500.reset(new MuonHists(ctx, "LQMod_Muons_ST500"));
@@ -292,11 +300,11 @@ bool LQAnalysisSSModule::process(Event & event) {
 
     // 2. test selections and fill histograms
 
-
+    /*
     for(const auto & muon : *event.muons){
       if( (sqrt(2*muon.pt()*event.met->pt()* (1-cos(event.met->phi()-muon.phi())) ))<40) return false;
     }
-
+    */
 
     if(!Mmumu_cut->passes(event)) return false;
 
@@ -356,6 +364,16 @@ bool LQAnalysisSSModule::process(Event & event) {
     h_ele_ST470->fill(event);
     h_jet_ST470->fill(event);
     h_event_ST470->fill(event);
+
+    if(TwoBTagL->passes(event)){
+      h_lq_ST470_TwoBTagL->fill(event);
+      h_tau_ST470_TwoBTagL->fill(event);
+      h_mu_ST470_TwoBTagL->fill(event);
+      h_ele_ST470_TwoBTagL->fill(event);
+      h_jet_ST470_TwoBTagL->fill(event);
+      h_event_ST470_TwoBTagL->fill(event);
+    }
+
 
 
     //if(samesign_sel->passes(event)) return false;

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "UHH2/core/include/Hists.h"
+#include "UHH2/common/include/ReconstructionHypothesisDiscriminators.h"
+#include "UHH2/common/include/ReconstructionHypothesis.h"
+#include "UHH2/common/include/TTbarGen.h"
 
 /**  \brief Example class for booking and filling histograms
  * 

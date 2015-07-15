@@ -17,7 +17,7 @@
 
 
 
-     <InputData Lumi="6097561" NEventsMax="-1" Type="MC" Version="Run2LQtoTTau800" Cacheable="True">
+     <InputData Lumi="2687582.418" NEventsMax="-1" Type="MC" Version="Run2LQtoTTau800" Cacheable="True">
        &Run2LQtoTTau800;
        <InputTree Name="AnalysisTree" />
        <OutputTree Name="AnalysisTree" />

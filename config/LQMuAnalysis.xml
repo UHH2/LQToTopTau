@@ -58,6 +58,7 @@
 
 
 
+<!--
  		<InputData Lumi="9174.8" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau300.root" Lumi="0.0"/>
 		        <InputTree Name="AnalysisTree" />
@@ -94,14 +95,14 @@
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau1500.root" Lumi="0.0"/>
                         <InputTree Name="AnalysisTree" />
 		</InputData> 
-
+-->
 
 		<InputData Lumi="31572" NEventsMax="-1" Type="MC" Version="TTbar" Cacheable="False">
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.TTbar.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-
+<!--
 		<InputData Lumi="2354.6" NEventsMax="-1" Type="MC" Version="WJetsHT100to200" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.WJetsHT100to200.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
@@ -174,6 +175,13 @@
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_sch.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" /> 
 		</InputData>
+-->
+
+
+
+
+
+
 
 
 
@@ -199,7 +207,7 @@
             <Item Name="METName" Value="slimmedMETs" />
             <Item Name="GenJetCollection" Value="slimmedGenJets" /> 
 	    <Item Name="TopJetCollection" Value="patJetsCmsTopTagCHSPacked" />
-
+	    <Item Name="GenParticleCollection" Value="GenParticles" />
 
 
             <!-- The list of available collections to read in corresponds to the pointer members in event. The 'Name's to use here in the configuration are:

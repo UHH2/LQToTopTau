@@ -15,11 +15,11 @@
     <Library Name="libSUHH2LQAnalysis"/>
     <Package Name="SUHH2LQAnalysis.par" />
 
-   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Sel/" PostFix="" TargetLumi="19700" > 
+   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Sel/" PostFix="_norm" TargetLumi="19700" > 
   <!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="2" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/" PostFix="_test" TargetLumi="19700" >  -->
 
 
-<!--
+
  		<InputData Lumi="73857" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="False">
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau300.root" Lumi="0.0"/>
 		        <InputTree Name="AnalysisTree" />
@@ -54,7 +54,7 @@
 		<In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.LQtoTTau1500.root" Lumi="0.0"/>
                         <InputTree Name="AnalysisTree" />
 		</InputData> 
--->
+
 
 
 <!--
@@ -167,7 +167,7 @@
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.DYJetsHT600toInf.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
--->
+
 
 		<InputData Lumi="1274576.8" NEventsMax="-1" Type="MC" Version="SingleTop_T_tch" Cacheable="False">
  		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_T_tch.root" Lumi="0.0"/>
@@ -198,7 +198,7 @@
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/PreSel/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_sch.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" /> 
 		</InputData>
-
+-->
 
 
 

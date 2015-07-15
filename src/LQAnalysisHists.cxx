@@ -3,11 +3,11 @@
 
 #include "UHH2/common/include/Utils.h"
 
-#include "UHH2/common/include/TTbarGen.h"
+
 #include <math.h>
 #include "TH1F.h"
 #include <iostream>
-#include "TMath.h"
+//#include "TMath.h"
 
 using namespace std;
 using namespace uhh2;
@@ -29,6 +29,7 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   //book<TH1F>("HT_weighttest", "H_{T} Jets", 140, 0, 3500);
   //book<TH1F>("ptj1", "p_{T} first jet", 15, 0,1200);
   book<TH1F>("M_mumu", "M_{#mu#mu}", 100, 0,1000);
+  book<TH1F>("M_mutau", "M_{#mu#tau}", 100, 0,1000);
   book<TH1F>("NbJetsL", "Number of bjets loose", 7, -0.5,6.5);
   book<TH1F>("NbJetsM", "Number of bjets medium", 7, -0.5,6.5);
   book<TH1F>("NbJetsT", "Number of bjets tight", 7, -0.5,6.5);
@@ -40,6 +41,19 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   double eta_bins[3]={0,0.9,2.5};
   book<TH1F>("eta_tilde_bin1", "|#tilde{#eta}|", 2,eta_bins);
   book<TH1F>("eta_tilde_bin2", "|#tilde{#eta}|", 2,eta_bins);
+  book<TH1F>("muon_type", "0 real muon, 1 fake muon", 2,-0.5,1.5);
+  book<TH1F>("tau_type", "0 real tau, 1 fake tau", 2,-0.5,1.5);
+  Double_t taubins[5] = {20, 60, 120, 200, 800};
+  book<TH1F>("pt_real_tau1_binned","p_{T} real tau 1",4,taubins);
+  book<TH1F>("pt_fake_tau1_binned","p_{T} fake tau 1",4,taubins);
+  book<TH1F>("pt_tau1_binned","p_{T} tau 1",4,taubins);
+
+
+  book<TH1F>("M_jet", "M_{Jet}", 100, 0, 2000);
+  book<TH1F>("N_subjets", "N_{Subjets} in a Topjet", 11, -0.5, 10.5);
+  book<TH1F>("min_mDisubjet", "Min(m_{ij})", 50, 0, 1000);
+  book<TH1F>("N_TopTags", "Number of CMSTopTags",6 ,-0.5, 5.5 );
+
 
 }
 
@@ -54,7 +68,10 @@ void LQAnalysisHists::fill(const Event & event){
   double weight = event.weight;
 
   //hist("Weights")->Fill(1,weight);
- 
+  
+
+  
+
   hist("MET")->Fill(event.met->pt(), weight);
   hist("MET_binned")->Fill(event.met->pt(), weight);
 
@@ -84,7 +101,7 @@ void LQAnalysisHists::fill(const Event & event){
   hist("ST_testbinned")->Fill(ht+ht_lep+met, weight);
 
 
-
+  
   const auto muons = event.muons;
   if(muons->size()>1){
     for(unsigned int i=0; i<muons->size(); ++i) 
@@ -103,7 +120,31 @@ void LQAnalysisHists::fill(const Event & event){
 	  }
       }
   }
+
+  const auto taus = event.taus;
+
   
+  if(muons->size()>0){
+    if(taus->size()>0){
+	for(unsigned int i=0; i<muons->size(); ++i) 
+	  {
+	    Muon muon = muons->at(i);
+	    TLorentzVector Mu;
+	    Mu.SetPtEtaPhiE(muon.pt() ,muon.eta() ,muon.phi() ,muon.energy() );
+	    for(unsigned int j=0; j<taus->size(); ++j) 
+	      {
+		Tau tau = taus->at(j);
+		TLorentzVector Tau;
+		Tau.SetPtEtaPhiE(tau.pt() ,tau.eta() ,tau.phi() ,tau.energy() );
+		TLorentzVector Vec =  Mu+Tau;
+		double InvMass = Vec.M(); 
+		hist("M_mutau")->Fill(InvMass, weight);	
+	      }
+	  }
+      }
+  }
+  
+
 
   for(const auto & muon : *event.muons){
     hist("MT")->Fill(sqrt(2*muon.pt()*event.met->pt()* (1-cos(event.met->phi()-muon.phi())) ), weight);
@@ -133,7 +174,6 @@ void LQAnalysisHists::fill(const Event & event){
   hist("NbJetsM")-> Fill(NbJetsM,weight);
   hist("NbJetsT")-> Fill(NbJetsT,weight);
 
-  const auto taus = event.taus;
   
   for (unsigned int i=0; i<=(*taus).size(); ++i){
     if((*taus).size()>i){
@@ -150,8 +190,9 @@ void LQAnalysisHists::fill(const Event & event){
       }
     }
   }
+  
 
-
+  
   double sum_ele=0;
   double sum_mu=0;
   double sum_tau=0;
@@ -164,7 +205,7 @@ void LQAnalysisHists::fill(const Event & event){
   for(const auto & tau : *event.taus){
     sum_tau+=TMath::ATan(exp(-fabs(tau.eta())));
   }
-
+  
 
   double sum_leptons=(event.electrons->size()+event.muons->size()+event.taus->size());
 
@@ -176,6 +217,168 @@ void LQAnalysisHists::fill(const Event & event){
   hist("eta_tilde2")->Fill( eta_halil ,weight);
   if(eta_halil<0.9)  hist("eta_tilde_bin1")->Fill( eta_halil ,weight);
   if(eta_halil>=0.9)  hist("eta_tilde_bin2")->Fill( eta_halil ,weight);
+
+
+
+  double dR = 1000;
+  for(const auto & tau : *event.taus){
+    for(auto genp : *event.genparticles){
+      //if(abs(genp.pdgId())!=15) continue;
+      if(abs(genp.pdgId())==15){
+	double tmp = deltaR(tau,genp);
+	if(tmp<dR){
+	  dR = tmp;
+	}
+      }
+    }
+  }
+  if(dR<0.4){
+    hist("tau_type")->Fill(0);
+    if(event.taus->size() > 0){
+      const auto & tau = (*event.taus)[0];
+      hist("pt_real_tau1_binned")->Fill(tau.pt(), weight);
+      //hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+    }
+  }
+  else{
+    hist("tau_type")->Fill(1);
+    if(event.taus->size() > 0){
+      const auto & tau = (*event.taus)[0];
+      hist("pt_fake_tau1_binned")->Fill(tau.pt(), weight);
+      //hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+    }
+  }
+  
+
+  
+  if(event.taus->size() > 0){
+    const auto & tau = (*event.taus)[0];
+    hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+  }    
+  
+
+  for(const auto & muon : *event.muons){
+    double dR = 1000;
+    for(auto genp : *event.genparticles){
+      if(abs(genp.pdgId())==13){
+	double tmp = deltaR(muon,genp);
+	if(tmp<dR){
+	  dR = tmp;
+	}
+      }
+    }
+    if(dR<0.1){
+     hist("muon_type")->Fill(0);
+    }
+    else{
+      hist("muon_type")->Fill(1);
+    }
+  }
+
+
+
+
+  //CMSTopTags
+  
+  double mDiminLower = 50., mjetLower = 140., mjetUpper = 250.;
+  //std::vector<TopJet>* topjets = event.topjets;
+  //std::vector<TopJet> taggedtopjets;
+  int N_toptaggedjets = 0;
+  bool CMSTopTag = true;
+
+  double m_disubjet_min = 0.;
+  
+  for(const auto & topjet : *event.topjets){
+
+    std::vector<Jet> subjets = topjet.subjets();
+    
+    if(subjets.size() < 2) m_disubjet_min = 0.0;
+    
+    // only need to sort if subjets there are more than 3 subjets, as
+    // otherwise, we use all 3 anyway.
+    if(subjets.size() > 3) sort_by_pt(subjets);
+    
+    double m01 = 0;
+    LorentzVector sum01test = subjets[0].v4()+subjets[1].v4();
+    LorentzVector sum02test = subjets[0].v4()+subjets[2].v4();
+    LorentzVector sum12test = subjets[1].v4()+subjets[2].v4();
+    double m01pt = 0;
+    double m01eta = 0;
+    double m01phi = 0;
+    double m01energy = 0;
+    m01pt = sum01test.pt();
+    m01eta = sum01test.eta();
+    m01phi = sum01test.phi();
+    m01energy = sum01test.energy();
+    double m02pt = 0;
+    double m02eta = 0;
+    double m02phi = 0;
+    double m02energy = 0;
+    m02pt = sum02test.pt();
+    m02eta = sum02test.eta();
+    m02phi = sum02test.phi();
+    m02energy = sum02test.energy();
+    double m12pt = 0;
+    double m12eta = 0;
+    double m12phi = 0;
+    double m12energy = 0;
+    m12pt = sum12test.pt();
+    m12eta = sum12test.eta();
+    m12phi = sum12test.phi();
+    m12energy = sum12test.energy();
+
+    TLorentzVector sum01;
+    sum01.SetPtEtaPhiE(m01pt ,m01eta ,m01phi ,m01energy );
+    
+    /*if(sum01.isTimelike())  */m01 = sum01.M();
+
+    
+    if(subjets.size() < 3) m_disubjet_min = m01;
+    
+    double m02 = 0;
+    //auto sum02 = subjets[0].v4()+subjets[2].v4();
+    TLorentzVector sum02;
+    sum02.SetPtEtaPhiE(m02pt ,m02eta ,m02phi ,m02energy );
+    /*if( sum02.isTimelike() )*/ m02 = sum02.M();
+    
+    double m12 = 0;
+    //auto sum12 = subjets[1].v4()+subjets[2].v4();
+    TLorentzVector sum12;
+    sum12.SetPtEtaPhiE(m12pt ,m12eta ,m12phi ,m12energy );
+    /*if( sum12.isTimelike() )*/  m12 = sum12.M();
+    
+    
+    m_disubjet_min = std::min(m01,std::min(m02, m12));
+    hist("min_mDisubjet")->Fill(m_disubjet_min, weight);
+    if(m_disubjet_min < mDiminLower) CMSTopTag = false;
+    
+    //auto mjet = topjet.v4().M();
+    TLorentzVector mjetv4;
+    mjetv4.SetPtEtaPhiE(topjet.pt() ,topjet.eta() ,topjet.phi() ,topjet.energy() );
+
+    double mjet = mjetv4.M();
+
+    hist("M_jet")->Fill(mjet, weight);
+    if(mjet < mjetLower) CMSTopTag = false;
+    if(mjet > mjetUpper) CMSTopTag = false;
+    
+    hist("N_subjets")->Fill(subjets.size(), weight);
+    if(subjets.size() < 3) CMSTopTag = false;
+    
+    //if (CMSTopTag) taggedtopjets.push_back(topjet); 
+    if (CMSTopTag) N_toptaggedjets++; 
+    
+  }
+
+  
+ //int N_toptaggedjets = taggedtopjets.size();
+  hist("N_TopTags")->Fill(N_toptaggedjets, weight);
+  
+
+
+
+
+
 
   
   //  Jet bjet1 = bjets[0];

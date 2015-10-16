@@ -103,7 +103,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
     // 1. setup other modules.
     jetcleaner.reset(new JetCleaner(30.0, 2.4));
     muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
-    muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(30.0, 2.1))));
+    muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1))));
     electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(30.0, 2.5))));
     taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1))));
 
@@ -313,6 +313,9 @@ bool LQAnalysisModule::process(Event & event) {
       event_BTagT->fill(event);
       lq_BTagT->fill(event);
     }
+
+
+    if(st<400) return false;
 
     /*
     //printer->process(event);

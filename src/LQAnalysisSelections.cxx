@@ -39,17 +39,32 @@ bool InvMass2MuVeto::passes(const Event & event){
 SameSignCut::SameSignCut(){
 }
 
- bool SameSignCut::passes(const Event & event)
- {
-   for(const auto & muon : *event.muons)
-     {
-       for(const auto & tau : *event.taus)
-	 {
-	   if (muon.charge() == tau.charge()) return true;
-	 }     
-     }
-   return false;
- }
+bool SameSignCut::passes(const Event & event)
+{
+  for(const auto & muon : *event.muons)
+    {
+      for(const auto & tau : *event.taus)
+	{
+	  if (muon.charge() == tau.charge()) return true;
+	}     
+    }
+  return false;
+}
+
+
+
+SameSignCutLeadingLep::SameSignCutLeadingLep(){
+}
+bool SameSignCutLeadingLep::passes(const Event & event)
+{
+  if(event.muons->size() > 0 && event.taus->size() > 0){
+    const auto & muon = (*event.muons)[0];
+    const auto & tau = (*event.taus)[0];
+    if (muon.charge() == tau.charge()) return true;
+  }
+  return false;
+}
+
 
 EleTauSameSignCut::EleTauSameSignCut(){
 }
@@ -150,5 +165,6 @@ bool ElectronIso::operator()(const Electron & electron, const uhh2::Event &) con
 if(electron.relIso()>iso) return false;
 return true;
 }
+
 
 

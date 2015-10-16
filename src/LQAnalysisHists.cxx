@@ -16,6 +16,8 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   // book all histograms here
 
   Double_t bins[9] = {0, 400, 700, 1000, 1300, 1600, 1900, 2200, 2500};
+  Double_t taubins[5] = {20, 60, 120, 200, 800};
+  Double_t bbins[5] = {20, 100, 200, 400, 1000};
   //double newbin[3] = {700,1500,4000};
   // ht
   book<TH1F>("MET", "missing E_{T}", 20,0,1000);
@@ -25,6 +27,19 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("ST", "H_{T}", 50, 0, 5000);
   book<TH1F>("ST_binned", "H_{T}", 8, bins);
   book<TH1F>("ST_testbinned", "H_{T}", 32, 800,4000);
+
+  /*
+  double pttoprebins[8]={0,80,130,180,230,300,400,1000};
+  double pttopbins[5]={0,70,140,200,1000};
+  book<TH1F>("M_tophad_own", "M^{top,had} [GeV/c^{2}]", 50, 0, 500 ) ;
+  book<TH1F>("Pt_tophad_own", "P_{T}^{top,had} [GeV/c]", 60, 0, 1200 ) ;
+  book<TH1F>("Pt_tophad_own_rebin", "P_{T}^{top,had} [GeV/c]", 7, pttoprebins ) ;
+  book<TH1F>("Pt_tophad_own_binned", "P_{T}^{top,had} [GeV/c]", 4, pttopbins ) ;
+
+  book<TH1F>("M_tophad_tau1", "M^{top,tau1} [GeV/c^{2}]", 50, 0, 1000 ) ; 
+  book<TH1F>("DeltaR_tophad_tau1", "DeltaR_tophad_tau1", 50, 0, 5 ) ; 
+  */
+
   //book<TH1F>("pt_gentau_hist", "p_{T}^{gen}", 100,0,800);
   //book<TH1F>("HT_weighttest", "H_{T} Jets", 140, 0, 3500);
   //book<TH1F>("ptj1", "p_{T} first jet", 15, 0,1200);
@@ -34,6 +49,12 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("NbJetsM", "Number of bjets medium", 7, -0.5,6.5);
   book<TH1F>("NbJetsT", "Number of bjets tight", 7, -0.5,6.5);
   book<TH1F>("M_btau", "M_{b#tau}", 20, 0,1000);
+
+  book<TH1F>("DeltaR_btau", "DeltaR_{b#tau}", 50, 0,5);
+  book<TH1F>("pt_b", "pt bjetM", 50,0,1000);
+  book<TH1F>("pt_b_binned", "pt bjetM", 4,bbins);
+
+
   book<TH1F>("MT", "M_{T}(mu,missing ET)", 50,0,800);
   //book<TH1F>("Weights", "weights", 2,0.5,2.5);
   book<TH1F>("eta_tilde", "|#tilde{#eta}|", 8,0,2.4);
@@ -43,7 +64,7 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("eta_tilde_bin2", "|#tilde{#eta}|", 2,eta_bins);
   book<TH1F>("muon_type", "0 real muon, 1 fake muon", 2,-0.5,1.5);
   book<TH1F>("tau_type", "0 real tau, 1 fake tau", 2,-0.5,1.5);
-  Double_t taubins[5] = {20, 60, 120, 200, 800};
+
   book<TH1F>("pt_real_tau1_binned","p_{T} real tau 1",4,taubins);
   book<TH1F>("pt_fake_tau1_binned","p_{T} fake tau 1",4,taubins);
   book<TH1F>("pt_tau1_binned","p_{T} tau 1",4,taubins);
@@ -54,6 +75,13 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("min_mDisubjet", "Min(m_{ij})", 50, 0, 1000);
   book<TH1F>("N_TopTags", "Number of CMSTopTags",6 ,-0.5, 5.5 );
 
+  book<TH1F>("pt_thad", "P_{T}^{top,had} [GeV/c]", 20,0,1200);
+  book<TH1F>("pt_tlep", "P_{T}^{top,lep} [GeV/c]", 20,0,1200);
+  book<TH1F>("pt_tcom", "P_{T}^{top,combined} [GeV/c]", 20,0,1200);
+
+
+  //h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
+  //m_discriminator_name = "Chi2";
 
 }
 
@@ -69,8 +97,16 @@ void LQAnalysisHists::fill(const Event & event){
 
   //hist("Weights")->Fill(1,weight);
   
+  /*
+  std::vector<ReconstructionHypothesis> hyps = event.get(h_ttbar_hyps); 
+  const ReconstructionHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
 
-  
+  hist("pt_thad")->Fill( hyp->tophad_v4().Pt(),weight );
+  hist("pt_tlep")->Fill( hyp->toplep_v4().Pt(),weight );
+
+  hist("pt_tcom")->Fill( hyp->tophad_v4().Pt(),weight );
+  hist("pt_tcom")->Fill( hyp->toplep_v4().Pt(),weight );
+  */
 
   hist("MET")->Fill(event.met->pt(), weight);
   hist("MET_binned")->Fill(event.met->pt(), weight);
@@ -99,6 +135,11 @@ void LQAnalysisHists::fill(const Event & event){
   hist("ST")->Fill(ht+ht_lep+met, weight);
   hist("ST_binned")->Fill(ht+ht_lep+met, weight);
   hist("ST_testbinned")->Fill(ht+ht_lep+met, weight);
+
+
+
+
+  
 
 
   
@@ -188,6 +229,25 @@ void LQAnalysisHists::fill(const Event & event){
 	  hist("M_btau")->Fill((Tau+BJet).M(),weight);
 	}
       }
+    }
+  }
+
+  if(event.taus->size() > 0){
+    const auto & tau = (*event.taus)[0];
+    for (unsigned int i =0; i<=bjetsM.size(); ++i) {
+      if (bjetsM.size()> i) {
+	Jet bjet = bjetsM[i];
+	double deltaR_btau = deltaR(bjet,tau);
+	hist("DeltaR_btau")->Fill(deltaR_btau,weight);
+      }
+    }
+  }
+
+  for (unsigned int i =0; i<=bjetsM.size(); ++i) {
+    if (bjetsM.size()> i) {
+      Jet bjet = bjetsM[i];
+      hist("pt_b")->Fill(bjet.pt(),weight);
+      hist("pt_b_binned")->Fill(bjet.pt(),weight);
     }
   }
   
@@ -374,7 +434,6 @@ void LQAnalysisHists::fill(const Event & event){
  //int N_toptaggedjets = taggedtopjets.size();
   hist("N_TopTags")->Fill(N_toptaggedjets, weight);
   
-
 
 
 

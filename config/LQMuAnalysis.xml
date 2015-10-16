@@ -12,11 +12,11 @@
 
 <!-- OutputLevel controls which messages are printed; set to VERBOSE or DEBUG for more verbosity, to WARNING or ERROR for less -->
 <JobConfiguration JobName="ExampleCycleJob" OutputLevel="INFO">
-    <Library Name="libSUHH2LQAnalysis"/>
-    <Package Name="SUHH2LQAnalysis.par" />
+  <Library Name="libSUHH2LQAnalysis"/>
+  <Package Name="SUHH2LQAnalysis.par" />
 
-   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuSel/" PostFix="" TargetLumi="19700" > 
-  <!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="2" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuSel" PostFix="_test" TargetLumi="19700" >  -->
+<!--      <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuSel/" PostFix="" TargetLumi="19700" > -->
+  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="6" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuSel/" PostFix="_test" TargetLumi="19700" > 
 
 
 <!--
@@ -125,22 +125,22 @@
 		</InputData>
 
 
-		<InputData Lumi="9900.6" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="False">
+		<InputData Lumi="18944.66" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.DYJetsHT100to200.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="42124.3" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="False">
+		<InputData Lumi="81156.45" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.DYJetsHT200to400.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="374240.6" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="False">
+		<InputData Lumi="684912.7" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.DYJetsHT400to600.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="994112.4" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="False">
+		<InputData Lumi="1872322" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="False">
 		  <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/uhh2.AnalysisModuleRunner.MC.DYJetsHT600toInf.root" Lumi="0.0"/>
 			<InputTree Name="AnalysisTree" />
 		</InputData>

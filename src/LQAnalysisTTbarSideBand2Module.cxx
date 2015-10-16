@@ -52,7 +52,7 @@ private:
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, threejet_sel, fourjet_sel, fivejet_sel, bsel, ntau_sel, nmuon_sel, TwoBTagM, BTagT, TwoBTagT, samesign_sel;
+  std::unique_ptr<Selection> njet_sel, threejet_sel, fourjet_sel, fivejet_sel, bsel, ntau_sel, nmuon_sel, TwoBTagL, TwoBTagM, BTagM, BTagT, TwoBTagT, samesign_sel, samesign_lead;
   std::vector<std::unique_ptr<Selection> > fullhad_sel;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
@@ -108,7 +108,7 @@ private:
   std::unique_ptr<AnalysisModule> muons_before, muons_after, jets_before, jets_after;
 
 
-  JetId BTagMedium, BTagTight;
+  JetId BTagLoose, BTagMedium, BTagTight;
   MuonId MuIso;
   ElectronId EleIso;
 
@@ -159,7 +159,8 @@ LQAnalysisTTbarSideBand2Module::LQAnalysisTTbarSideBand2Module(Context & ctx){
     muoncleaner_iso.reset(new MuonCleaner(AndId<Muon>(MuIso, MuonIDKinematic(30.0, 2.4))));
     electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(30.0, 2.5))));
     electroncleaner_iso.reset(new ElectronCleaner(AndId<Electron>(EleIso, PtEtaCut(30.0, 2.5))));
-    taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMediumInverted(), PtEtaCut(20.0, 2.1))));
+    taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMediumInverted(), PtEtaCut(30.0, 2.1))));
+    BTagLoose = CSVBTag(CSVBTag::WP_LOOSE);
     BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
     BTagTight = CSVBTag(CSVBTag::WP_TIGHT);
     jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
@@ -173,10 +174,13 @@ LQAnalysisTTbarSideBand2Module::LQAnalysisTTbarSideBand2Module(Context & ctx){
     ntau_sel.reset(new NTauSelection(1,-1));
     nmuon_sel.reset(new NMuonSelection(1,-1));
     bsel.reset(new NBTagSelection(1,-1));
+    TwoBTagL.reset(new NJetSelection(2,999,BTagLoose));
     TwoBTagM.reset(new NJetSelection(2,999,BTagMedium));
+    BTagM.reset(new NJetSelection(1,999,BTagMedium));
     BTagT.reset(new NJetSelection(1,999,BTagTight));
     TwoBTagT.reset(new NJetSelection(2,999,BTagTight));
     samesign_sel.reset(new SameSignCut());
+    samesign_lead.reset(new SameSignCutLeadingLep());
 
 
     int n_cuts = 4;
@@ -352,7 +356,7 @@ LQAnalysisTTbarSideBand2Module::LQAnalysisTTbarSideBand2Module(Context & ctx){
     h_event_ST1100.reset(new EventHists(ctx, "LQMod_Events_ST1100"));
     h_tau_ST1100.reset(new TauHists(ctx, "LQMod_Taus_ST1100"));
     h_lq_ST1100.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1100"));
-   h_faketau_ST1100.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST1100"));
+    h_faketau_ST1100.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST1100"));
 
     h_ele_ST1200.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1200"));
     h_mu_ST1200.reset(new MuonHists(ctx, "LQMod_Muons_ST1200"));
@@ -486,21 +490,33 @@ LQAnalysisTTbarSideBand2Module::LQAnalysisTTbarSideBand2Module(Context & ctx){
 
 
 bool LQAnalysisTTbarSideBand2Module::process(Event & event) {
-    // This is the main procedure, called for each event. Typically,
-    // do some pre-processing by calling the modules' process method
-    // of the modules constructed in the constructor (1).
-    // Then, test whether the event passes some selection and -- if yes --
-    // use it to fill the histograms (2).
-    // Finally, decide whether or not to keep the event in the output (3);
-    // this is controlled by the return value of this method: If it
-    // returns true, the event is kept; if it returns false, the event
-    // is thrown away.
+  // This is the main procedure, called for each event. Typically,
+  // do some pre-processing by calling the modules' process method
+  // of the modules constructed in the constructor (1).
+  // Then, test whether the event passes some selection and -- if yes --
+  // use it to fill the histograms (2).
+  // Finally, decide whether or not to keep the event in the output (3);
+  // this is controlled by the return value of this method: If it
+  // returns true, the event is kept; if it returns false, the event
+  // is thrown away.
     
-    //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
+  //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
     
- 
+  /*
+  taucleaner->process(event);
+  muoncleaner->process(event);
+  electroncleaner->process(event);
+
+  jetcleaner->process(event);
+  */
 
 
+  /*
+  //print all trigger names    
+  for (unsigned int i=0; i<event.get_current_triggernames().size();i++)
+  cout<< event.get_current_triggernames()[i]<<"\n";
+  cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+  */
 
     //jetlepcleantest->process(event);
   /*
@@ -512,74 +528,52 @@ bool LQAnalysisTTbarSideBand2Module::process(Event & event) {
     h_event_PreSel->fill(event);
   */
 
-    electron_PreSelection->fill(event);
-    muon_PreSelection->fill(event);
-    tau_PreSelection->fill(event);
-    jet_PreSelection->fill(event);
-    event_PreSelection->fill(event);
-    lq_PreSelection->fill(event);
+  electron_PreSelection->fill(event);
+  muon_PreSelection->fill(event);
+  tau_PreSelection->fill(event);
+  jet_PreSelection->fill(event);
+  event_PreSelection->fill(event);
+  lq_PreSelection->fill(event);
 
 
 
 
 
     
-    // define met
-    auto met = event.met->pt();
+  // define met
+  auto met = event.met->pt();
 
-    // define ht and st
-    double ht = 0.0;
-    for(const auto & jet : *event.jets){
-      ht += jet.pt();
-    }
-    double ht_lep = 0.0;
-    for(const auto & electron : *event.electrons){
-      ht_lep += electron.pt();
-    }
-    for(const auto & muon : *event.muons){
-      ht_lep += muon.pt();
-    }
-    for(const auto & tau : *event.taus){
+  // define ht and st
+  double ht = 0.0;
+  for(const auto & jet : *event.jets){
+    ht += jet.pt();
+  }
+  double ht_lep = 0.0;
+  for(const auto & electron : *event.electrons){
+    ht_lep += electron.pt();
+  }
+  for(const auto & muon : *event.muons){
+    ht_lep += muon.pt();
+  }
+  for(const auto & tau : *event.taus){
     ht_lep += tau.pt();
-    }
-    double st=0.0;
-    st = ht + ht_lep + met;
+  }
+  double st=0.0;
+  st = ht + ht_lep + met;
     
 
-    const auto jets = event.jets;
-    if(jets->size() > 0){
-      const auto & jet = (*jets)[0];
-      if(jet.pt()<150) return false;
-    }
+  const auto jets = event.jets;
+  if(jets->size() > 0){
+    const auto & jet = (*jets)[0];
+    if(jet.pt()<150) return false;
+  }
 
 
+  for(const auto & tau : *event.taus){
+    if(tau.pt()<30.0) return false;
+  }
 
 
-    if(!threejet_sel->passes(event)) return false;
-    /*h_lq_FourJets->fill(event);
-    h_tau_FourJets->fill(event);
-    h_mu_FourJets->fill(event);
-    h_ele_FourJets->fill(event);
-    h_jet_FourJets->fill(event);
-    h_event_FourJets->fill(event);*/
-    
-    if(samesign_sel->passes(event)){
-      /*h_lq_FourJets_SameSign->fill(event);
-      h_tau_FourJets_SameSign->fill(event);
-      h_mu_FourJets_SameSign->fill(event);
-      h_ele_FourJets_SameSign->fill(event);
-      h_jet_FourJets_SameSign->fill(event);
-      h_event_FourJets_SameSign->fill(event);*/
-    }
-
-    if(!samesign_sel->passes(event)){
-      /*h_lq_FourJets_OppositeSign->fill(event);
-      h_tau_FourJets_OppositeSign->fill(event);
-      h_mu_FourJets_OppositeSign->fill(event);
-      h_ele_FourJets_OppositeSign->fill(event);
-      h_jet_FourJets_OppositeSign->fill(event);
-      h_event_FourJets_OppositeSign->fill(event);*/
-    }
 
     //if(!fivejet_sel->passes(event)) return false;
     /*h_lq_FiveJets->fill(event);
@@ -589,12 +583,56 @@ bool LQAnalysisTTbarSideBand2Module::process(Event & event) {
     h_jet_FiveJets->fill(event);
     h_event_FiveJets->fill(event);*/
 
-    if(!samesign_sel->passes(event)) return false;
-    //if(met<100) return false;
-    //if(!TwoBTagM->passes(event)) return false;
-    //if(!BTagT->passes(event)) return false;
-    if(!TwoBTagT->passes(event)) return false;
-    /*h_lq_FiveJets_TwoBTagM->fill(event);
+    /*
+    for(const auto & tau : *event.taus){
+      //if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()/tau.pt()>1.0 && tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()/tau.pt()<1.1) return false;
+      //if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()/tau.pt()>0.35 && tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()/tau.pt()<0.7) return false; // looks quite good if we use only 4 pt tau 1 bins...
+
+      if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()>70 && tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<140) return false;
+
+    }
+    */
+
+
+
+    const auto taus = event.taus;
+    const auto & tau = (*event.taus)[0];
+
+    //if(tau.pt()<100) return false;
+
+    //if(!mbtau_sel->passes(event)) return false;
+    
+    bool OS_sel(false);
+    if(OS_sel){
+      if(samesign_lead->passes(event)) return false;
+      if(!fourjet_sel->passes(event)) return false;
+      if(met<100) return false;
+    }
+    else{
+      if(!samesign_lead->passes(event)) return false;
+      if(!BTagM->passes(event)) return false;
+    }
+    
+
+
+
+  /*
+    for(const auto & muon : *event.muons)
+    {
+    for(const auto & tau : *event.taus)
+    {
+    if (muon.charge() != tau.charge()){
+    cout << "fail" << endl; 
+    }
+    else{
+    cout << "success" << endl;
+    }
+    }     
+    }
+  */
+
+  //if(!TwoBTagT->passes(event)) return false;
+  /*h_lq_FiveJets_TwoBTagM->fill(event);
     h_tau_FiveJets_TwoBTagM->fill(event);
     h_mu_FiveJets_TwoBTagM->fill(event);
     h_ele_FiveJets_TwoBTagM->fill(event);

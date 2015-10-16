@@ -233,13 +233,14 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
 
   // fill hists before all selection cuts
+  
     h_lq_nocut->fill(event);
     h_tau_nocut->fill(event);
     h_mu_nocut->fill(event);
     h_ele_nocut->fill(event);
     h_jet_nocut->fill(event);
     h_event_nocut->fill(event);
-
+  
 
 
 
@@ -250,9 +251,9 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     electroncleaner->process(event);
     electroncleaner_iso->process(event);
 
-    h_mu_before->fill(event);
+    //h_mu_before->fill(event);
     jetleptoncleaner->process(event);
-    h_mu_after->fill(event);
+    //h_mu_after->fill(event);
 
     for(unsigned int i=0; i<event.jets->size(); i++){
       Jet jet = event.jets->at(i);
@@ -276,12 +277,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
  
 
     // fill hists after cleaning modules 
+    
     h_lq_cleaner->fill(event);
     h_tau_cleaner->fill(event);
     h_mu_cleaner->fill(event);
     h_ele_cleaner->fill(event);
     h_jet_cleaner->fill(event);
     h_event_cleaner->fill(event);
+    
+
 
     // define met
     auto met = event.met->pt();
@@ -305,13 +309,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     st = ht + ht_lep + met;
 
 
-    if(!nmuon_sel->passes(event)) return false;
-    h_lq_MuonOnly->fill(event);
-    h_tau_MuonOnly->fill(event);
-    h_mu_MuonOnly->fill(event);
-    h_ele_MuonOnly->fill(event);
-    h_jet_MuonOnly->fill(event);
-    h_event_MuonOnly->fill(event);
     
     if(!njet_sel->passes(event)) return false;
     h_lq_TwoJetsOnly->fill(event);
@@ -320,6 +317,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     h_ele_TwoJetsOnly->fill(event);
     h_jet_TwoJetsOnly->fill(event);
     h_event_TwoJetsOnly->fill(event);
+
+
+    if(!nmuon_sel->passes(event)) return false;
+    h_lq_MuonOnly->fill(event);
+    h_tau_MuonOnly->fill(event);
+    h_mu_MuonOnly->fill(event);
+    h_ele_MuonOnly->fill(event);
+    h_jet_MuonOnly->fill(event);
+    h_event_MuonOnly->fill(event);
     
     if(st<350) return false;
     h_lq_ST350Only->fill(event);
@@ -349,6 +355,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
 
     // 2. test selections and fill histograms
+    /*
     bool complete_selection = true;
     std::vector<bool> v_accept(fullhad_sel.size());
     for (unsigned i=0; i<fullhad_sel.size(); ++i) {
@@ -358,6 +365,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 	complete_selection = false;
       }
     }
+    */
 
     /*if(met<50) return false;
     if(!njet_sel->passes(event)) return false;
@@ -385,7 +393,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
     
     // 3. decide whether or not to keep the current event in the output:
-    return complete_selection;
+    return true;
 }
 
 // as we want to run the ExampleCycleNew directly with AnalysisModuleRunner,

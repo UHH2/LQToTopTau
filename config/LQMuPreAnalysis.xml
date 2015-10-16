@@ -25,7 +25,7 @@
 <!ENTITY SingleTop_Tbar_tch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_TBarToLeptons_t-channel_20x25.xml">
 <!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_Tbar_tW_20x25.xml">
 <!ENTITY SingleTop_Tbar_sch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_TBarToLeptons_s-channel_20x25.xml">
-<!ENTITY QCD_HT500To1000 SYSTEM "/afs/desy.de/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_QCD_HT500To1000_20x25.xml">
+<!ENTITY QCD_HT500To1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_QCD_HT500To1000_20x25.xml">
 <!ENTITY QCD_HT500To1000Ext SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_QCD_HT500To1000_20x25_ext1.xml">
 <!ENTITY QCD_HT1000ToInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_QCD_HT1000ToInf_20x25.xml">
 <!ENTITY QCD_HT1000ToInfExt SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_2_1_patch4/src/UHH2/common/datasets/MC_QCD_HT1000ToInf_20x25_ext1.xml">
@@ -36,13 +36,13 @@
     <Library Name="libSUHH2LQAnalysis"/>
     <Package Name="SUHH2LQAnalysis.par" />
 
-<!-- <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/" PostFix="_test" TargetLumi="19700" > -->
-  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="2" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/MuPreSel/" PostFix="" TargetLumi="19700" >  
+<!-- <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/TwoTaus/" PostFix="" TargetLumi="19700" > -->
+  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="10" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/TwoTaus/" PostFix="" TargetLumi="19700" > 
 
 
 
 
-
+<!--
  		<InputData Lumi="9174.8" NEventsMax="-1" Type="MC" Version="LQtoTTau300" Cacheable="True">
 	                &LQtoTTau300;
 		        <InputTree Name="AnalysisTree" />
@@ -127,9 +127,9 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
+-->
 
-
-
+<!--
 		<InputData Lumi="29334.8" NEventsMax="-1" Type="MC" Version="SingleTop_T_tch" Cacheable="False">
                         &SingleTop_T_tch;
 			<InputTree Name="AnalysisTree" /> 
@@ -165,9 +165,9 @@
 			<InputTree Name="AnalysisTree" /> 
 			<OutputTree Name="AnalysisTree" />  	 
 		</InputData>
+-->
 
 
-<!--
 		<InputData Lumi="31.75" NEventsMax="-1" Type="MC" Version="QCD_HT500To1000" Cacheable="True">
 		        &QCD_HT500To1000;
 			<InputTree Name="AnalysisTree" />
@@ -192,34 +192,35 @@
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
--->
 
 
 
-		<InputData Lumi="9900.6" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="True">
+<!--
+		<InputData Lumi="18944.66" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="True">
 		        &DYJetsHT100to200;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="42124.3" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="True">
+		<InputData Lumi="81156.45" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="True">
 		        &DYJetsHT200to400;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
 
-		<InputData Lumi="374240.6" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="True">
+		<InputData Lumi="684912.7" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="True">
 		        &DYJetsHT400to600;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
 
-		<InputData Lumi="994112.4" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="True">
+		<InputData Lumi="1872322" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="True">
 		        &DYJetsHT600toInf;
 			<InputTree Name="AnalysisTree" />
 			<OutputTree Name="AnalysisTree" />
 		</InputData>
+-->
 
 
 <!--

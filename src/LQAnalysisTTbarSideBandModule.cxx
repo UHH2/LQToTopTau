@@ -22,6 +22,11 @@
 #include "UHH2/common/include/JetCorrections.h"
 #include "UHH2/common/include/PrintingModules.h"
 
+#include "UHH2/common/include/TTbarGen.h"
+#include "UHH2/common/include/TTbarReconstruction.h"
+#include "UHH2/common/include/ReconstructionHypothesis.h"
+#include "UHH2/common/include/ReconstructionHypothesisDiscriminators.h"
+#include "UHH2/common/include/HypothesisHists.h"
 
 
 using namespace std;
@@ -52,7 +57,7 @@ private:
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, fourjet_sel, fivejet_sel, bsel, ntau_sel, nmuon_sel, TwoBTagM, samesign_sel;
+  std::unique_ptr<Selection> njet_sel, fourjet_sel, fivejet_sel, bsel, ntau_sel, nmuon_sel, BTagM, TwoBTagM, samesign_sel, samesign_lead;
   std::vector<std::unique_ptr<Selection> > fullhad_sel;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
@@ -64,18 +69,18 @@ private:
   std::unique_ptr<Hists> h_lq_FiveJets_TwoBTagM, h_tau_FiveJets_TwoBTagM, h_mu_FiveJets_TwoBTagM, h_ele_FiveJets_TwoBTagM, h_jet_FiveJets_TwoBTagM, h_event_FiveJets_TwoBTagM;
   std::unique_ptr<Hists> h_lq_FiveJets_TwoBTagM_SameSign, h_tau_FiveJets_TwoBTagM_SameSign, h_mu_FiveJets_TwoBTagM_SameSign, h_ele_FiveJets_TwoBTagM_SameSign, h_jet_FiveJets_TwoBTagM_SameSign, h_event_FiveJets_TwoBTagM_SameSign;
   std::unique_ptr<Hists> h_lq_FiveJets_TwoBTagM_OppositeSign, h_tau_FiveJets_TwoBTagM_OppositeSign, h_mu_FiveJets_TwoBTagM_OppositeSign, h_ele_FiveJets_TwoBTagM_OppositeSign, h_jet_FiveJets_TwoBTagM_OppositeSign, h_event_FiveJets_TwoBTagM_OppositeSign;*/
-  std::unique_ptr<Hists> lq_PreSelection, electron_PreSelection, muon_PreSelection, jet_PreSelection, tau_PreSelection, event_PreSelection;
+  std::unique_ptr<Hists> lq_PreSelection, electron_PreSelection, muon_PreSelection, jet_PreSelection, tau_PreSelection, event_PreSelection, hypothesis_PreSelection;
   std::unique_ptr<Hists> h_lq_LeadingJet150, h_tau_LeadingJet150, h_mu_LeadingJet150, h_ele_LeadingJet150, h_jet_LeadingJet150, h_event_LeadingJet150;
   std::unique_ptr<Hists> h_lq_ThreeJets, h_tau_ThreeJets, h_mu_ThreeJets, h_ele_ThreeJets, h_jet_ThreeJets, h_event_ThreeJets;
-  std::unique_ptr<Hists> h_lq_ST400, h_tau_ST400, h_mu_ST400, h_ele_ST400, h_jet_ST400, h_topjet_ST400, h_event_ST400, h_faketau_ST400;
-  std::unique_ptr<Hists> h_lq_ST500, h_tau_ST500, h_mu_ST500, h_ele_ST500, h_jet_ST500, h_topjet_ST500, h_event_ST500, h_faketau_ST500;
-  std::unique_ptr<Hists> h_lq_ST600, h_tau_ST600, h_mu_ST600, h_ele_ST600, h_jet_ST600, h_topjet_ST600, h_event_ST600, h_faketau_ST600;
-  std::unique_ptr<Hists> h_lq_ST700, h_tau_ST700, h_mu_ST700, h_ele_ST700, h_jet_ST700, h_topjet_ST700, h_event_ST700, h_faketau_ST700;
-  std::unique_ptr<Hists> h_lq_ST800, h_tau_ST800, h_mu_ST800, h_ele_ST800, h_jet_ST800, h_topjet_ST800, h_event_ST800, h_faketau_ST800;
-  std::unique_ptr<Hists> h_lq_ST900, h_tau_ST900, h_mu_ST900, h_ele_ST900, h_jet_ST900, h_topjet_ST900, h_event_ST900, h_faketau_ST900;
-  std::unique_ptr<Hists> h_lq_ST1000, h_tau_ST1000, h_mu_ST1000, h_ele_ST1000, h_jet_ST1000, h_topjet_ST1000, h_event_ST1000, h_faketau_ST1000;
-  std::unique_ptr<Hists> h_lq_ST1100, h_tau_ST1100, h_mu_ST1100, h_ele_ST1100, h_jet_ST1100, h_topjet_ST1100, h_event_ST1100, h_faketau_ST1100;
-  std::unique_ptr<Hists> h_lq_ST1200, h_tau_ST1200, h_mu_ST1200, h_ele_ST1200, h_jet_ST1200, h_topjet_ST1200, h_event_ST1200, h_faketau_ST1200;
+  std::unique_ptr<Hists> h_lq_ST400, h_tau_ST400, h_mu_ST400, h_ele_ST400, h_jet_ST400, h_topjet_ST400, h_event_ST400, h_faketau_ST400, h_hypothesis_ST400;
+  std::unique_ptr<Hists> h_lq_ST500, h_tau_ST500, h_mu_ST500, h_ele_ST500, h_jet_ST500, h_topjet_ST500, h_event_ST500, h_faketau_ST500, h_hypothesis_ST500;
+  std::unique_ptr<Hists> h_lq_ST600, h_tau_ST600, h_mu_ST600, h_ele_ST600, h_jet_ST600, h_topjet_ST600, h_event_ST600, h_faketau_ST600, h_hypothesis_ST600;
+  std::unique_ptr<Hists> h_lq_ST700, h_tau_ST700, h_mu_ST700, h_ele_ST700, h_jet_ST700, h_topjet_ST700, h_event_ST700, h_faketau_ST700, h_hypothesis_ST700;
+  std::unique_ptr<Hists> h_lq_ST800, h_tau_ST800, h_mu_ST800, h_ele_ST800, h_jet_ST800, h_topjet_ST800, h_event_ST800, h_faketau_ST800, h_hypothesis_ST800;
+  std::unique_ptr<Hists> h_lq_ST900, h_tau_ST900, h_mu_ST900, h_ele_ST900, h_jet_ST900, h_topjet_ST900, h_event_ST900, h_faketau_ST900, h_hypothesis_ST900;
+  std::unique_ptr<Hists> h_lq_ST1000, h_tau_ST1000, h_mu_ST1000, h_ele_ST1000, h_jet_ST1000, h_topjet_ST1000, h_event_ST1000, h_faketau_ST1000, h_hypothesis_ST1000;
+  std::unique_ptr<Hists> h_lq_ST1100, h_tau_ST1100, h_mu_ST1100, h_ele_ST1100, h_jet_ST1100, h_topjet_ST1100, h_event_ST1100, h_faketau_ST1100, h_hypothesis_ST1100;
+  std::unique_ptr<Hists> h_lq_ST1200, h_tau_ST1200, h_mu_ST1200, h_ele_ST1200, h_jet_ST1200, h_topjet_ST1200, h_event_ST1200, h_faketau_ST1200, h_hypothesis_ST1200;
   std::unique_ptr<Hists> h_lq_ST1300, h_tau_ST1300, h_mu_ST1300, h_ele_ST1300, h_jet_ST1300, h_topjet_ST1300, h_event_ST1300;
   std::unique_ptr<Hists> h_lq_ST1400, h_tau_ST1400, h_mu_ST1400, h_ele_ST1400, h_jet_ST1400, h_topjet_ST1400, h_event_ST1400;
   std::unique_ptr<Hists> h_lq_ST1500, h_tau_ST1500, h_mu_ST1500, h_ele_ST1500, h_jet_ST1500, h_topjet_ST1500, h_event_ST1500;
@@ -99,18 +104,18 @@ private:
 
 
 
-
-
-
-
-
-
   std::unique_ptr<AnalysisModule> muons_before, muons_after, jets_before, jets_after;
 
 
   JetId BTagMedium;
   MuonId MuIso;
   ElectronId EleIso;
+
+  std::vector<std::unique_ptr<AnalysisModule>> recomodules;
+  std::unique_ptr<AnalysisModule> ttgenprod;
+  Event::Handle<TTbarGen> h_ttbargen;
+  Event::Handle<std::vector<ReconstructionHypothesis>> h_ttbar_hyps;
+
 
 };
 
@@ -159,9 +164,18 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     muoncleaner_iso.reset(new MuonCleaner(AndId<Muon>(MuIso, MuonIDKinematic(30.0, 2.4))));
     electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(30.0, 2.5))));
     electroncleaner_iso.reset(new ElectronCleaner(AndId<Electron>(EleIso, PtEtaCut(30.0, 2.5))));
-    taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMediumInverted(), PtEtaCut(20.0, 2.1))));
+    taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMediumInverted(), PtEtaCut(30.0, 2.1))));
     BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
     jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
+
+    // ttbar GEN
+    ttgenprod.reset(new TTbarGenProducer(ctx, "ttbargen", false));
+    h_ttbargen = ctx.get_handle<TTbarGen>("ttbargen");
+    // ttbar RECO hypotheses
+    h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
+    recomodules.emplace_back(new PrimaryLepton(ctx));
+    recomodules.emplace_back(new HighMassTTbarReconstruction(ctx,NeutrinoReconstruction,"HighMassTTbarReconstruction"));
+    recomodules.emplace_back(new Chi2Discriminator(ctx,"HighMassTTbarReconstruction"));
 
 
     // 2. set up selections:
@@ -171,8 +185,10 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     ntau_sel.reset(new NTauSelection(1,-1));
     nmuon_sel.reset(new NMuonSelection(1,-1));
     bsel.reset(new NBTagSelection(1,-1));
+    BTagM.reset(new NJetSelection(1,999,BTagMedium));
     TwoBTagM.reset(new NJetSelection(2,999,BTagMedium));
     samesign_sel.reset(new SameSignCut());
+    samesign_lead.reset(new SameSignCutLeadingLep());
 
 
     int n_cuts = 4;
@@ -249,6 +265,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     jet_PreSelection.reset(new JetHists(ctx, "LQMod_Jets_PreSel"));
     event_PreSelection.reset(new EventHists(ctx, "LQMod_Events_PreSel"));
     lq_PreSelection.reset(new LQAnalysisHists(ctx, "LQMod_LQ_PreSel"));
+    hypothesis_PreSelection.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_PreSel", "HighMassTTbarReconstruction", "Chi2"));
 
     ele_TwoMuon.reset(new ElectronHists(ctx, "LQMod_Electrons_TwoMuon"));
     muon_TwoMuon.reset(new MuonHists(ctx, "LQMod_Muons_TwoMuon"));
@@ -286,6 +303,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST400.reset(new TauHists(ctx, "LQMod_Taus_ST400"));
     h_lq_ST400.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST400"));
     h_faketau_ST400.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST400"));
+    h_hypothesis_ST400.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST400", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST500.reset(new ElectronHists(ctx, "LQMod_Electrons_ST500"));
     h_mu_ST500.reset(new MuonHists(ctx, "LQMod_Muons_ST500"));
@@ -295,6 +313,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST500.reset(new TauHists(ctx, "LQMod_Taus_ST500"));
     h_lq_ST500.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST500"));
     h_faketau_ST500.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST500"));
+    h_hypothesis_ST500.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST500", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST600.reset(new ElectronHists(ctx, "LQMod_Electrons_ST600"));
     h_mu_ST600.reset(new MuonHists(ctx, "LQMod_Muons_ST600"));
@@ -304,7 +323,8 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST600.reset(new TauHists(ctx, "LQMod_Taus_ST600"));
     h_lq_ST600.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST600"));
     h_faketau_ST600.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST600"));
-
+    h_hypothesis_ST600.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST600", "HighMassTTbarReconstruction", "Chi2"));
+    
     h_ele_ST700.reset(new ElectronHists(ctx, "LQMod_Electrons_ST700"));
     h_mu_ST700.reset(new MuonHists(ctx, "LQMod_Muons_ST700"));
     h_jet_ST700.reset(new JetHists(ctx, "LQMod_Jets_ST700"));
@@ -313,6 +333,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST700.reset(new TauHists(ctx, "LQMod_Taus_ST700"));
     h_lq_ST700.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST700"));
     h_faketau_ST700.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST700"));
+    h_hypothesis_ST700.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST700", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST800.reset(new ElectronHists(ctx, "LQMod_Electrons_ST800"));
     h_mu_ST800.reset(new MuonHists(ctx, "LQMod_Muons_ST800"));
@@ -322,6 +343,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST800.reset(new TauHists(ctx, "LQMod_Taus_ST800"));
     h_lq_ST800.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST800"));
     h_faketau_ST800.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST800"));
+    h_hypothesis_ST800.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST800", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST900.reset(new ElectronHists(ctx, "LQMod_Electrons_ST900"));
     h_mu_ST900.reset(new MuonHists(ctx, "LQMod_Muons_ST900"));
@@ -331,6 +353,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST900.reset(new TauHists(ctx, "LQMod_Taus_ST900"));
     h_lq_ST900.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST900"));
     h_faketau_ST900.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST900"));
+    h_hypothesis_ST900.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST900", "HighMassTTbarReconstruction", "Chi2"));
 
     h_lq_ST1000.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1000"));
     h_tau_ST1000.reset(new TauHists(ctx, "LQMod_Taus_ST1000"));
@@ -340,6 +363,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_topjet_ST1000.reset(new TopJetHists(ctx, "LQMod_TopJets_ST1000"));
     h_event_ST1000.reset(new EventHists(ctx, "LQMod_Events_ST1000"));
     h_faketau_ST1000.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST1000"));
+    h_hypothesis_ST1000.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1000", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST1100.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1100"));
     h_mu_ST1100.reset(new MuonHists(ctx, "LQMod_Muons_ST1100"));
@@ -349,6 +373,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST1100.reset(new TauHists(ctx, "LQMod_Taus_ST1100"));
     h_lq_ST1100.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1100"));
     h_faketau_ST1100.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST1100"));
+    h_hypothesis_ST1100.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1100", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST1200.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1200"));
     h_mu_ST1200.reset(new MuonHists(ctx, "LQMod_Muons_ST1200"));
@@ -358,6 +383,7 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
     h_tau_ST1200.reset(new TauHists(ctx, "LQMod_Taus_ST1200"));
     h_lq_ST1200.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1200"));
     h_faketau_ST1200.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_ST1200"));
+    h_hypothesis_ST1200.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1200", "HighMassTTbarReconstruction", "Chi2"));
 
     h_ele_ST1300.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1300"));
     h_mu_ST1300.reset(new MuonHists(ctx, "LQMod_Muons_ST1300"));
@@ -482,23 +508,31 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
 
 
 bool LQAnalysisTTbarSideBandModule::process(Event & event) {
-    // This is the main procedure, called for each event. Typically,
-    // do some pre-processing by calling the modules' process method
-    // of the modules constructed in the constructor (1).
-    // Then, test whether the event passes some selection and -- if yes --
-    // use it to fill the histograms (2).
-    // Finally, decide whether or not to keep the event in the output (3);
-    // this is controlled by the return value of this method: If it
-    // returns true, the event is kept; if it returns false, the event
-    // is thrown away.
+  // This is the main procedure, called for each event. Typically,
+  // do some pre-processing by calling the modules' process method
+  // of the modules constructed in the constructor (1).
+  // Then, test whether the event passes some selection and -- if yes --
+  // use it to fill the histograms (2).
+  // Finally, decide whether or not to keep the event in the output (3);
+  // this is controlled by the return value of this method: If it
+  // returns true, the event is kept; if it returns false, the event
+  // is thrown away.
     
-    //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
+  //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
     
- 
+  /*
+  taucleaner->process(event);
+  muoncleaner->process(event);
+  electroncleaner->process(event);
 
+  jetcleaner->process(event);
+  */
 
+  for (auto & m : recomodules) {
+    m->process(event);
+  }
 
-    //jetlepcleantest->process(event);
+  //jetlepcleantest->process(event);
   /*
     h_lq_PreSel->fill(event);
     h_tau_PreSel->fill(event);
@@ -508,45 +542,51 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_event_PreSel->fill(event);
   */
 
-    electron_PreSelection->fill(event);
-    muon_PreSelection->fill(event);
-    tau_PreSelection->fill(event);
-    jet_PreSelection->fill(event);
-    event_PreSelection->fill(event);
-    lq_PreSelection->fill(event);
-
+  electron_PreSelection->fill(event);
+  muon_PreSelection->fill(event);
+  tau_PreSelection->fill(event);
+  jet_PreSelection->fill(event);
+  event_PreSelection->fill(event);
+  lq_PreSelection->fill(event);
+  hypothesis_PreSelection->fill(event);
 
 
 
 
     
-    // define met
-    auto met = event.met->pt();
+  // define met
+  auto met = event.met->pt();
 
-    // define ht and st
-    double ht = 0.0;
-    for(const auto & jet : *event.jets){
-      ht += jet.pt();
-    }
-    double ht_lep = 0.0;
-    for(const auto & electron : *event.electrons){
-      ht_lep += electron.pt();
-    }
-    for(const auto & muon : *event.muons){
-      ht_lep += muon.pt();
-    }
-    for(const auto & tau : *event.taus){
+  // define ht and st
+  double ht = 0.0;
+  for(const auto & jet : *event.jets){
+    ht += jet.pt();
+  }
+  double ht_lep = 0.0;
+
+  for(const auto & electron : *event.electrons){
+    ht_lep += electron.pt();
+  }
+  for(const auto & muon : *event.muons){
+    ht_lep += muon.pt();
+  }
+  for(const auto & tau : *event.taus){
     ht_lep += tau.pt();
-    }
-    double st=0.0;
-    st = ht + ht_lep + met;
+  }
+  double st=0.0;
+  st = ht + ht_lep + met;
     
 
-    const auto jets = event.jets;
-    if(jets->size() > 0){
-      const auto & jet = (*jets)[0];
-      if(jet.pt()<150) return false;
-    }
+  for(const auto & tau : *event.taus){
+    if(tau.pt()<30.0) return false;
+  }
+
+
+  const auto jets = event.jets;
+  if(jets->size() > 0){
+    const auto & jet = (*jets)[0];
+    if(jet.pt()<150) return false;
+  }
 
 
 
@@ -585,9 +625,32 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_jet_FiveJets->fill(event);
     h_event_FiveJets->fill(event);*/
 
-    if(samesign_sel->passes(event)) return false;
-    if(met<100) return false;
-    if(!TwoBTagM->passes(event)) return false;
+    const auto taus = event.taus;
+    const auto & tau = (*event.taus)[0];
+
+    //if(tau.pt()<100) return false;
+
+    //if(!mbtau_sel->passes(event)) return false;
+    
+    bool OS_sel(false);
+    if(OS_sel){
+      if(samesign_lead->passes(event)) return false;
+      if(!fourjet_sel->passes(event)) return false;
+      if(met<100) return false;
+    }
+    else{
+      if(!samesign_lead->passes(event)) return false;
+      //if(!BTagM->passes(event)) return false;
+    }
+    
+
+    /*
+    for(const auto & tau : *event.taus){
+      if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<=10 || tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()>40) return false;
+    }
+    */
+
+
     /*h_lq_FiveJets_TwoBTagM->fill(event);
     h_tau_FiveJets_TwoBTagM->fill(event);
     h_mu_FiveJets_TwoBTagM->fill(event);
@@ -604,7 +667,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_tau_ST400->fill(event);
     h_lq_ST400->fill(event);
     h_faketau_ST400->fill(event);
-
+    h_hypothesis_ST400->fill(event);
 
     if(st<600) return false;
     h_ele_ST600->fill(event);
@@ -615,6 +678,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_tau_ST600->fill(event);
     h_lq_ST600->fill(event);
     h_faketau_ST600->fill(event);
+    h_hypothesis_ST600->fill(event);
 
     if(st<800) return false;
     h_ele_ST800->fill(event);
@@ -625,6 +689,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_tau_ST800->fill(event);
     h_lq_ST800->fill(event);
     h_faketau_ST800->fill(event);
+    h_hypothesis_ST800->fill(event);
 
     if(st<1000) return false;
     h_ele_ST1000->fill(event);
@@ -635,7 +700,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_tau_ST1000->fill(event);
     h_lq_ST1000->fill(event);
     h_faketau_ST1000->fill(event);
-
+    h_hypothesis_ST1000->fill(event);
 
     if(st<1200) return false;
     h_ele_ST1200->fill(event);
@@ -646,7 +711,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     h_tau_ST1200->fill(event);
     h_lq_ST1200->fill(event);
     h_faketau_ST1200->fill(event);
-
+    h_hypothesis_ST1200->fill(event);
 
     if(samesign_sel->passes(event)){
       /*h_lq_FiveJets_TwoBTagM_SameSign->fill(event);

@@ -49,6 +49,14 @@ private:
   private:
   };
 
+  class SameSignCutLeadingLep: public Selection{
+  public:
+    SameSignCutLeadingLep();
+    ~SameSignCutLeadingLep(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
+
   class EleTauSameSignCut: public Selection{
   public:
     EleTauSameSignCut();
@@ -152,5 +160,7 @@ bool operator()(const Electron & electron, const uhh2::Event & event) const;
 private:
 double iso;
 };
+
+
 
 

@@ -37,16 +37,28 @@ LQFakeTauHists::LQFakeTauHists(Context & ctx, const string & dirname): Hists(ctx
   book<TH1F>("faketau1_pt160to200_iso","tau_iso 160to200",50,0,500);
   book<TH1F>("faketau1_pt200to800_iso","tau_iso 200to800",50,0,500);
 
-  book<TH1F>("pt_fake_gluon_tau1_binned","p_{T} fake gluon tau 1",4,taubins);
-  book<TH1F>("pt_fake_gluon_tau1_doublebinned","p_{T} fake gluon tau 1",7,moretaubins);
-  book<TH1F>("pt_fake_Up_SS_tau1_binned","p_{T} fake up type quark SS tau 1",4,taubins);
-  book<TH1F>("pt_fake_Up_SS_tau1_doublebinned","p_{T} fake up type quark SS tau 1",7,moretaubins);
-  book<TH1F>("pt_fake_Down_SS_tau1_binned","p_{T} fake down type quark SS tau 1",4,taubins);
-  book<TH1F>("pt_fake_Down_SS_tau1_doublebinned","p_{T} fake down type quark SS tau 1",7,moretaubins);
-  book<TH1F>("pt_fake_ChargeFlip_tau1_binned","p_{T} fake chargeflip tau 1",4,taubins);
-  book<TH1F>("pt_fake_ChargeFlip_tau1_doublebinned","p_{T} fake chargeflip tau 1",7,moretaubins);
-  book<TH1F>("pt_fake_others_tau1_binned","p_{T} fake (others) tau 1",4,taubins);
-  book<TH1F>("pt_fake_others_tau1_doublebinned","p_{T} fake (others) tau 1",7,moretaubins);
+  book<TH1F>("pt_fake_gluon_tau1_binned","p_{T} fake tau 1 (gluon)",4,taubins);
+  book<TH1F>("pt_fake_gluon_tau1_doublebinned","p_{T} fake tau 1 (gluon)",7,moretaubins);
+  book<TH1F>("pt_fake_Up_SS_tau1_binned","p_{T} fake tau 1 (up type quark SS)",4,taubins);
+  book<TH1F>("pt_fake_Up_SS_tau1_doublebinned","p_{T} fake tau 1 (up type quark SS)",7,moretaubins);
+  book<TH1F>("pt_fake_Down_SS_tau1_binned","p_{T} fake tau 1 (fake down type quark SS)",4,taubins);
+  book<TH1F>("pt_fake_Down_SS_tau1_doublebinned","p_{T} fake tau 1 (fake down type quark SS)",7,moretaubins);
+  book<TH1F>("pt_fake_ChargeFlip_tau1_binned","p_{T} fake tau 1 (chargeflip)",4,taubins);
+  book<TH1F>("pt_fake_ChargeFlip_tau1_doublebinned","p_{T} fake tau 1 (chargeflip)",7,moretaubins);
+  book<TH1F>("pt_fake_others_tau1_binned","p_{T} fake tau 1 (others)",4,taubins);
+  book<TH1F>("pt_fake_others_tau1_doublebinned","p_{T} fake tau 1 (others)",7,moretaubins);
+
+  book<TH1F>("pt_fake_uquark_tau1_doublebinned","p_{T} fake tau 1 (u quarks)",7,moretaubins);
+  book<TH1F>("pt_fake_cquark_tau1_doublebinned","p_{T} fake tau 1 (c quarks)",7,moretaubins);
+  book<TH1F>("pt_fake_dquark_tau1_doublebinned","p_{T} fake tau 1 (d and s quarks)",7,moretaubins);
+  book<TH1F>("pt_fake_bquark_tau1_doublebinned","p_{T} fake tau 1 (b quarks)",7,moretaubins);
+
+  book<TH1F>("ptgen_fake_gluon_tau1_doublebinned","p_{T,gen} fake tau 1 (gluons)",7,moretaubins);
+  book<TH1F>("ptgen_fake_uquark_tau1_doublebinned","p_{T,gen} fake tau 1 (u quarks)",7,moretaubins);
+  book<TH1F>("ptgen_fake_cquark_tau1_doublebinned","p_{T,gen} fake tau 1 (c quarks)",7,moretaubins);
+  book<TH1F>("ptgen_fake_dquark_tau1_doublebinned","p_{T,gen} fake tau 1 (d and s quarks)",7,moretaubins);
+  book<TH1F>("ptgen_fake_bquark_tau1_doublebinned","p_{T,gen} fake tau 1 (b quarks)",7,moretaubins);
+
 
   book<TH1F>("Gluon_pT_Tau_1","Gluon_pT_Tau_1",4,0.5,4.5);
   book<TH1F>("Gluon_pT_Tau_2","Gluon_pT_Tau_2",4,0.5,4.5);
@@ -67,6 +79,21 @@ LQFakeTauHists::LQFakeTauHists(Context & ctx, const string & dirname): Hists(ctx
   book<TH1F>("ChargeFlip_pT_Tau_2","ChargeFlip_pT_Tau_2",4,0.5,4.5);
   book<TH1F>("ChargeFlip_pT_Tau_3","ChargeFlip_pT_Tau_3",4,0.5,4.5);
   book<TH1F>("ChargeFlip_pT_Tau_4","ChargeFlip_pT_Tau_4",4,0.5,4.5);
+
+
+  
+  book<TH1F>("dquark_pT_Tau_1","dquark_pT_Tau_1",4,0.5,4.5);
+  book<TH1F>("dquark_pT_Tau_2","dquark_pT_Tau_2",4,0.5,4.5);
+  book<TH1F>("dquark_pT_Tau_3","dquark_pT_Tau_3",4,0.5,4.5);
+  book<TH1F>("dquark_pT_Tau_4","dquark_pT_Tau_4",4,0.5,4.5);
+
+  book<TH1F>("bquark_pT_Tau_1","bquark_pT_Tau_1",4,0.5,4.5);
+  book<TH1F>("bquark_pT_Tau_2","bquark_pT_Tau_2",4,0.5,4.5);
+  book<TH1F>("bquark_pT_Tau_3","bquark_pT_Tau_3",4,0.5,4.5);
+  book<TH1F>("bquark_pT_Tau_4","bquark_pT_Tau_4",4,0.5,4.5);
+
+  
+
 
   book<TH1F>("Gluon_pT_Tau","Gluon_pT_Tau",1,1,2);
   book<TH1F>("Up_SS_pT_Tau","Up_SS_pT_Tau",1,1,2);
@@ -181,6 +208,21 @@ void LQFakeTauHists::fill(const Event & event){
 	    delR = tmp;
 	    if(delR<0.4){
 	      genpPdg = genp_new.pdgId();
+	      if(fabs(genp_new.pdgId())==2){
+		hist("ptgen_fake_uquark_tau1_doublebinned")->Fill(genp_new.pt(), weight);
+	      }
+	      if(fabs(genp_new.pdgId())==4){
+		hist("ptgen_fake_cquark_tau1_doublebinned")->Fill(genp_new.pt(), weight);
+	      }
+	      if(fabs(genp_new.pdgId())==1 || fabs(genp_new.pdgId())==3){
+		hist("ptgen_fake_dquark_tau1_doublebinned")->Fill(genp_new.pt(), weight);
+	      }
+	      if(fabs(genp_new.pdgId())==5){
+		hist("ptgen_fake_bquark_tau1_doublebinned")->Fill(genp_new.pt(), weight);
+	      }
+	      if(genp_new.pdgId()==21){
+		hist("ptgen_fake_gluon_tau1_doublebinned")->Fill(genp_new.pt(), weight);
+	      }
 	    }
 	  }
 	}
@@ -314,6 +356,88 @@ void LQFakeTauHists::fill(const Event & event){
 	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("ChargeFlip_pT_Tau_4")->Fill(2, weight);
 	  if (tau.pt() >= 200 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("ChargeFlip_pT_Tau_4")->Fill(3, weight);
 	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("ChargeFlip_pT_Tau_4")->Fill(4, weight);   
+	}
+
+
+	if ((genpPdg ==2 && tau.charge()==1) || (genpPdg ==-2 && tau.charge()==-1) || (genpPdg ==2 && tau.charge()==-1) || (genpPdg ==-2 && tau.charge()==1)){
+	  if(event.taus->size() > 0){
+	    const auto & tau = (*event.taus)[0];
+	    hist("pt_fake_uquark_tau1_doublebinned")->Fill(tau.pt(), weight);
+	  }
+	}
+
+
+
+
+	if ((genpPdg ==4 && tau.charge()==1) || (genpPdg ==-4 && tau.charge()==-1) || (genpPdg ==4 && tau.charge()==-1) || (genpPdg ==-4 && tau.charge()==1)){
+	  if(event.taus->size() > 0){
+	    const auto & tau = (*event.taus)[0];
+	    hist("pt_fake_cquark_tau1_doublebinned")->Fill(tau.pt(), weight);
+	  }
+
+	}
+
+
+
+	if (((genpPdg ==1 || genpPdg ==3) && tau.charge()==1) || ((genpPdg ==-1 || genpPdg ==-3) && tau.charge()==-1) || ((genpPdg ==1 || genpPdg ==3) && tau.charge()==-1) || ((genpPdg ==-1 || genpPdg ==-3) && tau.charge()==1)){
+
+	  if(event.taus->size() > 0){
+	    const auto & tau = (*event.taus)[0];
+	    hist("pt_fake_dquark_tau1_doublebinned")->Fill(tau.pt(), weight);
+	  }
+
+
+
+	  if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_1")->Fill(1, weight);
+	  if (tau.pt() < 60 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_1")->Fill(2, weight);
+	  if (tau.pt() < 60 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_1")->Fill(3, weight);
+	  if (tau.pt() < 60 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_1")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_2")->Fill(1, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_2")->Fill(2, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_2")->Fill(3, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_2")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_3")->Fill(1, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_3")->Fill(2, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_3")->Fill(3, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_3")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 200 && muon.charge()==1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_4")->Fill(1, weight);
+	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("dquark_pT_Tau_4")->Fill(2, weight);
+	  if (tau.pt() >= 200 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_4")->Fill(3, weight);
+	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("dquark_pT_Tau_4")->Fill(4, weight); 
+
+	}
+
+	if ((genpPdg ==5 && tau.charge()==1) || (genpPdg ==-5 && tau.charge()==-1) || (genpPdg ==5 && tau.charge()==-1) || (genpPdg ==-5 && tau.charge()==1)){
+
+	  if(event.taus->size() > 0){
+	    const auto & tau = (*event.taus)[0];
+	    hist("pt_fake_bquark_tau1_doublebinned")->Fill(tau.pt(), weight);
+	  }
+
+
+	  if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_1")->Fill(1, weight);
+	  if (tau.pt() < 60 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_1")->Fill(2, weight);
+	  if (tau.pt() < 60 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_1")->Fill(3, weight);
+	  if (tau.pt() < 60 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_1")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_2")->Fill(1, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_2")->Fill(2, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_2")->Fill(3, weight);
+	  if (tau.pt() >= 60 && tau.pt()<120 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_2")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_3")->Fill(1, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_3")->Fill(2, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_3")->Fill(3, weight);
+	  if (tau.pt() >= 120 && tau.pt()<200 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_3")->Fill(4, weight);   
+            
+	  if (tau.pt() >= 200 && muon.charge()==1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_4")->Fill(1, weight);
+	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()==tau.charge())   hist("bquark_pT_Tau_4")->Fill(2, weight);
+	  if (tau.pt() >= 200 && muon.charge()==1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_4")->Fill(3, weight);
+	  if (tau.pt() >= 200 && muon.charge()==-1 && muon.charge()!=tau.charge())   hist("bquark_pT_Tau_4")->Fill(4, weight); 
+
 	}
 
 

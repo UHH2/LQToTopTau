@@ -80,8 +80,13 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("pt_tcom", "P_{T}^{top,combined} [GeV/c]", 20,0,1200);
 
 
+<<<<<<< HEAD
   //h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
   //m_discriminator_name = "Chi2";
+=======
+  h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
+  m_discriminator_name = "Chi2";
+>>>>>>> bd4150a47a2e314ae826afe5cb7ae4fa7ffb22e3
 
 }
 

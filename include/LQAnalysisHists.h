@@ -18,5 +18,10 @@ public:
     LQAnalysisHists(uhh2::Context & ctx, const std::string & dirname);
 
     virtual void fill(const uhh2::Event & ev) override;
+
+  protected:
+    uhh2::Event::Handle<std::vector<ReconstructionHypothesis>> h_ttbar_hyps;
+    std::string m_discriminator_name;
+
     virtual ~LQAnalysisHists();
 };

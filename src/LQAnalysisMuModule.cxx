@@ -95,6 +95,7 @@ private:
   TopJetId CMSTopTagger;
   MuonId MuIso;
 
+<<<<<<< HEAD
   //std::unique_ptr<AnalysisModule> jetlepcleantest;
   std::unique_ptr<CommonModules> common;
 
@@ -107,6 +108,8 @@ private:
 
 
 
+=======
+>>>>>>> bd4150a47a2e314ae826afe5cb7ae4fa7ffb22e3
   std::vector<std::unique_ptr<AnalysisModule>> recomodules;
   std::unique_ptr<AnalysisModule> ttgenprod;
   Event::Handle<TTbarGen> h_ttbargen;
@@ -145,6 +148,14 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
     CMSTopTagger = CMSTopTag(50,140,250);
     MuIso = MuonIso(0.12);
 
+    // ttbar GEN
+    ttgenprod.reset(new TTbarGenProducer(ctx, "ttbargen", false));
+    h_ttbargen = ctx.get_handle<TTbarGen>("ttbargen");
+    // ttbar RECO hypotheses
+    h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
+    recomodules.emplace_back(new PrimaryLepton(ctx));
+    recomodules.emplace_back(new HighMassTTbarReconstruction(ctx,NeutrinoReconstruction,"HighMassTTbarReconstruction"));
+    recomodules.emplace_back(new Chi2Discriminator(ctx,"HighMassTTbarReconstruction"));
 
     EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
     MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
@@ -479,11 +490,18 @@ bool LQAnalysisMuModule::process(Event & event) {
       mod->process(event);
     }
 
+<<<<<<< HEAD
     
     for (auto & m : recomodules) {
       m->process(event);
     }
     
+=======
+    for (auto & m : recomodules) {
+      m->process(event);
+    }
+
+>>>>>>> bd4150a47a2e314ae826afe5cb7ae4fa7ffb22e3
     
     if(!muon_sel->passes(event)) return false;
     if(!ntau_sel->passes(event)) return false;
@@ -627,8 +645,13 @@ bool LQAnalysisMuModule::process(Event & event) {
     
 
 
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> bd4150a47a2e314ae826afe5cb7ae4fa7ffb22e3
     //if(!BTagM->passes(event)) return false;
     //if(!BTagL->passes(event)) return false;
 

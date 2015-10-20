@@ -34,7 +34,7 @@
 <!ENTITY QCDPT600to800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_QCD_Pt-600to800_MuEnrichedPt5.xml">
 <!ENTITY QCDPT800to1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_QCD_Pt-800to1000_MuEnrichedPt5.xml">
 <!ENTITY QCDPT1000toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_QCD_Pt-1000toInf_MuEnrichedPt5.xml">
-<!ENTITY DATA SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/SingleMuon_Run2015D-PromptReco-v3_MINIAOD.xml">
+<!ENTITY DATA SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/SingleMuon_Run2015D-PromptReco-v3_MINIAOD_JSONv3.xml">
 <!--
 <!ENTITY DATA1 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu.xml">
 <!ENTITY DATA2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu_Run254833.xml">
@@ -47,7 +47,7 @@
   <Package Name="SUHH2LQAnalysis.par" />
   
 <!--  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/MuPreSel/" PostFix="" TargetLumi="206.9" > -->
-  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="12" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/MuPreSel/" PostFix="" TargetLumi="206.9" >  
+  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="24" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/MuPreSel/" PostFix="_test" TargetLumi="552.67" >  
     
 
 
@@ -135,7 +135,7 @@
     </InputData> 
     -->
 
-    <!--
+   <!--
     <InputData Lumi="113811.0" NEventsMax="-1" Type="MC" Version="TTbar" Cacheable="True">
       &TTbar;
       <InputTree Name="AnalysisTree" />
@@ -251,7 +251,7 @@
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
--->    
+    -->
 
     <!--
    <InputData Lumi="" NEventsMax="-1" Type="MC" Version="SingleTop_T_sch" Cacheable="True">
@@ -268,11 +268,13 @@
    -->
 
 
-    <InputData Lumi="206.9" NEventsMax="-1" Type="DATA" Version="DATA" Cacheable="True">
+    <InputData Lumi="1" NEventsMax="1000000" Type="DATA" Version="DATA" Cacheable="True">
       &DATA;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
+
+
 
 <!--
     <InputData Lumi="66.196" NEventsMax="-1" Type="DATA" Version="DATA2" Cacheable="True">
@@ -296,7 +298,7 @@
       <Item Name="TopJetCollection" Value="patJetsCa15CHSJetsFilteredPacked_daughters" />  
       <Item Name="GenParticleCollection" Value="GenParticles" />
 
-      <Item Name="lumi_file" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_v2/Lumifile_withRun254833.root" />
+      <Item Name="lumi_file" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_25ns_v1/Lumifile_Cert_246908-258159_13TeV_PromptReco_Collisions15_25ns_JSON_v3.root" />
       <Item Name="lumihists_lumi_per_bin" Value="3."/>
 
       <!--
@@ -338,22 +340,11 @@
       <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
 
       <Item Name="pileup_directory" Value="" /> 
-      <!--
-      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/reimersa/LQToTopMu/Run2/MCPUReweight/40028pb_uhh2.AnalysisModuleRunner.DATA.DATA.root" />
-      <Item Name="pileup_directory_50ns" Value="/nfs/dust/cms/user/reimersa/LQToTopMu/Run2/MCPUReweight/40028pb_uhh2.AnalysisModuleRunner.MC.TTbar.root" />
-      <Item Name="pileup_directory_25ns" Value="/nfs/dust/cms/user/reimersa/LQToTopMu/Run2/MCPUReweight/40028pb_uhh2.AnalysisModuleRunner.MC.LQtoTMuM2000_25ns.root" />
-      -->
+      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/marchesi/PUData/MyDataPileupHistogram.root" />
+      <Item Name="pileup_directory_50ns" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_25ns_v1/Pileup.MC.TTbar.root" />
+      <Item Name="pileup_directory_25ns" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_25ns_v1/Pileup.MC.TTbar.root" />
+      
  
-      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/reimersa/LQToTopMu/Run2_v2/MCPUReweight/uhh2.AnalysisModuleRunner.Data.Data.root" />
-      <Item Name="pileup_directory_50ns" Value="/nfs/dust/cms/user/gonvaq/CMSSW/CMSSW_7_4_3/src/UHH2/VLQToTopAndLepton/config/PU_reweighting/uhh2.AnalysisModuleRunner.MC.TTbar.root" />
-      <Item Name="pileup_directory_25ns" Value="/nfs/dust/cms/user/reimersa/LQToTopMu/Run2_v2/MCPUReweight/uhh2.AnalysisModuleRunner.MC.MC_LQToTopMuM900.root" />
-
-      <!--    <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/mameyer/TTDMDM/preselection_RunII/uhh2.AnalysisModuleRunner.Data.Data.root" /> -->
-<!--      <Item Name="pileup_directory_50ns" Value="/nfs/dust/cms/user/mameyer/TTDMDM/preselection_RunII/uhh2.AnalysisModuleRunner.MC.TTbar.root" />
-      <Item Name="pileup_directory_25ns" Value="/nfs/dust/cms/user/mameyer/TTDMDM/preselection_RunII/uhh2.AnalysisModuleRunner.MC.TTbarDMJets_pseudoscalar_Mchi-50_Mphi-300.root" />
--->
-
-
       <!-- set this to the name of an AndSelection to control what is written to the output. If not given, *all* events are written to the output tree. -->
       <Item Name="TestKey" Value="TestKeyValue" />
     </UserConfig>

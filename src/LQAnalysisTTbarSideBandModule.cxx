@@ -614,7 +614,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
 
     //if(!mbtau_sel->passes(event)) return false;
     
-    bool OS_sel(true);
+    bool OS_sel(false);
     if(OS_sel){
       if(samesign_lead->passes(event)) return false;
       if(!fourjet_sel->passes(event)) return false;

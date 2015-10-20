@@ -129,7 +129,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
   //common->disable_pvfilter();
-  common->disable_lumisel();
+  //common->disable_lumisel();
   common->switch_jetlepcleaner(true);
   common->set_electron_id(EleId);
   common->set_muon_id(MuId);
@@ -143,7 +143,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   nmuon_sel.reset(new NMuonSelection(1,-1));
   bsel.reset(new NBTagSelection(1,-1));
   lumi_sel.reset(new LumiSelection(ctx));
-  trigger_sel.reset(new TriggerSelection("HLT_IsoMu24_eta2p1_v*"));
+  trigger_sel.reset(new TriggerSelection("HLT_IsoMu27_v*"));
 
 
   int n_cuts = 4;
@@ -243,7 +243,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
     
   // 1. run all modules; here: only jet cleaning.
-
 
   
   if(is_data){

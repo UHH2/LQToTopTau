@@ -16,7 +16,7 @@
   <Package Name="SUHH2LQAnalysis.par" />
 
 <!--  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/TTbarSideBand/" PostFix="" TargetLumi="19700" > -->
-  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="12" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/TTbarSideBand/" PostFix="" TargetLumi="19700" > 
+  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="12" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/TTbarSideBand2/" PostFix="" TargetLumi="19700" > 
 
     <!--
        <InputData Lumi="1230.5" NEventsMax="-1" Type="MC" Version="LQtoTTau200" Cacheable="False">

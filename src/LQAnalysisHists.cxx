@@ -83,6 +83,9 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   //h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
   //m_discriminator_name = "Chi2";
 
+  auto dataset_type = ctx.get("dataset_type");
+  is_data = dataset_type == "DATA";
+
 }
 
 
@@ -94,6 +97,7 @@ void LQAnalysisHists::fill(const Event & event){
   
   // Don't forget to always use the weight when filling.
   double weight = event.weight;
+
 
   //hist("Weights")->Fill(1,weight);
   
@@ -279,36 +283,36 @@ void LQAnalysisHists::fill(const Event & event){
   if(eta_halil>=0.9)  hist("eta_tilde_bin2")->Fill( eta_halil ,weight);
 
 
-
-  double dR = 1000;
-  for(const auto & tau : *event.taus){
-    for(auto genp : *event.genparticles){
-      //if(abs(genp.pdgId())!=15) continue;
-      if(abs(genp.pdgId())==15){
-	double tmp = deltaR(tau,genp);
-	if(tmp<dR){
-	  dR = tmp;
+  if(!is_data){
+    double dR = 1000;
+    for(const auto & tau : *event.taus){
+      for(auto genp : *event.genparticles){
+	//if(abs(genp.pdgId())!=15) continue;
+	if(abs(genp.pdgId())==15){
+	  double tmp = deltaR(tau,genp);
+	  if(tmp<dR){
+	    dR = tmp;
+	  }
 	}
       }
     }
-  }
-  if(dR<0.4){
-    hist("tau_type")->Fill(0);
-    if(event.taus->size() > 0){
-      const auto & tau = (*event.taus)[0];
-      hist("pt_real_tau1_binned")->Fill(tau.pt(), weight);
-      //hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+    if(dR<0.4){
+      hist("tau_type")->Fill(0);
+      if(event.taus->size() > 0){
+	const auto & tau = (*event.taus)[0];
+	hist("pt_real_tau1_binned")->Fill(tau.pt(), weight);
+	//hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+      }
+    }
+    else{
+      hist("tau_type")->Fill(1);
+      if(event.taus->size() > 0){
+	const auto & tau = (*event.taus)[0];
+	hist("pt_fake_tau1_binned")->Fill(tau.pt(), weight);
+	//hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+      }
     }
   }
-  else{
-    hist("tau_type")->Fill(1);
-    if(event.taus->size() > 0){
-      const auto & tau = (*event.taus)[0];
-      hist("pt_fake_tau1_binned")->Fill(tau.pt(), weight);
-      //hist("pt_tau1_binned")->Fill(tau.pt(), weight);
-    }
-  }
-  
 
   
   if(event.taus->size() > 0){
@@ -316,25 +320,25 @@ void LQAnalysisHists::fill(const Event & event){
     hist("pt_tau1_binned")->Fill(tau.pt(), weight);
   }    
   
-
-  for(const auto & muon : *event.muons){
-    double dR = 1000;
-    for(auto genp : *event.genparticles){
-      if(abs(genp.pdgId())==13){
-	double tmp = deltaR(muon,genp);
-	if(tmp<dR){
-	  dR = tmp;
+  if(!is_data){
+    for(const auto & muon : *event.muons){
+      double dR = 1000;
+      for(auto genp : *event.genparticles){
+	if(abs(genp.pdgId())==13){
+	  double tmp = deltaR(muon,genp);
+	  if(tmp<dR){
+	    dR = tmp;
+	  }
 	}
       }
-    }
-    if(dR<0.1){
-     hist("muon_type")->Fill(0);
-    }
-    else{
-      hist("muon_type")->Fill(1);
+      if(dR<0.1){
+	hist("muon_type")->Fill(0);
+      }
+      else{
+	hist("muon_type")->Fill(1);
+      }
     }
   }
-
 
 
 

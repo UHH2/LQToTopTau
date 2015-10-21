@@ -112,19 +112,17 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   // 1. setup other modules.
   EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
   MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
-  TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1));
+  TauonId = AndId<Tau>(/*TauIDDecayModeFinding()*/TauIDMedium(), PtEtaCut(20.0, 2.1));
+  /*
   MuIso = MuonIso(0.12);
   EleIso = ElectronIso(0.12);
-  jetcleaner.reset(new JetCleaner(30.0, 2.5));
-  //muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
-  //muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(30.0, 2.1))));
-  //muoncleaner_iso.reset(new MuonCleaner(AndId<Muon>(MuIso, MuonIDKinematic(30.0, 2.1))));
   electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(30.0, 2.5))));
   electroncleaner_iso.reset(new ElectronCleaner(AndId<Electron>(EleIso, PtEtaCut(30.0, 2.5))));
-  taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1))));
-  BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
-  //jetlepcleantest.reset(new TestJetLeptonCleaner(ctx));
+  taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1))));
+  */
+  jetcleaner.reset(new JetCleaner(30.0, 2.5));
+  BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
@@ -286,6 +284,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //cleaning modules
   bool pass_common = common->process(event);
   if(!pass_common) return false;
+
   /*
   taucleaner->process(event);
   muoncleaner->process(event);
@@ -293,9 +292,9 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   electroncleaner->process(event);
   electroncleaner_iso->process(event);
   */
+
+
   
-
-
   for(unsigned int i=0; i<event.jets->size(); i++){
     Jet jet = event.jets->at(i);
     for(const auto & tau : *event.taus){
@@ -310,8 +309,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
 
  
-  // fill hists after cleaning modules 
-   
+  // fill hists after cleaning modules   
   h_lq_cleaner->fill(event);
   h_tau_cleaner->fill(event);
   h_mu_cleaner->fill(event);

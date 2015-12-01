@@ -607,7 +607,7 @@ bool LQAnalysisTTbarSideBandModule::process(Event & event) {
     }
     */
 
-    const auto taus = event.taus;
+    //const auto taus = event.taus;
     const auto & tau = (*event.taus)[0];
 
     //if(tau.pt()<100) return false;

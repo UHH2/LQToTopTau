@@ -6,6 +6,7 @@
 
 #include <math.h>
 #include "TH1F.h"
+#include "TH2F.h"
 #include <iostream>
 //#include "TMath.h"
 
@@ -27,6 +28,8 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("ST", "H_{T}", 50, 0, 5000);
   book<TH1F>("ST_binned", "H_{T}", 8, bins);
   book<TH1F>("ST_testbinned", "H_{T}", 32, 800,4000);
+
+  book<TH1F>("isolation","tau_iso",20,0,2);
 
   /*
   double pttoprebins[8]={0,80,130,180,230,300,400,1000};
@@ -68,7 +71,7 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("pt_real_tau1_binned","p_{T} real tau 1",4,taubins);
   book<TH1F>("pt_fake_tau1_binned","p_{T} fake tau 1",4,taubins);
   book<TH1F>("pt_tau1_binned","p_{T} tau 1",4,taubins);
-
+  book<TH1F>("pt_tau_binned","p_{T} taus",4,taubins);
 
   book<TH1F>("M_jet", "M_{Jet}", 100, 0, 2000);
   book<TH1F>("N_subjets", "N_{Subjets} in a Topjet", 11, -0.5, 10.5);
@@ -79,6 +82,10 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("pt_tlep", "P_{T}^{top,lep} [GeV/c]", 20,0,1200);
   book<TH1F>("pt_tcom", "P_{T}^{top,combined} [GeV/c]", 20,0,1200);
 
+  /*
+  book<TH2F>("pt_tau1_vs_ST","pt tau 1 vs ST", 50, 0, 800 ,100, 0, 2500);
+  book<TH2F>("pt_tau1_vs_MET","pt tau 1 vs MET", 50, 0, 800 ,50, 0, 1000);
+  */
 
   //h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
   //m_discriminator_name = "Chi2";
@@ -141,8 +148,10 @@ void LQAnalysisHists::fill(const Event & event){
   hist("ST_testbinned")->Fill(ht+ht_lep+met, weight);
 
 
-
-
+  for(const auto & tau : *event.taus){
+    hist("isolation")->Fill(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits(), weight);
+    hist("pt_tau_binned")->Fill(tau.pt(),weight);
+  }
   
 
 
@@ -314,12 +323,14 @@ void LQAnalysisHists::fill(const Event & event){
     }
   }
 
-  
+  /*
   if(event.taus->size() > 0){
     const auto & tau = (*event.taus)[0];
     hist("pt_tau1_binned")->Fill(tau.pt(), weight);
+    ((TH2F*)hist("pt_tau1_vs_ST"))->Fill(tau.pt(),ht+ht_lep+met, weight);
+    ((TH2F*)hist("pt_tau1_vs_MET"))->Fill(tau.pt(),met, weight);
   }    
-  
+  */
   if(!is_data){
     for(const auto & muon : *event.muons){
       double dR = 1000;

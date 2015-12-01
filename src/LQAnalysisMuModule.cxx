@@ -66,10 +66,10 @@ private:
   std::unique_ptr<Hists> h_lq_ST1000, h_tau_ST1000, h_mu_ST1000, h_ele_ST1000, h_jet_ST1000, h_topjet_ST1000, h_event_ST1000, h_faketau_ST1000, h_hypothesis_ST1000;
   std::unique_ptr<Hists> h_lq_ST1100, h_tau_ST1100, h_mu_ST1100, h_ele_ST1100, h_jet_ST1100, h_topjet_ST1100, h_event_ST1100, h_faketau_ST1100, h_hypothesis_ST1100;
   std::unique_ptr<Hists> h_lq_ST1200, h_tau_ST1200, h_mu_ST1200, h_ele_ST1200, h_jet_ST1200, h_topjet_ST1200, h_event_ST1200, h_faketau_ST1200, h_hypothesis_ST1200;
-  std::unique_ptr<Hists> h_lq_ST1300, h_tau_ST1300, h_mu_ST1300, h_ele_ST1300, h_jet_ST1300, h_topjet_ST1300, h_event_ST1300;
-  std::unique_ptr<Hists> h_lq_ST1400, h_tau_ST1400, h_mu_ST1400, h_ele_ST1400, h_jet_ST1400, h_topjet_ST1400, h_event_ST1400;
-  std::unique_ptr<Hists> h_lq_ST1500, h_tau_ST1500, h_mu_ST1500, h_ele_ST1500, h_jet_ST1500, h_topjet_ST1500, h_event_ST1500;
-  std::unique_ptr<Hists> h_lq_ST1600, h_tau_ST1600, h_mu_ST1600, h_ele_ST1600, h_jet_ST1600, h_topjet_ST1600, h_event_ST1600;
+  std::unique_ptr<Hists> h_lq_ST1300, h_tau_ST1300, h_mu_ST1300, h_ele_ST1300, h_jet_ST1300, h_topjet_ST1300, h_event_ST1300, h_hypothesis_ST1300;
+  std::unique_ptr<Hists> h_lq_ST1400, h_tau_ST1400, h_mu_ST1400, h_ele_ST1400, h_jet_ST1400, h_topjet_ST1400, h_event_ST1400, h_hypothesis_ST1400;
+  std::unique_ptr<Hists> h_lq_ST1500, h_tau_ST1500, h_mu_ST1500, h_ele_ST1500, h_jet_ST1500, h_topjet_ST1500, h_event_ST1500, h_hypothesis_ST1500;
+  std::unique_ptr<Hists> h_lq_ST1600, h_tau_ST1600, h_mu_ST1600, h_ele_ST1600, h_jet_ST1600, h_topjet_ST1600, h_event_ST1600, h_hypothesis_ST1600;
   std::unique_ptr<Hists> h_lq_ST1700, h_tau_ST1700, h_mu_ST1700, h_ele_ST1700, h_jet_ST1700, h_topjet_ST1700, h_event_ST1700;
   std::unique_ptr<Hists> h_lq_ST1800, h_tau_ST1800, h_mu_ST1800, h_ele_ST1800, h_jet_ST1800, h_topjet_ST1800, h_event_ST1800;
   std::unique_ptr<Hists> ele_TwoMuon, muon_TwoMuon, tau_TwoMuon, event_TwoMuon, jet_TwoMuon, lq_TwoMuon;
@@ -119,15 +119,15 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(30.0, 2.1));
 
   common.reset(new CommonModules());
-  common->disable_mcpileupreweight();
+  //common->disable_mcpileupreweight();
   common->disable_lumisel();
   common->disable_jersmear();
   common->disable_jec();
   //common->disable_metfilters();
   //common->disable_pvfilter();
-  common->set_electron_id(EleId);
-  common->set_muon_id(MuId);
-  common->set_tau_id(TauonId);
+  //common->set_electron_id(EleId);
+  //common->set_muon_id(MuId);
+  //common->set_tau_id(TauonId);
   common->init(ctx);
 
   // ttbar GEN
@@ -292,6 +292,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_event_ST1300.reset(new EventHists(ctx, "LQMod_Events_ST1300"));
   h_tau_ST1300.reset(new TauHists(ctx, "LQMod_Taus_ST1300"));
   h_lq_ST1300.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1300"));
+  h_hypothesis_ST1300.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1300", "HighMassTTbarReconstruction", "Chi2"));
 
   h_ele_ST1400.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1400"));
   h_mu_ST1400.reset(new MuonHists(ctx, "LQMod_Muons_ST1400"));
@@ -300,6 +301,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_event_ST1400.reset(new EventHists(ctx, "LQMod_Events_ST1400"));
   h_tau_ST1400.reset(new TauHists(ctx, "LQMod_Taus_ST1400"));
   h_lq_ST1400.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1400"));
+  h_hypothesis_ST1400.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1400", "HighMassTTbarReconstruction", "Chi2"));
 
   h_ele_ST1500.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1500"));
   h_mu_ST1500.reset(new MuonHists(ctx, "LQMod_Muons_ST1500"));
@@ -308,6 +310,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_event_ST1500.reset(new EventHists(ctx, "LQMod_Events_ST1500"));
   h_tau_ST1500.reset(new TauHists(ctx, "LQMod_Taus_ST1500"));
   h_lq_ST1500.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1500"));
+  h_hypothesis_ST1500.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1500", "HighMassTTbarReconstruction", "Chi2"));
 
   h_ele_ST1600.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1600"));
   h_mu_ST1600.reset(new MuonHists(ctx, "LQMod_Muons_ST1600"));
@@ -316,6 +319,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_event_ST1600.reset(new EventHists(ctx, "LQMod_Events_ST1600"));
   h_tau_ST1600.reset(new TauHists(ctx, "LQMod_Taus_ST1600"));
   h_lq_ST1600.reset(new LQAnalysisHists(ctx, "LQMod_LQ_ST1600"));
+  h_hypothesis_ST1600.reset(new HypothesisHists(ctx, "LQMod_Hypothesis_ST1600", "HighMassTTbarReconstruction", "Chi2"));
 
   h_ele_ST1700.reset(new ElectronHists(ctx, "LQMod_Electrons_ST1700"));
   h_mu_ST1700.reset(new MuonHists(ctx, "LQMod_Muons_ST1700"));
@@ -473,23 +477,25 @@ bool LQAnalysisMuModule::process(Event & event) {
     }
   */
 
+  
+  //const auto taus = event.taus;
   /*
-  const auto taus = event.taus;
   const auto & tau = (*event.taus)[0];
-  if(tau.pt()<100) return false;
+  if(tau.pt()<80) return false;
   */
-
+  
   //if(!mbtau_sel->passes(event)) return false;
     
-  bool OS_sel(true);
+  bool OS_sel(false);
   if(OS_sel){
     if(samesign_lead->passes(event)) return false;
     if(!fourjet_sel->passes(event)) return false;
     if(met<100) return false;
+    if(!BTagT->passes(event)) return false;
   }
   else{
     if(!samesign_lead->passes(event)) return false;
-    //if(!BTagM->passes(event)) return false;
+    if(!BTagM->passes(event)) return false;
   }
     
   //if(!BTagM->passes(event)) return false;
@@ -638,6 +644,7 @@ bool LQAnalysisMuModule::process(Event & event) {
     h_jet_ST1300->fill(event);
     h_topjet_ST1300->fill(event);
     h_event_ST1300->fill(event);
+    h_hypothesis_ST1300->fill(event);
   }
   if(st>1400){
     h_lq_ST1400->fill(event);
@@ -647,6 +654,7 @@ bool LQAnalysisMuModule::process(Event & event) {
     h_jet_ST1400->fill(event);
     h_topjet_ST1400->fill(event);
     h_event_ST1400->fill(event);
+    h_hypothesis_ST1400->fill(event);
   }
   if(st>1500){
     h_lq_ST1500->fill(event);
@@ -656,6 +664,7 @@ bool LQAnalysisMuModule::process(Event & event) {
     h_jet_ST1500->fill(event);
     h_topjet_ST1500->fill(event);
     h_event_ST1500->fill(event);
+    h_hypothesis_ST1500->fill(event);
   }
 
   if(st>1600){
@@ -666,6 +675,7 @@ bool LQAnalysisMuModule::process(Event & event) {
     h_jet_ST1600->fill(event);
     h_topjet_ST1600->fill(event);
     h_event_ST1600->fill(event);
+    h_hypothesis_ST1600->fill(event);
   }
 
   if(st>1700){

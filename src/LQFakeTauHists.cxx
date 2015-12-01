@@ -101,6 +101,9 @@ LQFakeTauHists::LQFakeTauHists(Context & ctx, const string & dirname): Hists(ctx
   book<TH1F>("ChargeFlip_pT_Tau","ChargeFlip_pT_Tau",1,1,2);
 
 
+  auto dataset_type = ctx.get("dataset_type");
+  is_data = dataset_type == "DATA";
+
 }
 
 
@@ -151,6 +154,7 @@ void LQFakeTauHists::fill(const Event & event){
   */
 
   //for(const auto & tau : *event.taus){
+  if(!is_data){
   for(unsigned int i =0; i<event.taus->size(); ++i){
       Tau tau = event.taus->at(i);
       bool fake = true;
@@ -226,6 +230,8 @@ void LQFakeTauHists::fill(const Event & event){
 	    }
 	  }
 	}
+      
+
 
 	//double delR = deltaR(tau,genp_new);
 
@@ -456,7 +462,7 @@ void LQFakeTauHists::fill(const Event & event){
       }
     }
 	
-  
+  }
 
   
   if(event.taus->size() > 0){

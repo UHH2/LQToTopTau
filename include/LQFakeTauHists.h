@@ -16,7 +16,7 @@ class LQFakeTauHists: public uhh2::Hists {
 public:
     // use the same constructor arguments as Hists for forwarding:
     LQFakeTauHists(uhh2::Context & ctx, const std::string & dirname);
-
+    bool is_data;
     virtual void fill(const uhh2::Event & ev) override;
     virtual ~LQFakeTauHists();
 

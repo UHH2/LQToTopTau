@@ -36,7 +36,7 @@
 <!ENTITY DibosonWW SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_WW.xml">
 <!ENTITY DibosonWZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_WZ.xml">
 <!ENTITY DibosonZZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/MC_ZZ.xml">
-<!ENTITY DATA SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/SingleMuon_Run2015D-PromptReco-v3_MINIAOD_JSONv3.xml">
+<!ENTITY DATA SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/SingleMuon_Run2015D-PromptReco-v3_MINIAOD_JSONv3_withtau.xml">
 <!--
 <!ENTITY DATA1 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu.xml">
 <!ENTITY DATA2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu_Run254833.xml">
@@ -276,21 +276,23 @@
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
-    -->
-
+-->
+   
+<!--
 <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_testfile" Cacheable="False">
   <In FileName="/pnfs/desy.de/cms/tier2/store/user/imarches/SingleMuon/crab_SingleMuon_Run2015D-PromptReco-v3_MINIAOD_v5/151020_164928/0000/Ntuple_343.root" Lumi="0.0"/> 
   <InputTree Name="AnalysisTree" /> 
   <OutputTree Name="AnalysisTree" />
 </InputData>
+-->
 
-<!--
+
     <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA" Cacheable="True">
       &DATA;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
--->
+
 
 
 

@@ -129,7 +129,7 @@ LQAnalysisTTbarSideBandPreModule::LQAnalysisTTbarSideBandPreModule(Context & ctx
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
   //common->disable_pvfilter();
-  common->disable_lumisel();
+  //common->disable_lumisel();
   common->switch_jetlepcleaner(true);
   common->set_electron_id(EleId);
   common->set_muon_id(MuId);

@@ -18,7 +18,7 @@
   <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/TTbarSideBand2/" PostFix="" TargetLumi="19700" > 
 <!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="12" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/TTbarSideBand/" PostFix="" TargetLumi="19700" > -->
 
-    
+    <!--
        <InputData Lumi="1230.5" NEventsMax="-1" Type="MC" Version="LQtoTTau200" Cacheable="False">
 	 <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.LQtoTTau200.root" Lumi="0.0"/>
 	 <InputTree Name="AnalysisTree" />
@@ -60,7 +60,7 @@
 	 <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.LQtoTTau900.root" Lumi="0.0"/>
 	 <InputTree Name="AnalysisTree" />
        </InputData> 
-       
+       -->
 
        <!--
        <InputData Lumi="12702047.8" NEventsMax="-1" Type="MC" Version="LQtoTTau1000" Cacheable="False">
@@ -97,7 +97,7 @@
       <InputTree Name="AnalysisTree" />
     </InputData>
 
-   
+   <!--
        <InputData Lumi="60501928.3" NEventsMax="-1" Type="MC" Version="WJets" Cacheable="False">
 	 <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.WJets.root" Lumi="0.0"/>
 	 <InputTree Name="AnalysisTree" />
@@ -127,6 +127,7 @@
 	 <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.SingleTop_Tbar_tWch.root" Lumi="0.0"/>
 	 <InputTree Name="AnalysisTree" />
        </InputData> 
+-->
 <!--
        <InputData Lumi="0.616" NEventsMax="-1" Type="MC" Version="QCDPT15to20" Cacheable="False">
 	 <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.QCDPT15to20.root" Lumi="0.0"/>
@@ -191,7 +192,7 @@
 -->
 
 
-
+<!--
     <InputData Lumi="8358.5" NEventsMax="-1" Type="MC" Version="DibosonWW" Cacheable="False">
       <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.DibosonWW.root" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
@@ -206,7 +207,7 @@
       <In FileName="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand/uhh2.AnalysisModuleRunner.MC.DibosonZZ.root" Lumi="0.0"/>
       <InputTree Name="AnalysisTree" />
     </InputData>
-
+-->
 
 
       

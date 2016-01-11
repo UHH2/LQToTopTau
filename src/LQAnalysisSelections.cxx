@@ -34,7 +34,20 @@ bool InvMass2MuVeto::passes(const Event & event){
   return true;
 }
 
+OppositeSignCut::OppositeSignCut(){
+}
 
+bool OppositeSignCut::passes(const Event & event)
+{
+  for(const auto & muon : *event.muons)
+    {
+      for(const auto & tau : *event.taus)
+	{
+	  if (muon.charge() == tau.charge()) return false;
+	}     
+    }
+  return true;
+}
 
 SameSignCut::SameSignCut(){
 }
@@ -45,10 +58,10 @@ bool SameSignCut::passes(const Event & event)
     {
       for(const auto & tau : *event.taus)
 	{
-	  if (muon.charge() == tau.charge()) return true;
+	  if (muon.charge() != tau.charge()) return false;
 	}     
     }
-  return false;
+  return true;
 }
 
 

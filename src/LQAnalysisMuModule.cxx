@@ -49,7 +49,7 @@ private:
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, twojet_sel, fourjet_sel, TwoBTagL, BTagL, BTagM, BTagT, toptag, ntau_sel, ele_sel, muon_sel, onemuon_sel, twomuons_sel, isomuon_sel, leadingjet_sel, leadingjet300_sel, secondjet100_sel, samesign_sel, met_sel, mbtau_sel, samesign_lead;
+  std::unique_ptr<Selection> invertedjet_sel, njet_sel, twojet_sel, fourjet_sel, fivejet_sel, TwoBTagL, BTagL, BTagM, BTagT, toptag, ntau_sel, ele_sel, muon_sel, onemuon_sel, twomuons_sel, isomuon_sel, oppositesign_sel, samesign_sel, met_sel, mbtau_sel, samesign_lead;
 
   std::vector<std::unique_ptr<AnalysisModule>> pre_modules;
   
@@ -116,7 +116,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
 
   EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
   MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
-  TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(30.0, 2.1));
+  TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1));
 
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();
@@ -142,12 +142,11 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   pre_modules.push_back(std::unique_ptr<AnalysisModule>(new HTCalculator(ctx)));
 
   // 2. set up selections:
+  invertedjet_sel.reset(new NJetSelection(2,3));
   twojet_sel.reset(new NJetSelection(2,-1));
   njet_sel.reset(new NJetSelection(3,-1));
   fourjet_sel.reset(new NJetSelection(4,-1));
-  leadingjet_sel.reset(new NJetCut(1,-1,150,5.0));
-  leadingjet300_sel.reset(new NJetCut(1,-1,300,5.0));
-  secondjet100_sel.reset(new NJetCut(2,-1,100,5.0));
+  fivejet_sel.reset(new NJetSelection(5,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
   TwoBTagL.reset(new NJetSelection(2,999,BTagLoose));
   BTagL.reset(new NJetSelection(1,999,BTagLoose));
@@ -158,6 +157,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   onemuon_sel.reset(new NMuonSelection(1,1));
   twomuons_sel.reset(new NMuonSelection(2,2));
   isomuon_sel.reset(new NMuonSelection(1,-1,MuIso));
+  oppositesign_sel.reset(new OppositeSignCut());
   samesign_sel.reset(new SameSignCut());
   samesign_lead.reset(new SameSignCutLeadingLep());
   met_sel.reset(new METCut(150,-1));
@@ -378,6 +378,36 @@ bool LQAnalysisMuModule::process(Event & event) {
 
   // 2. test selections and fill histograms
 
+  /*
+  for(const auto & tau : *event.taus){
+    if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5) return false;
+  }
+  */
+
+
+  if(!is_data){
+    for(unsigned int i =0; i<event.taus->size(); ++i){
+      Tau tau = event.taus->at(i);
+      for(auto genp : *event.genparticles){
+	double dR = deltaR(tau,genp);
+	if(dR<0.4 && abs(genp.pdgId())==15){
+	  return false;
+	}
+      }
+    }
+  }
+
+  double ht_jets=0.0;
+  for(const auto & jet : *event.jets){
+    ht_jets += jet.pt();
+  }
+  int x = ht_jets / 50;
+  double weights[] = {0, 0, 0, 0.247271, 0.556426, 0.695177, 0.906894, 1.31349, 1.2024, 1.52267, 1.71345, 1.92297, 1.88701, 2.18738, 1.9942, 2.66787, 2.87255, 3.46065, 3.27695, 7.98165, 6.56439, 0.73353, 6.30659, 3.22762, 0, 0, 0, 0, 0, 0, 0.0153867, 0, 0, 0.0173008, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  event.weight = event.weight * weights[x];
+
+
+
+
   if (!twojet_sel->passes(event)) return false;
   electron_PreSelection->fill(event);
   muon_PreSelection->fill(event);
@@ -448,7 +478,7 @@ bool LQAnalysisMuModule::process(Event & event) {
     const auto & jet = (*jets)[0];
     if(jet.pt()<150) return false;
   }
-  if(!leadingjet_sel->passes(event)) return false;
+
   h_lq_LeadingJet150->fill(event);
   h_tau_LeadingJet150->fill(event);
   h_mu_LeadingJet150->fill(event);
@@ -456,48 +486,57 @@ bool LQAnalysisMuModule::process(Event & event) {
   h_jet_LeadingJet150->fill(event);
   h_event_LeadingJet150->fill(event);
 
-
-  /*
-    const auto muons = event.muons;
-    Muon muon1;
-    Muon muon2;
-    if(muons->size()>0) muon1=(*muons)[0];
-    if(muons->size()>1) muon2=(*muons)[1];
-    TLorentzVector Mu1;
-    TLorentzVector Mu2;
-    Mu1.SetPtEtaPhiE(muon1.pt() ,muon1.eta() ,muon1.phi() ,muon1.energy() );
-    Mu2.SetPtEtaPhiE(muon2.pt() ,muon2.eta() ,muon2.phi() ,muon2.energy() );
-    double Mmumu = (Mu1+Mu2).M();
-  
-    if(!twomuons_sel->passes(event)) return false;
-    if(muon1.charge() != muon2.charge()){
-    if((81 < Mmumu && Mmumu < 101)){
-    return false;
-    }
-    }
-  */
-
   
   //const auto taus = event.taus;
-  /*
+  
   const auto & tau = (*event.taus)[0];
-  if(tau.pt()<80) return false;
-  */
+
+  
   
   //if(!mbtau_sel->passes(event)) return false;
+
     
-  bool OS_sel(false);
+  bool OS_sel(true);
   if(OS_sel){
+    //if(!oppositesign_sel->passes(event)) return false;
     if(samesign_lead->passes(event)) return false;
     if(!fourjet_sel->passes(event)) return false;
     if(met<100) return false;
-    if(!BTagT->passes(event)) return false;
+    //if(!BTagT->passes(event)) return false;
+    //if(ht_lep<200) return false; //200GeV
+    //if(tau.pt()<80) return false; //80GeV
+    //if(!BTagM->passes(event)) return false;
   }
   else{
+    if(!fourjet_sel->passes(event)) return false;/////////////////////////++++++++++++
+    //if(!fivejet_sel->passes(event)) return false;/////////////////////////++++++++++++
+    //if(!samesign_sel->passes(event)) return false;
     if(!samesign_lead->passes(event)) return false;
-    if(!BTagM->passes(event)) return false;
+    if(met<100) return false; //////////////////////////////////////////////++++++++++
+    //if(!BTagM->passes(event)) return false;
+    //if(ht_lep<180) return false;
+    //if(tau.pt()<60) return false;
   }
-    
+  /*
+  if(event.muons->size() > 0 && event.taus->size() > 0){
+    const auto & muon = (*event.muons)[0];
+    const auto & tau = (*event.taus)[0];
+    if (muon.charge() == tau.charge()) cout << "fail" << endl;
+    else{cout << "check" << endl;}
+  }
+  */
+  
+  //cout << "number of taus: " << event.taus->size() << endl;
+  /*for(const auto & muon : *event.muons)
+    {
+      for(const auto & tau : *event.taus)
+	{
+	  if (muon.charge() == tau.charge()) cout << "fail" << endl;
+	  else{ cout << "check" << endl;}
+	}     
+	}*/
+  //cout << endl << endl;
+  
   //if(!BTagM->passes(event)) return false;
   //if(!BTagL->passes(event)) return false;
   //if(!toptag->passes(event)) return false;

@@ -111,7 +111,7 @@ LQAnalysisPreModule::LQAnalysisPreModule(Context & ctx){
 
   // 1. setup other modules.
   EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
-  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
+  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.12));
   TauonId = AndId<Tau>(/*TauIDDecayModeFinding()*/TauIDMedium(), PtEtaCut(20.0, 2.1));
   /*
   MuIso = MuonIso(0.12);
@@ -136,7 +136,7 @@ LQAnalysisPreModule::LQAnalysisPreModule(Context & ctx){
 
 
   // 2. set up selections:
-  njet_sel.reset(new NJetCut(2,-1,50,3.0));
+  njet_sel.reset(new NJetSelection(2,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
   nmuon_sel.reset(new NMuonSelection(0,0));
   nele_sel.reset(new NElectronSelection(0,0));
@@ -353,6 +353,13 @@ bool LQAnalysisPreModule::process(Event & event) {
   h_event_MuonOnly->fill(event);
     
   if(!njet_sel->passes(event)) return false;
+  const auto jets = event.jets;
+  if(jets->size() > 0){
+    const auto & jet1 = (*jets)[0];
+    const auto & jet2 = (*jets)[0];
+    if(jet1.pt()<50) return false;
+    if(jet2.pt()<50) return false;
+  }
   h_lq_TwoJetsOnly->fill(event);
   h_tau_TwoJetsOnly->fill(event);
   h_mu_TwoJetsOnly->fill(event);

@@ -332,13 +332,15 @@ bool LQAnalysisModule::process(Event & event) {
     mod->process(event);
   }
 
+
+  if(!ntau_sel->passes(event)) return false;
   for (auto & m : recomodules) {
     m->process(event);
   }
     
   
   if(!muon_sel->passes(event)) return false;
-  if(!ntau_sel->passes(event)) return false;
+
   /*
     const auto jets = event.jets;
     if(jets->size() > 0){
@@ -418,7 +420,7 @@ bool LQAnalysisModule::process(Event & event) {
     const auto & jet = (*jets)[0];
     if(jet.pt()<150) return false;
   }
-  if(!leadingjet_sel->passes(event)) return false;
+  //if(!leadingjet_sel->passes(event)) return false;
   h_lq_LeadingJet150->fill(event);
   h_tau_LeadingJet150->fill(event);
   h_mu_LeadingJet150->fill(event);
@@ -434,10 +436,11 @@ bool LQAnalysisModule::process(Event & event) {
   const auto & tau = (*event.taus)[0];
   if(tau.pt()<80) return false;
   */
+  
   for(const auto & tau : *event.taus){
-    if(tau.pt()<80) return false;
+    if(tau.pt()<60) return false;
   }
-
+  
   
   if(!fourjet_sel->passes(event)) return false; // five jets!!
 

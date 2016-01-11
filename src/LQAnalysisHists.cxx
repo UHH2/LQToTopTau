@@ -30,6 +30,7 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("ST_testbinned", "H_{T}", 32, 800,4000);
 
   book<TH1F>("isolation","tau_iso",20,0,2);
+  book<TH1F>("isolation_sideband","tau_iso",15,0,300);
 
   /*
   double pttoprebins[8]={0,80,130,180,230,300,400,1000};
@@ -105,7 +106,7 @@ void LQAnalysisHists::fill(const Event & event){
   // Don't forget to always use the weight when filling.
   double weight = event.weight;
 
-
+  //assert(event.jets);
   //hist("Weights")->Fill(1,weight);
   
   /*
@@ -150,6 +151,7 @@ void LQAnalysisHists::fill(const Event & event){
 
   for(const auto & tau : *event.taus){
     hist("isolation")->Fill(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits(), weight);
+    hist("isolation_sideband")->Fill(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits(), weight);
     hist("pt_tau_binned")->Fill(tau.pt(),weight);
   }
   

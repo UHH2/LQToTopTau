@@ -40,6 +40,13 @@ private:
     double m_min, m_max;
   };
 
+  class OppositeSignCut: public Selection{
+  public:
+    OppositeSignCut();
+    ~OppositeSignCut(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
 
   class SameSignCut: public Selection{
   public:

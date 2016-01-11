@@ -22,6 +22,7 @@
 #include "UHH2/common/include/JetCorrections.h"
 #include "UHH2/common/include/PrintingModules.h"
 //#include "UHH2/common/test/TestJetLeptonCleaner.cpp"
+#include "UHH2/common/include/MCWeight.h"
 #include "UHH2/common/include/LuminosityHists.h"
 #include "UHH2/common/include/LumiSelection.h"
 #include "UHH2/common/include/TriggerSelection.h"
@@ -52,10 +53,11 @@ private:
   std::unique_ptr<ElectronCleaner> electroncleaner;
   std::unique_ptr<ElectronCleaner> electroncleaner_iso;
   std::unique_ptr<JetLeptonCleaner> jetleptoncleaner;
+  std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger;
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, bsel, ntau_sel, nmuon_sel, lumi_sel, trigger_sel;
+  std::unique_ptr<Selection> njet_sel, bsel, ntau_sel, nmuon_sel, lumi_sel, trigger_sel1, trigger_sel2, twojetcut;
   std::vector<std::unique_ptr<Selection> > fullhad_sel;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
@@ -73,7 +75,8 @@ private:
   //std::unique_ptr<AnalysisModule> jetlepcleantest;
   std::unique_ptr<CommonModules> common;
 
-
+  JetId jet_id;
+  PtEtaCut* pteta;
   JetId BTagMedium;
   MuonId MuIso;
   ElectronId EleIso;
@@ -111,7 +114,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
 
   // 1. setup other modules.
   EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
-  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
+  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.12));
   TauonId = AndId<Tau>(/*TauIDDecayModeFinding()*/TauIDMedium(), PtEtaCut(20.0, 2.1));
   /*
   MuIso = MuonIso(0.12);
@@ -121,13 +124,15 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
   taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1))));
   */
-  jetcleaner.reset(new JetCleaner(30.0, 2.5));
+  pteta = new PtEtaCut(30, 2.5);
+  jet_id = *pteta;
+  jetcleaner.reset(new JetCleaner(jet_id));
   BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
   //common->disable_pvfilter();
-  //common->disable_lumisel();
+  common->disable_lumisel();
   common->switch_jetlepcleaner(true);
   common->set_electron_id(EleId);
   common->set_muon_id(MuId);
@@ -137,11 +142,15 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
 
   // 2. set up selections:
   njet_sel.reset(new NJetCut(2,-1,50,3.0));
+  twojetcut.reset(new NJetSelection(2,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
   nmuon_sel.reset(new NMuonSelection(1,-1));
   bsel.reset(new NBTagSelection(1,-1));
   lumi_sel.reset(new LumiSelection(ctx));
-  trigger_sel.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+  trigger_sel1.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+  trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu20_v*"));
+  SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
+  SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/SingleMuonTrigger_Z_RunD_Reco74X_Nov20.root", "IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
 
 
   int n_cuts = 4;
@@ -262,14 +271,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
 
   //print all trigger names
-  /* 
+  /*
      for (unsigned int i=0; i<event.get_current_triggernames().size();i++)
      cout<< event.get_current_triggernames()[i]<<"\n";
      cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
   */
 
   //trigger sel + hists
-  if(!trigger_sel->passes(event)) return false;  
+  if(!(trigger_sel1->passes(event) || trigger_sel2->passes(event))) return false;
+  SF_muonTrigger->process(event);
   
   h_lq_trigger->fill(event);
   h_tau_trigger->fill(event);
@@ -284,6 +294,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //cleaning modules
   bool pass_common = common->process(event);
   if(!pass_common) return false;
+  SF_muonID->process(event);
 
   /*
   taucleaner->process(event);
@@ -294,7 +305,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   */
 
 
-  
   for(unsigned int i=0; i<event.jets->size(); i++){
     Jet jet = event.jets->at(i);
     for(const auto & tau : *event.taus){
@@ -304,9 +314,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
       }
     }
   }
+  
 
+  /*cout << "before: " << event.jets->size() << endl;
+  if(event.jets->size()>0){
+    cout << "pt: " << event.jets->at(0).pt() << endl;
+    cout << "eta: " << event.jets->at(0).eta() << endl;
+    }*/
   jetcleaner->process(event);
-
+  //cout << "after: " << event.jets->size() << " ++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 
  
   // fill hists after cleaning modules   
@@ -316,7 +332,13 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_ele_cleaner->fill(event);
   h_jet_cleaner->fill(event);
   h_event_cleaner->fill(event);
-  
+ 
+
+  /*
+  for(const auto & tau : *event.taus){
+    if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5) return false;
+  }
+  */
 
 
 
@@ -350,7 +372,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_MuonOnly->fill(event);
   h_event_MuonOnly->fill(event);
     
-  if(!njet_sel->passes(event)) return false;
+  //  if(!njet_sel->passes(event)) return false;
+  if(!twojetcut->passes(event)) return false;
+  const auto jets = event.jets;
+  if(jets->size() > 0){
+    const auto & jet1 = (*jets)[0];
+    const auto & jet2 = (*jets)[0];
+    if(jet1.pt()<50) return false;
+    if(jet2.pt()<50) return false;
+  }
   h_lq_TwoJetsOnly->fill(event);
   h_tau_TwoJetsOnly->fill(event);
   h_mu_TwoJetsOnly->fill(event);

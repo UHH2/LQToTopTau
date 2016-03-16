@@ -132,23 +132,23 @@ LQAnalysisTTbarSideBandModule::LQAnalysisTTbarSideBandModule(Context & ctx){
   for(auto & kv : ctx.get_all()){
     cout << " " << kv.first << " = " << kv.second << endl;
   }
-    
-    // 1. setup other modules.
-    jetcleaner.reset(new JetCleaner(30.0, 2.4));
-    muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
-    muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(30.0, 2.1))));
-    electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(20.0, 2.5))));
-    taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMedium(), PtEtaCut(30.0, 2.1))));
-    BTagLoose = CSVBTag(CSVBTag::WP_LOOSE);
-    BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
-    BTagTight = CSVBTag(CSVBTag::WP_TIGHT);
-    CMSTopTagger = CMSTopTag(50,140,250);
-    MuIso = MuonIso(0.12);
+  
+  // 1. setup other modules.
+  jetcleaner.reset(new JetCleaner(ctx,30.0, 2.4));
+  muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
+  muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(30.0, 2.1))));
+  electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(20.0, 2.5))));
+  taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDMedium(), PtEtaCut(30.0, 2.1))));
+  BTagLoose = CSVBTag(CSVBTag::WP_LOOSE);
+  BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
+  BTagTight = CSVBTag(CSVBTag::WP_TIGHT);
+  CMSTopTagger = CMSTopTag(50,140,250);
+  MuIso = MuonIso(0.12);
 
 
-    EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
-    MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
-    TauonId = AndId<Tau>(TauIDMediumInverted(), PtEtaCut(30.0, 2.1));
+  EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
+  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.12));
+  TauonId = AndId<Tau>(TauIDMediumInverted(), PtEtaCut(30.0, 2.1));
   
 
     common.reset(new CommonModules());

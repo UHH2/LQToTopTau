@@ -1,4 +1,4 @@
-#include "UHH2/LQAnalysis/include/LQAnalysisHists.h"
+#include "UHH2/LQAnalysis/include/LQAnalysisPreHists.h"
 #include "UHH2/core/include/Event.h"
 
 #include "UHH2/common/include/Utils.h"
@@ -13,7 +13,7 @@
 using namespace std;
 using namespace uhh2;
 
-LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(ctx, dirname){
+LQAnalysisPreHists::LQAnalysisPreHists(Context & ctx, const string & dirname): Hists(ctx, dirname){
   // book all histograms here
 
   Double_t bins[9] = {0, 400, 700, 1000, 1300, 1600, 1900, 2200, 2500};
@@ -86,33 +86,14 @@ LQAnalysisHists::LQAnalysisHists(Context & ctx, const string & dirname): Hists(c
   book<TH1F>("N", "counting exp.", 1,0.5,1.5);
 
 
-  double pttoprebins[5]={0,100,200,300,1200};
-  double pttopbins[4]={0,100,200,1200};
-
-  book<TH1F>("M_tophad_own", "M^{top,had} [GeV/c^{2}]", 50, 0, 500 ) ;
-  book<TH1F>("Pt_tophad_own", "P_{T}^{top,had} [GeV/c]", 60, 0, 1200 ) ;
-  book<TH1F>("Pt_tophad_own_rebin", "P_{T}^{top,had} [GeV/c]", 12, 0, 1200 ) ;
-  book<TH1F>("Pt_tophad_own_binned", "P_{T}^{top,had} [GeV/c]", 4, pttoprebins ) ;
-  book<TH1F>("Pt_tophad_own_binned2", "P_{T}^{top,had} [GeV/c]", 3, pttopbins ) ;
-  book <TH1F>("Chi2", "#chi^{2}", 100, 0, 500);
-  /*
-  book<TH2F>("pt_tau1_vs_ST","pt tau 1 vs ST", 50, 0, 800 ,100, 0, 2500);
-  book<TH2F>("pt_tau1_vs_MET","pt tau 1 vs MET", 50, 0, 800 ,50, 0, 1000);
-  */
-
-  //h_ttbar_hyps = ctx.get_handle<std::vector<ReconstructionHypothesis>>("HighMassTTbarReconstruction");
-  //m_discriminator_name = "Chi2";
-
-
-  h_hadr_hyps = ctx.get_handle<std::vector<TTbarFullhadRecoHypothesis>>("HighMassHadronicTTbarFullhadReco");
-
+ 
   auto dataset_type = ctx.get("dataset_type");
   is_data = dataset_type == "DATA";
 
 }
 
 
-void LQAnalysisHists::fill(const Event & event){
+void LQAnalysisPreHists::fill(const Event & event){
   // fill the histograms. Please note the comments in the header file:
   // 'hist' is used here a lot for simplicity, but it will be rather
   // slow when you have many histograms; therefore, better
@@ -121,21 +102,7 @@ void LQAnalysisHists::fill(const Event & event){
   // Don't forget to always use the weight when filling.
   double weight = event.weight;
 
-  
-  std::vector<TTbarFullhadRecoHypothesis> hadr_hyps = event.get(h_hadr_hyps);
-  const TTbarFullhadRecoHypothesis* hadr_hyp = get_best_hypothesis( hadr_hyps, "Chi2Hadronic" );
-
-  double mTopHad = hadr_hyp->tophad1_v4().M();
-  double ptTopHad = hadr_hyp->tophad1_v4().pt();
-
-  hist("Chi2")->Fill(hadr_hyp->discriminator("Chi2Hadronic"), weight);
-  hist("M_tophad_own")->Fill(mTopHad,weight);
-  hist("Pt_tophad_own")->Fill(ptTopHad, weight);
-  hist("Pt_tophad_own_rebin")->Fill(ptTopHad, weight);
-  hist("Pt_tophad_own_binned")->Fill(ptTopHad, weight);
-  hist("Pt_tophad_own_binned2")->Fill(ptTopHad, weight);
-  
-
+ 
   /*
   std::vector<ReconstructionHypothesis> hyps = event.get(h_ttbar_hyps); 
   const ReconstructionHypothesis* hyp = get_best_hypothesis( hyps, m_discriminator_name );
@@ -543,4 +510,4 @@ void LQAnalysisHists::fill(const Event & event){
 
 }
 
-LQAnalysisHists::~LQAnalysisHists(){}
+LQAnalysisPreHists::~LQAnalysisPreHists(){}

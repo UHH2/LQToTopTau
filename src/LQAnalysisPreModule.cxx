@@ -121,7 +121,7 @@ LQAnalysisPreModule::LQAnalysisPreModule(Context & ctx){
   jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
   taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1))));
   */
-  jetcleaner.reset(new JetCleaner(30.0, 2.5));
+  jetcleaner.reset(new JetCleaner(ctx, 30.0, 2.5));
   BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();

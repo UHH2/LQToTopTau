@@ -57,9 +57,9 @@ bool TTbarFullhadRecoChi2Discriminator::process(uhh2::Event & event){
 
     for(auto & hyp: hyps){
         double mass_thad1_rec = inv_mass(hyp.tophad1_v4());
-        double mass_thad2_rec = inv_mass(hyp.tophad2_v4());
+        //double mass_thad2_rec = inv_mass(hyp.tophad2_v4());
 
-	double chi2 = pow((mass_thad1_rec-mass_thad1) / mass_thad1_sigma,2) + pow((mass_thad2_rec-mass_thad1) / mass_thad1_sigma,2);
+	double chi2 = pow((mass_thad1_rec-mass_thad1) / mass_thad1_sigma,2)/* + pow((mass_thad2_rec-mass_thad1) / mass_thad1_sigma,2)*/;
 
         hyp.set_discriminator(config.discriminator_label, chi2); // modified
 

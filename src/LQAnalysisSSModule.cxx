@@ -94,7 +94,7 @@ LQAnalysisSSModule::LQAnalysisSSModule(Context & ctx){
 	}*/
     
     // 1. setup other modules.
-    jetcleaner.reset(new JetCleaner(30.0, 2.4));
+    jetcleaner.reset(new JetCleaner(ctx, 30.0, 2.4));
     muonidkinematic.reset(new MuonIDKinematic(30.0,3.0));
     muoncleaner.reset(new MuonCleaner(AndId<Muon>(MuonIDTight(), MuonIDKinematic(30.0, 2.1))));
     electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(20.0, 2.5))));

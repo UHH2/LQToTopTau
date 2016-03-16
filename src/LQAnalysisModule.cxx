@@ -107,7 +107,7 @@ LQAnalysisModule::LQAnalysisModule(Context & ctx){
   }
     
   // 1. setup other modules.
-  jetcleaner.reset(new JetCleaner(30.0, 2.4));
+  jetcleaner.reset(new JetCleaner(ctx, 30.0, 2.4));
   BTagLoose = CSVBTag(CSVBTag::WP_LOOSE);
   BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   BTagTight = CSVBTag(CSVBTag::WP_TIGHT);

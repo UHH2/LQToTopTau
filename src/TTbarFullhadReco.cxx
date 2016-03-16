@@ -64,36 +64,38 @@ bool HighMassHadronicTTbarReco::process(uhh2::Event & event) {
     }
    
     double mass_thad1_rec = 0;
-    double mass_thad2_rec = 0;
+    //double mass_thad2_rec = 0;
 
     if(tophad1_v4.isTimelike())      mass_thad1_rec = tophad1_v4.M();
     else      mass_thad1_rec = -sqrt(-tophad1_v4.mass2());
-   
+    /*
     if(tophad2_v4.isTimelike())      mass_thad2_rec = tophad2_v4.M();
     else      mass_thad2_rec = -sqrt(-tophad2_v4.mass2());
+    */
+    /*
+    if(event.taus->size()>1){
+      const auto & tau1 = (*event.taus)[0];
+      const auto & tau2 = (*event.taus)[1];
 
-    const auto & tau1 = (*event.taus)[0];
-    const auto & tau2 = (*event.taus)[1];
+      LQ11_v4 = tau1.v4()+tophad1_v4;
+      LQ12_v4 = tau1.v4()+tophad2_v4;
+      LQ21_v4 = tau2.v4()+tophad1_v4;
+      LQ22_v4 = tau2.v4()+tophad2_v4;
 
-    LQ11_v4 = tau1.v4()+tophad1_v4;
-    LQ12_v4 = tau1.v4()+tophad2_v4;
-    LQ21_v4 = tau2.v4()+tophad1_v4;
-    LQ22_v4 = tau2.v4()+tophad2_v4;
-
-
-    double Mdiff1 = fabs(LQ11_v4.M() - LQ22_v4.M());
-    double Mdiff2 = fabs(LQ12_v4.M() - LQ21_v4.M());
-    if(Mdiff1<Mdiff2){
-      hyp.set_LQ1_v4(LQ11_v4);
-      hyp.set_LQ2_v4(LQ22_v4);
+      double Mdiff1 = fabs(LQ11_v4.M() - LQ22_v4.M());
+      double Mdiff2 = fabs(LQ12_v4.M() - LQ21_v4.M());
+      if(Mdiff1<Mdiff2){
+	hyp.set_LQ1_v4(LQ11_v4);
+	hyp.set_LQ2_v4(LQ22_v4);
+      }
+      else{
+	hyp.set_LQ1_v4(LQ12_v4);
+	hyp.set_LQ2_v4(LQ21_v4);
+      }
     }
-    else{
-      hyp.set_LQ1_v4(LQ12_v4);
-      hyp.set_LQ2_v4(LQ21_v4);
-    }
-
-    if(hadjets1>0 && hadjets2>0) {
-      chi2 = pow((mass_thad1_rec-mass_thad1) / mass_thad1_sigma,2) + pow((mass_thad2_rec-mass_thad1) / mass_thad1_sigma,2);
+    */
+    if(hadjets1>0 /*&& hadjets2>0*/) {
+      chi2 = pow((mass_thad1_rec-mass_thad1) / mass_thad1_sigma,2) /*+ pow((mass_thad2_rec-mass_thad1) / mass_thad1_sigma,2)*/;
       if(chi2 < chi2min){
 	chi2min = chi2;
 	hyp.set_tophad1_v4(tophad1_v4);

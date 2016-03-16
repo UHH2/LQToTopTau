@@ -16,16 +16,19 @@
 #include "UHH2/common/include/JetIds.h"
 #include "UHH2/common/include/EventHists.h"
 #include "UHH2/LQAnalysis/include/LQAnalysisSelections.h"
-#include "UHH2/LQAnalysis/include/LQAnalysisHists.h"
+#include "UHH2/LQAnalysis/include/LQAnalysisPreHists.h"
 #include "UHH2/common/include/NSelections.h"
 #include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/common/include/JetCorrections.h"
 #include "UHH2/common/include/PrintingModules.h"
 //#include "UHH2/common/test/TestJetLeptonCleaner.cpp"
 #include "UHH2/common/include/MCWeight.h"
+#include "UHH2/common/include/TauUncerts.h"
 #include "UHH2/common/include/LuminosityHists.h"
 #include "UHH2/common/include/LumiSelection.h"
 #include "UHH2/common/include/TriggerSelection.h"
+#include "UHH2/common/include/EventVariables.h"
+
 
 
 using namespace std;
@@ -43,7 +46,7 @@ public:
   virtual bool process(Event & event) override;
 
 private:
-    
+  std::string channel_;
     
   std::unique_ptr<JetCleaner> jetcleaner;
   std::unique_ptr<MuonIDKinematic> muonidkinematic;
@@ -53,12 +56,11 @@ private:
   std::unique_ptr<ElectronCleaner> electroncleaner;
   std::unique_ptr<ElectronCleaner> electroncleaner_iso;
   std::unique_ptr<JetLeptonCleaner> jetleptoncleaner;
-  std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger;
+  std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger, SF_muonIso, tauenergy_module, taures_module;
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, bsel, ntau_sel, nmuon_sel, lumi_sel, trigger_sel1, trigger_sel2, twojetcut;
-  std::vector<std::unique_ptr<Selection> > fullhad_sel;
+  std::unique_ptr<Selection> onejet_sel, njet_sel, ntau_sel, nmuon_sel, nele_sel, nomuon_sel, lumi_sel, trigger_sel1, trigger_sel2, trigger_eledat, trigger_elemc, twojetcut;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
   std::unique_ptr<Hists> h_lq_nocut, h_tau_nocut, h_mu_nocut, h_ele_nocut, h_jet_nocut, h_event_nocut, h_lumi_nocut;
@@ -80,10 +82,13 @@ private:
   JetId BTagMedium;
   MuonId MuIso;
   ElectronId EleIso;
-  bool is_data;
+  bool is_data, OS_sel, do_tauenergy_variation, do_taures_variation;
   MuonId MuId;
   ElectronId EleId;
   TauId TauonId;
+
+
+
 
 };
 
@@ -110,23 +115,24 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   auto dataset_type = ctx.get("dataset_type");
   is_data = dataset_type == "DATA";
 
+  channel_ = ctx.get("channel", "electron");
+  if(channel_!="muon" && channel_!="electron")
+    throw std::runtime_error("undefined argument for 'channel' (must be 'muon' or 'electron'): "+channel_);
 
-
+ 
   // 1. setup other modules.
-  EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
-  MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.12));
+  if(channel_ == "muon"){
+    EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
+    MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
+  }
+  else if(channel_ == "electron"){
+    EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5), Electron_MINIIso(0.15,"uncorrected"));
+    MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
+  }
   TauonId = AndId<Tau>(/*TauIDDecayModeFinding()*/TauIDMedium(), PtEtaCut(20.0, 2.1));
-  /*
-  MuIso = MuonIso(0.12);
-  EleIso = ElectronIso(0.12);
-  electroncleaner.reset(new ElectronCleaner(AndId<Electron>(ElectronID_PHYS14_25ns_medium, PtEtaCut(30.0, 2.5))));
-  electroncleaner_iso.reset(new ElectronCleaner(AndId<Electron>(EleIso, PtEtaCut(30.0, 2.5))));
-  jetleptoncleaner.reset(new JetLeptonCleaner(JERFiles::PHYS14_L123_MC));
-  taucleaner.reset(new TauCleaner(AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1))));
-  */
   pteta = new PtEtaCut(30, 2.5);
   jet_id = *pteta;
-  jetcleaner.reset(new JetCleaner(jet_id));
+  jetcleaner.reset(new JetCleaner(ctx, jet_id));
   BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();
@@ -139,33 +145,37 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   common->set_tau_id(TauonId);
   common->init(ctx);
 
+  //systematics modules
+  tauenergy_module.reset(new TauEnergySmearing(ctx));
+  taures_module.reset(new TauEnergyResolutionShifter(ctx));
+
+  do_tauenergy_variation = (ctx.get("TauEnergyVariation") == "up" || ctx.get("TauEnergyVariation") == "down");
+  do_taures_variation = (ctx.get("TauEnergyResolutionVariation") == "up" || ctx.get("TauEnergyResolutionVariation") == "down");
 
   // 2. set up selections:
+  onejet_sel.reset(new NJetSelection(1,-1));
   njet_sel.reset(new NJetCut(2,-1,50,3.0));
   twojetcut.reset(new NJetSelection(2,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
   nmuon_sel.reset(new NMuonSelection(1,-1));
-  bsel.reset(new NBTagSelection(1,-1));
+  nele_sel.reset(new NElectronSelection(1,-1));
+  nomuon_sel.reset(new NMuonSelection(0,0));
   lumi_sel.reset(new LumiSelection(ctx));
   trigger_sel1.reset(new TriggerSelection("HLT_IsoMu27_v*"));
   trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu20_v*"));
-  SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
-  SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/SingleMuonTrigger_Z_RunD_Reco74X_Nov20.root", "IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
+  trigger_eledat.reset(new TriggerSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"));
+  trigger_elemc.reset(new TriggerSelection("HLT_Ele27_eta2p1_WP75_Gsf_v*"));
+  if(channel_ == "muon"){
+    SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
+    SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/SingleMuonTrigger_Z_RunD_Reco74X_Nov20.root", "IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
+    //SF_muonIso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/reimersa/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonIso_Z_RunCD_Reco74X_Dec1.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1", 1, "iso", "nominal"));
+  }
 
-
-  int n_cuts = 4;
-  fullhad_sel.resize(n_cuts);
-  fullhad_sel[0].reset(new NJetSelection(2,-1));
-  fullhad_sel[1].reset(new NTauSelection(1));
-  //fullhad_sel[2].reset(new NJetSelection(1,999,BTagMedium));
-  fullhad_sel[2].reset(new NJetCut(2,-1,50,3.0));
-  fullhad_sel[3].reset(new NMuonSelection(1));
-  //fullhad_sel[4].reset(new METCut(100,-1));
 
 
 
   // 3. Set up Hists classes:
-  h_lq_nocut.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_NoCuts"));
+  h_lq_nocut.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_NoCuts"));
   h_tau_nocut.reset(new TauHists(ctx, "LQPreMod_Taus_NoCuts"));
   h_mu_nocut.reset(new MuonHists(ctx, "LQPreMod_Muons_NoCuts"));
   h_ele_nocut.reset(new ElectronHists(ctx, "LQPreMod_Electrons_NoCuts"));
@@ -173,7 +183,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   h_event_nocut.reset(new EventHists(ctx, "LQPreMod_Events_NoCuts"));
   h_lumi_nocut.reset(new LuminosityHists(ctx, "LQPreMod_Lumi_NoCuts"));
 
-  h_lq_trigger.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_Trigger"));
+  h_lq_trigger.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_Trigger"));
   h_tau_trigger.reset(new TauHists(ctx, "LQPreMod_Taus_Trigger"));
   h_mu_trigger.reset(new MuonHists(ctx, "LQPreMod_Muons_Trigger"));
   h_ele_trigger.reset(new ElectronHists(ctx, "LQPreMod_Electrons_Trigger"));
@@ -181,49 +191,49 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   h_event_trigger.reset(new EventHists(ctx, "LQPreMod_Events_Trigger"));
   h_lumi_trigger.reset(new LuminosityHists(ctx, "LQPreMod_Lumi_Trigger"));
 
-  h_lq_cleaner.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_Cleaner"));
+  h_lq_cleaner.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_Cleaner"));
   h_tau_cleaner.reset(new TauHists(ctx, "LQPreMod_Taus_Cleaner"));
   h_mu_cleaner.reset(new MuonHists(ctx, "LQPreMod_Muons_Cleaner"));
   h_ele_cleaner.reset(new ElectronHists(ctx, "LQPreMod_Electrons_Cleaner"));
   h_jet_cleaner.reset(new JetHists(ctx, "LQPreMod_Jets_Cleaner"));
   h_event_cleaner.reset(new EventHists(ctx, "LQPreMod_Events_Cleaner"));
 
-  h_lq_MET50Only.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_MET50Only"));
+  h_lq_MET50Only.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_MET50Only"));
   h_tau_MET50Only.reset(new TauHists(ctx, "LQPreMod_Taus_MET50Only"));
   h_mu_MET50Only.reset(new MuonHists(ctx, "LQPreMod_Muons_MET50Only"));
   h_ele_MET50Only.reset(new ElectronHists(ctx, "LQPreMod_Electrons_MET50Only"));
   h_jet_MET50Only.reset(new JetHists(ctx, "LQPreMod_Jets_MET50Only"));
   h_event_MET50Only.reset(new EventHists(ctx, "LQPreMod_Events_MET50Only"));
 
-  h_lq_MuonOnly.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_MuonOnly"));
+  h_lq_MuonOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_MuonOnly"));
   h_tau_MuonOnly.reset(new TauHists(ctx, "LQPreMod_Taus_MuonOnly"));
   h_mu_MuonOnly.reset(new MuonHists(ctx, "LQPreMod_Muons_MuonOnly"));
   h_ele_MuonOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_MuonOnly"));
   h_jet_MuonOnly.reset(new JetHists(ctx, "LQPreMod_Jets_MuonOnly"));
   h_event_MuonOnly.reset(new EventHists(ctx, "LQPreMod_Events_MuonOnly"));
 
-  h_lq_TauOnly.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_TauOnly"));
+  h_lq_TauOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_TauOnly"));
   h_tau_TauOnly.reset(new TauHists(ctx, "LQPreMod_Taus_TauOnly"));
   h_mu_TauOnly.reset(new MuonHists(ctx, "LQPreMod_Muons_TauOnly"));
   h_ele_TauOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_TauOnly"));
   h_jet_TauOnly.reset(new JetHists(ctx, "LQPreMod_Jets_TauOnly"));
   h_event_TauOnly.reset(new EventHists(ctx, "LQPreMod_Events_TauOnly"));
 
-  h_lq_TwoJetsOnly.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_TwoJetsOnly"));
+  h_lq_TwoJetsOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_TwoJetsOnly"));
   h_tau_TwoJetsOnly.reset(new TauHists(ctx, "LQPreMod_Taus_TwoJetsOnly"));
   h_mu_TwoJetsOnly.reset(new MuonHists(ctx, "LQPreMod_Muons_TwoJetsOnly"));
   h_ele_TwoJetsOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_TwoJetsOnly"));
   h_jet_TwoJetsOnly.reset(new JetHists(ctx, "LQPreMod_Jets_TwoJetsOnly"));
   h_event_TwoJetsOnly.reset(new EventHists(ctx, "LQPreMod_Events_TwoJetsOnly"));
 
-  h_lq_ST350Only.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_ST350Only"));
+  h_lq_ST350Only.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_ST350Only"));
   h_tau_ST350Only.reset(new TauHists(ctx, "LQPreMod_Taus_ST350Only"));
   h_mu_ST350Only.reset(new MuonHists(ctx, "LQPreMod_Muons_ST350Only"));
   h_ele_ST350Only.reset(new ElectronHists(ctx, "LQPreMod_Electrons_ST3500Only"));
   h_jet_ST350Only.reset(new JetHists(ctx, "LQPreMod_Jets_ST350Only"));
   h_event_ST350Only.reset(new EventHists(ctx, "LQPreMod_Events_ST350Only"));
 
-  h_lq_PreSel.reset(new LQAnalysisHists(ctx, "LQPreMod_LQ_PreSel"));
+  h_lq_PreSel.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_PreSel"));
   h_tau_PreSel.reset(new TauHists(ctx, "LQPreMod_Taus_PreSel"));
   h_mu_PreSel.reset(new MuonHists(ctx, "LQPreMod_Muons_PreSel"));
   h_ele_PreSel.reset(new ElectronHists(ctx, "LQPreMod_Electrons_PreSel"));
@@ -231,9 +241,9 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   h_event_PreSel.reset(new EventHists(ctx, "LQPreMod_Events_PreSel"));
   h_lumi_PreSel.reset(new LuminosityHists(ctx, "LQPreMod_Lumi_PreSel"));
 
-   
-
 }
+
+
 
 
 bool LQAnalysisMuPreModule::process(Event & event) {
@@ -250,7 +260,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
     
   // 1. run all modules; here: only jet cleaning.
-
   
   if(is_data){
     if(!lumi_sel->passes(event)) return false;
@@ -272,15 +281,26 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
   //print all trigger names
   /*
-     for (unsigned int i=0; i<event.get_current_triggernames().size();i++)
-     cout<< event.get_current_triggernames()[i]<<"\n";
-     cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    for (unsigned int i=0; i<event.get_current_triggernames().size();i++){
+    cout<< event.get_current_triggernames()[i]<<"\n";
+    }
+    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
   */
 
   //trigger sel + hists
-  if(!(trigger_sel1->passes(event) || trigger_sel2->passes(event))) return false;
-  SF_muonTrigger->process(event);
-  
+  if(channel_ == "muon"){
+    if(!(trigger_sel1->passes(event) || trigger_sel2->passes(event))) return false;
+    SF_muonTrigger->process(event);
+  }
+  if(channel_ == "electron"){
+    if(is_data){
+      if(!trigger_eledat->passes(event)) return false;
+    }
+    if(!is_data){
+      if(!trigger_elemc->passes(event)) return false;
+    }
+  }
+
   h_lq_trigger->fill(event);
   h_tau_trigger->fill(event);
   h_mu_trigger->fill(event);
@@ -291,40 +311,33 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_lumi_trigger->fill(event);
 
 
+  // tau systematics
+  if(do_tauenergy_variation) tauenergy_module->process(event);
+  if(do_taures_variation) taures_module->process(event);
+
   //cleaning modules
   bool pass_common = common->process(event);
   if(!pass_common) return false;
-  SF_muonID->process(event);
-
-  /*
-  taucleaner->process(event);
-  muoncleaner->process(event);
-  muoncleaner_iso->process(event);
-  electroncleaner->process(event);
-  electroncleaner_iso->process(event);
-  */
-
+  if(channel_ == "muon"){
+    SF_muonID->process(event);
+    //SF_muonIso->process(event);
+  }
 
   for(unsigned int i=0; i<event.jets->size(); i++){
     Jet jet = event.jets->at(i);
     for(const auto & tau : *event.taus){
-      if(deltaR(tau,jet)<0.4){
-	event.jets->erase(event.jets->begin()+i);
-	i--;
+      if(event.jets->size()>0){
+	if(deltaR(tau,jet)<0.4){
+	  event.jets->erase(event.jets->begin()+i);
+	  i--;
+	}
       }
     }
   }
-  
 
-  /*cout << "before: " << event.jets->size() << endl;
-  if(event.jets->size()>0){
-    cout << "pt: " << event.jets->at(0).pt() << endl;
-    cout << "eta: " << event.jets->at(0).eta() << endl;
-    }*/
   jetcleaner->process(event);
-  //cout << "after: " << event.jets->size() << " ++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 
- 
+
   // fill hists after cleaning modules   
   h_lq_cleaner->fill(event);
   h_tau_cleaner->fill(event);
@@ -339,8 +352,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5) return false;
   }
   */
-
-
 
   // define met
   auto met = event.met->pt();
@@ -364,14 +375,21 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   st = ht + ht_lep + met;
 
 
-  if(!nmuon_sel->passes(event)) return false;
+  if(channel_ == "muon"){
+    if(!nmuon_sel->passes(event)) return false;
+  }
+  else if(channel_ == "electron"){
+    if(!nomuon_sel->passes(event)) return false;
+    if(!nele_sel->passes(event)) return false;
+  }
+
   h_lq_MuonOnly->fill(event);
   h_tau_MuonOnly->fill(event);
   h_mu_MuonOnly->fill(event);
   h_ele_MuonOnly->fill(event);
   h_jet_MuonOnly->fill(event);
   h_event_MuonOnly->fill(event);
-    
+
   //  if(!njet_sel->passes(event)) return false;
   if(!twojetcut->passes(event)) return false;
   const auto jets = event.jets;
@@ -381,13 +399,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     if(jet1.pt()<50) return false;
     if(jet2.pt()<50) return false;
   }
+
+
   h_lq_TwoJetsOnly->fill(event);
   h_tau_TwoJetsOnly->fill(event);
   h_mu_TwoJetsOnly->fill(event);
   h_ele_TwoJetsOnly->fill(event);
   h_jet_TwoJetsOnly->fill(event);
   h_event_TwoJetsOnly->fill(event);
-    
+
   if(st<350) return false;
   h_lq_ST350Only->fill(event);
   h_tau_ST350Only->fill(event);
@@ -403,7 +423,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_ele_MET50Only->fill(event);
   h_jet_MET50Only->fill(event);
   h_event_MET50Only->fill(event);
-    
+
   if(!ntau_sel->passes(event)) return false;
   h_lq_TauOnly->fill(event);
   h_tau_TauOnly->fill(event);
@@ -411,11 +431,49 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_ele_TauOnly->fill(event);
   h_jet_TauOnly->fill(event);
   h_event_TauOnly->fill(event);
-    
+  
+
+  // cut events with real taus
+  /*
+  if(!is_data){
+    for(unsigned int i =0; i<event.taus->size(); ++i){
+      Tau tau = event.taus->at(i);
+      for(auto genp : *event.genparticles){
+	double dR = deltaR(tau,genp);
+	if(dR<0.4 && abs(genp.pdgId())==15){
+	  return false;
+	}
+      }
+    }
+  }
+  */
+  // cut events with fake taus
+  /*  
+  if(!is_data){
+    double dR = 1000;
+    for(const auto & tau : *event.taus){
+      for(auto genp : *event.genparticles){
+	//if(abs(genp.pdgId())!=15) continue;
+	if(abs(genp.pdgId())==15){
+	  double tmp = deltaR(tau,genp);
+	  if(tmp<dR){
+	    dR = tmp;
+	  }
+	}
+      }
+    }
+    if(dR<0.4){
+    }
+    else{
+      return false;
+    }
+  }
+  */
+  
 
 
 
-
+  // Preselection histos
   h_lq_PreSel->fill(event);
   h_tau_PreSel->fill(event);
   h_mu_PreSel->fill(event);
@@ -423,7 +481,8 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_PreSel->fill(event);
   h_event_PreSel->fill(event);
   h_lumi_PreSel->fill(event);
-    
+
+
   // 3. decide whether or not to keep the current event in the output:
   return true;
 }

@@ -81,18 +81,15 @@ bool SameSignCutLeadingLep::passes(const Event & event)
 
 EleTauSameSignCut::EleTauSameSignCut(){
 }
-
- bool EleTauSameSignCut::passes(const Event & event)
- {
-   for(const auto & electron : *event.electrons)
-     {
-       for(const auto & tau : *event.taus)
-	 {
-	   if (electron.charge() == tau.charge()) return true;
-	 }     
-     }
-   return false;
- }
+bool EleTauSameSignCut::passes(const Event & event)
+{
+  if(event.electrons->size() > 0 && event.taus->size() > 0){
+    const auto & ele = (*event.electrons)[0];
+    const auto & tau = (*event.taus)[0];
+    if (ele.charge() == tau.charge()) return true;
+  }
+  return false;
+}
 
 
 MbtauSelection::MbtauSelection(double minMbtau, double maxMbtau): minMbtau_(minMbtau),maxMbtau_(maxMbtau) {}

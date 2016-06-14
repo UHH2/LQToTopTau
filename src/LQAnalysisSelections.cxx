@@ -147,6 +147,7 @@ bool METCut::passes(const Event & event){
 
 
 // see https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation53XReReco
+/*
 float btagging::csv_threshold(const csv_wp & wp){
     using namespace btagging;
     switch(wp){
@@ -168,7 +169,7 @@ bool NBTagSelection::passes(const Event & event){
     }
     return nbtag >= nmin && (nmax < 0 || nbtag <= nmax);
 }
-
+*/
 
 ElectronIso::ElectronIso(double iso_):iso(iso_){}
 bool ElectronIso::operator()(const Electron & electron, const uhh2::Event &) const {

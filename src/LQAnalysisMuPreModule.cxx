@@ -115,7 +115,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   auto dataset_type = ctx.get("dataset_type");
   is_data = dataset_type == "DATA";
 
-  channel_ = ctx.get("channel", "electron");
+  channel_ = ctx.get("channel", "muon");
   if(channel_!="muon" && channel_!="electron")
     throw std::runtime_error("undefined argument for 'channel' (must be 'muon' or 'electron'): "+channel_);
 
@@ -138,6 +138,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
   //common->disable_pvfilter();
+  common->disable_jersmear();
   common->disable_lumisel();
   common->switch_jetlepcleaner(true);
   common->set_electron_id(EleId);
@@ -163,15 +164,13 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   lumi_sel.reset(new LumiSelection(ctx));
   trigger_sel1.reset(new TriggerSelection("HLT_IsoMu27_v*"));
   trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu20_v*"));
-  trigger_eledat.reset(new TriggerSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"));
-  trigger_elemc.reset(new TriggerSelection("HLT_Ele27_eta2p1_WP75_Gsf_v*"));
+  trigger_eledat.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
+  trigger_elemc.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
   if(channel_ == "muon"){
-    SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonID_Z_RunD_Reco74X_Nov20.root", "NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
-    SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_4_15_patch1/src/UHH2/common/data/SingleMuonTrigger_Z_RunD_Reco74X_Nov20.root", "IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
-    //SF_muonIso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/reimersa/CMSSW_7_4_15_patch1/src/UHH2/common/data/MuonIso_Z_RunCD_Reco74X_Dec1.root", "NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1", 1, "iso", "nominal"));
+    SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/MuonID_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
+    SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root", "runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
+    SF_muonIso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1", 1, "iso", "nominal"));
   }
-
-
 
 
   // 3. Set up Hists classes:
@@ -256,19 +255,14 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   // this is controlled by the return value of this method: If it
   // returns true, the event is kept; if it returns false, the event
   // is thrown away.
-    
+
   //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
-    
-  // 1. run all modules; here: only jet cleaning.
-  
+      
   if(is_data){
     if(!lumi_sel->passes(event)) return false;
   }
-  
 
-  // fill hists before all selection cuts
-  
-  
+  // fill hists before all selection cuts 
   h_lq_nocut->fill(event);
   h_tau_nocut->fill(event);
   h_mu_nocut->fill(event);
@@ -277,8 +271,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_event_nocut->fill(event);
   h_lumi_nocut->fill(event);
   
-
-
   //print all trigger names
   /*
     for (unsigned int i=0; i<event.get_current_triggernames().size();i++){
@@ -307,9 +299,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_ele_trigger->fill(event);
   h_jet_trigger->fill(event);
   h_event_trigger->fill(event);
-    
   h_lumi_trigger->fill(event);
-
 
   // tau systematics
   if(do_tauenergy_variation) tauenergy_module->process(event);
@@ -320,7 +310,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   if(!pass_common) return false;
   if(channel_ == "muon"){
     SF_muonID->process(event);
-    //SF_muonIso->process(event);
+    SF_muonIso->process(event);
   }
 
   for(unsigned int i=0; i<event.jets->size(); i++){
@@ -346,7 +336,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_cleaner->fill(event);
   h_event_cleaner->fill(event);
  
-
   /*
   for(const auto & tau : *event.taus){
     if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5) return false;
@@ -355,7 +344,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
 
   // define met
   auto met = event.met->pt();
-
   // define ht and st
   double ht = 0.0;
   for(const auto & jet : *event.jets){

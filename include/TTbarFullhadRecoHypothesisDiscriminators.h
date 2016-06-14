@@ -4,7 +4,7 @@
 #include "UHH2/core/include/Event.h"
 
 #include "UHH2/LQAnalysis/include/TTbarFullhadRecoHypothesis.h"
-
+#include "UHH2/common/include/TTbarGen.h"
 
 /**  @short This file defines analysis modules which add discriminator values to reconstruction hypotheses
  *
@@ -55,5 +55,24 @@ class TTbarFullhadRecoChi2Discriminator: public uhh2::AnalysisModule {
     
  private:
   uhh2::Event::Handle<std::vector<TTbarFullhadRecoHypothesis>> h_hyps;
+  cfg config;
+};
+
+
+class LQCorrectMatchDiscriminator: public uhh2::AnalysisModule {
+ public:
+  struct cfg {
+    std::string ttbargen_name;
+    std::string discriminator_label;
+   cfg(): ttbargen_name("ttbargen"), discriminator_label("CorrectMatch"){}
+  };
+  
+  LQCorrectMatchDiscriminator(uhh2::Context & ctx, const std::string & rechyps_name, const cfg & config = cfg());
+  virtual bool process(uhh2::Event & event) override;
+  
+ private:
+  
+  uhh2::Event::Handle<std::vector<TTbarFullhadRecoHypothesis>> h_hyps;
+  uhh2::Event::Handle<TTbarGen> h_ttbargen;
   cfg config;
 };

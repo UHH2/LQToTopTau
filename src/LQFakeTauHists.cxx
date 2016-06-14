@@ -28,6 +28,8 @@ LQFakeTauHists::LQFakeTauHists(Context & ctx, const string & dirname): Hists(ctx
   book<TH2F>("pt_tau1_vs_iso","pt tau1 vs tau iso", 50, 0, 800 ,50, 0, 500);
   book<TH2F>("eta_tau1_vs_iso","eta tau1 vs tau iso", 50, -3, 3 ,50, 0, 500);
 
+  book <TH1F>("tau_mother", "Tau mother", 100, -50.5, 49.5);
+
   book<TH1F>("faketau1_iso","tau_iso",50,0,500);
   book<TH1F>("faketau1_pt20to40_iso","tau_iso 20to40",50,0,500);
   book<TH1F>("faketau1_pt40to60_iso","tau_iso 40to60",50,0,500);
@@ -100,6 +102,8 @@ LQFakeTauHists::LQFakeTauHists(Context & ctx, const string & dirname): Hists(ctx
   book<TH1F>("Down_SS_pT_Tau","Down_SS_pT_Tau",1,1,2);
   book<TH1F>("ChargeFlip_pT_Tau","ChargeFlip_pT_Tau",1,1,2);
 
+  book<TH1F>("Fraction_Fakes","Origin of fake taus",6,0.5,6.5);
+
 
   auto dataset_type = ctx.get("dataset_type");
   is_data = dataset_type == "DATA";
@@ -154,13 +158,15 @@ void LQFakeTauHists::fill(const Event & event){
   */
 
   //for(const auto & tau : *event.taus){
-  if(!is_data){
+  if(!is_data){    
   for(unsigned int i =0; i<event.taus->size(); ++i){
       Tau tau = event.taus->at(i);
       bool fake = true;
       for(auto genp : *event.genparticles){
 	double dR = deltaR(tau,genp);
 	if(dR<0.4 && abs(genp.pdgId())==15){
+	  const GenParticle* taumother = genp.mother(event.genparticles,1);
+	  hist("tau_mother")->Fill(taumother->pdgId(),weight);
 	  fake = false;
 	  break;
 	}
@@ -250,6 +256,7 @@ void LQFakeTauHists::fill(const Event & event){
 	    hist("pt_fake_gluon_tau1_doublebinned")->Fill(tau.pt(), weight);
 	  }
 	  
+	  hist("Fraction_Fakes")->Fill(1, weight);
 	  hist("Gluon_pT_Tau")->Fill(1, weight);
 	  if(event.muons->size()>0){
 	    if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("Gluon_pT_Tau_1")->Fill(1, weight);
@@ -281,6 +288,7 @@ void LQFakeTauHists::fill(const Event & event){
 	    hist("pt_fake_Up_SS_tau1_doublebinned")->Fill(tau.pt(), weight);
 	  }
 
+	  hist("Fraction_Fakes")->Fill(2, weight);
 	  hist("Up_SS_pT_Tau")->Fill(1, weight);
 	  if(event.muons->size()>0){
 	    if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("Up_SS_pT_Tau_1")->Fill(1, weight);
@@ -313,6 +321,7 @@ void LQFakeTauHists::fill(const Event & event){
 	    hist("pt_fake_Down_SS_tau1_doublebinned")->Fill(tau.pt(), weight);
 	  }
 
+	  hist("Fraction_Fakes")->Fill(3, weight);
 	  hist("Down_SS_pT_Tau")->Fill(1, weight);
 	  if(event.muons->size()>0){
 	    if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("Down_SS_pT_Tau_1")->Fill(1, weight);
@@ -344,6 +353,7 @@ void LQFakeTauHists::fill(const Event & event){
 	    hist("pt_fake_ChargeFlip_tau1_doublebinned")->Fill(tau.pt(), weight);
 	  }
 
+	  hist("Fraction_Fakes")->Fill(4, weight);
 	  hist("ChargeFlip_pT_Tau")->Fill(1, weight);
 	  if(event.muons->size()>0){
 	    if (tau.pt() < 60 && muon.charge()==1 && muon.charge()==tau.charge())   hist("ChargeFlip_pT_Tau_1")->Fill(1, weight);
@@ -460,9 +470,13 @@ void LQFakeTauHists::fill(const Event & event){
 	  }
 	}
 
+	if(fabs(genpPdg)==11){
+	  hist("Fraction_Fakes")->Fill(5, weight);
+	}
+	if(fabs(genpPdg)==13){
+	  hist("Fraction_Fakes")->Fill(6, weight);
+	}
 
-	    
-	  
       }
     }
 	

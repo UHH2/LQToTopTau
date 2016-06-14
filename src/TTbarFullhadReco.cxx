@@ -24,7 +24,7 @@ bool HighMassHadronicTTbarReco::process(uhh2::Event & event) {
   std::vector<TTbarFullhadRecoHypothesis> recoHyps;
 
   unsigned int n_jets = event.jets->size();
-  if(n_jets>7) n_jets=7; //avoid crashes in events with many jets
+  if(n_jets>6) n_jets=6; //avoid crashes in events with many jets
   // idea: loop over 3^Njet possibilities and write the current loop
   // index j in the 3-base system. The Njets digits represent whether
   // to assign each jet to the hadronic side (0), leptonic side (1),

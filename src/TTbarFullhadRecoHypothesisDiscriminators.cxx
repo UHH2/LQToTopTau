@@ -68,3 +68,83 @@ bool TTbarFullhadRecoChi2Discriminator::process(uhh2::Event & event){
   }
   return true;
 }
+
+
+
+LQCorrectMatchDiscriminator::LQCorrectMatchDiscriminator(Context & ctx, const std::string & rechyps_name, const cfg & config_): config(config_){
+  h_hyps = ctx.get_handle<vector<TTbarFullhadRecoHypothesis>>(rechyps_name);
+  h_ttbargen = ctx.get_handle<TTbarGen>(config.ttbargen_name);
+  //h_LQLQbargen = ctx.get_handle<LQGen>(config.LQLQbargen_name);
+}
+
+namespace {
+  // match particle p to one of the jets (Delta R < 0.3); return the deltaR
+  // of the match.
+  template<typename T> // T should inherit from Particle
+  float match_dr(const Particle & p, const std::vector<T> & jets, int& index){
+    float mindr = infinity;
+    index = -1;
+    for(unsigned int i=0; i<jets.size(); ++i){
+      float dR = deltaR(p, jets.at(i));
+      if( dR <0.3 && dR<mindr) {
+        mindr=dR;
+        index=i;
+      }
+    }
+    return mindr;
+  }
+}
+
+bool LQCorrectMatchDiscriminator::process(uhh2::Event & event){  // replaced 'infinity' with '999999'
+  auto & hyps = event.get(h_hyps);
+
+  const auto & ttbargen = event.get(h_ttbargen);
+
+  //const auto & LQLQbargen = event.get(h_LQLQbargen);
+  auto dec = ttbargen.DecayChannel();
+  if(dec != TTbarGen::e_muhad){ // if not semilep mu channel
+    for(auto & hyp: hyps){
+      hyp.set_discriminator(config.discriminator_label, 999999);
+    }
+    return true;
+  }
+
+  // note that it is allowed that two partons from the hadronic ttbar decay match the same jet.
+  for(auto & hyp: hyps){
+    auto hadr1_jets = hyp.tophad1_jets();
+    //auto hadr2_jets = hyp.tophad2_jets();
+
+    if(hadr1_jets.size() > 3){ // < 3 is allowed ...
+      hyp.set_discriminator(config.discriminator_label, 999999);
+      continue;
+    }
+
+    //index lists of jets that can be matched to partons
+    std::set<int> matched_hadr_jets;
+
+    // match b jets
+    int index_h;
+    
+    float correct_dr = match_dr(ttbargen.BHad(), hadr1_jets, index_h);
+    if(index_h >= 0) matched_hadr_jets.insert(index_h);
+    //match quarks from W decays
+    correct_dr += match_dr(ttbargen.Q1(), hadr1_jets, index_h);
+    if(index_h >= 0) matched_hadr_jets.insert(index_h);
+    correct_dr += match_dr(ttbargen.Q2(), hadr1_jets, index_h);
+    if(index_h >= 0) matched_hadr_jets.insert(index_h);
+
+    // if not all jets of the hadronic side of the reconstruction could be matched: infinite
+    // value:
+    if(matched_hadr_jets.size() != hadr1_jets.size()){
+      hyp.set_discriminator(config.discriminator_label, 999999);
+      continue;
+    }
+    //set final dr as discriminator value
+    hyp.set_discriminator(config.discriminator_label, correct_dr);
+    
+
+
+  }
+
+  return true;
+}

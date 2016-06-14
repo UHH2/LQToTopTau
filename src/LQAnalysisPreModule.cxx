@@ -55,7 +55,7 @@ private:
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, bsel, ntau_sel, nmuon_sel, nele_sel, lumi_sel, trigger_sel;
+  std::unique_ptr<Selection> njet_sel, ntau_sel, nmuon_sel, nele_sel, lumi_sel, trigger_sel;
   std::vector<std::unique_ptr<Selection> > fullhad_sel;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
@@ -140,7 +140,6 @@ LQAnalysisPreModule::LQAnalysisPreModule(Context & ctx){
   ntau_sel.reset(new NTauSelection(1,-1));
   nmuon_sel.reset(new NMuonSelection(0,0));
   nele_sel.reset(new NElectronSelection(0,0));
-  bsel.reset(new NBTagSelection(1,-1));
   lumi_sel.reset(new LumiSelection(ctx));
   trigger_sel.reset(new TriggerSelection("HLT_IsoMu27_v*"));
 

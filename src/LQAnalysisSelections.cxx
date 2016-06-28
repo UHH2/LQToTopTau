@@ -91,6 +91,61 @@ bool EleTauSameSignCut::passes(const Event & event)
   return false;
 }
 
+JetTauCleaning::JetTauCleaning(){
+}
+bool JetTauCleaning::passes(const Event & event)
+{
+  for(unsigned int i=0; i<event.jets->size(); i++){
+    Jet jet = event.jets->at(i);
+    for(const auto & tau : *event.taus){
+      if(event.jets->size()>0){
+	if(deltaR(tau,jet)<0.4){
+	  event.jets->erase(event.jets->begin()+i);
+	  i--;
+	}
+      }
+    }
+  }
+  return true;
+}
+
+GetFakeTaus::GetFakeTaus(){
+}
+bool GetFakeTaus::passes(const Event & event)
+{
+  for(unsigned int i =0; i<event.taus->size(); ++i){
+    Tau tau = event.taus->at(i);
+    for(auto genp : *event.genparticles){
+      double dR = deltaR(tau,genp);
+      if(dR<0.4 && abs(genp.pdgId())==15){
+	return false;
+      }
+    }
+  }
+}
+
+GetRealTaus::GetRealTaus(){
+}
+bool GetRealTaus::passes(const Event & event)
+{
+  double dR = 1000;
+  for(const auto & tau : *event.taus){
+    for(auto genp : *event.genparticles){
+      if(abs(genp.pdgId())==15){
+	double tmp = deltaR(tau,genp);
+	if(tmp<dR){
+	  dR = tmp;
+	}
+      }
+    }
+  }
+  if(dR<0.4){
+  }
+  else{
+    return false;
+  }
+}
+
 
 MbtauSelection::MbtauSelection(double minMbtau, double maxMbtau): minMbtau_(minMbtau),maxMbtau_(maxMbtau) {}
 bool MbtauSelection::passes(const Event & event){
@@ -138,13 +193,47 @@ bool NJetCut::passes(const Event & event){
 
 METCut::METCut(double min_met_, double max_met_): min_met(min_met_), max_met(max_met_){}
 bool METCut::passes(const Event & event){
-  bool pass = false;
   double MET = event.met->pt();
+  bool pass = false;
   pass = MET > min_met && (max_met < 0 || MET < max_met);
   return pass;
 }
 
 
+HtSelection::HtSelection(double ht_min_, double ht_max_):ht_min(ht_min_), ht_max(ht_max_){}
+bool HtSelection::passes(const Event & event){
+  auto met = event.met->pt();
+
+  double ht = 0.0;
+  double ht_jets = 0.0;
+  double ht_lep = 0.0;
+  for(const auto & jet : *event.jets){
+    ht_jets += jet.pt();
+  }
+  for(const auto & electron : *event.electrons){
+    ht_lep += electron.pt();
+  }
+  for(const auto & muon : *event.muons){
+    ht_lep += muon.pt();
+  }
+  for(const auto & tau : *event.taus){
+    ht_lep += tau.pt();
+  }
+  ht = ht_lep + ht_jets + met;
+
+  bool pass = false;
+  pass = ht > ht_min && (ht_max < 0 || ht < ht_max);
+  return pass;
+}
+
+PtLeadingJetSelection::PtLeadingJetSelection(double pt_min_, double pt_max_):pt_min(pt_min_), pt_max(pt_max_){}
+bool PtLeadingJetSelection::passes(const Event & event){
+
+  bool pass = true;
+  double pt_leadingjet = event.jets->at(0).pt();
+  pass = pt_leadingjet >= pt_min && (pt_leadingjet <= pt_max || pt_max < 0);
+  return pass;
+}
 
 // see https://twiki.cern.ch/twiki/bin/viewauth/CMS/BtagRecommendation53XReReco
 /*

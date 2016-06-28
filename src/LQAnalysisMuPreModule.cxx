@@ -46,7 +46,7 @@ public:
   virtual bool process(Event & event) override;
 
 private:
-  std::string channel_;
+  std::string channel_, region_;
     
   std::unique_ptr<JetCleaner> jetcleaner;
   std::unique_ptr<MuonIDKinematic> muonidkinematic;
@@ -56,11 +56,10 @@ private:
   std::unique_ptr<ElectronCleaner> electroncleaner;
   std::unique_ptr<ElectronCleaner> electroncleaner_iso;
   std::unique_ptr<JetLeptonCleaner> jetleptoncleaner;
-  std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger, SF_muonIso, tauenergy_module, taures_module;
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> onejet_sel, njet_sel, ntau_sel, nmuon_sel, nele_sel, nomuon_sel, lumi_sel, trigger_sel1, trigger_sel2, trigger_eledat, trigger_elemc, twojetcut;
+  std::unique_ptr<Selection> ntau_sel, nmuon_sel, nele_sel, nomuon_sel, lumi_sel, trigger_sel1, trigger_sel2, trigger_eledat, trigger_elemc, twojetcut, JetTauCleaner, metcut, stcut;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
   std::unique_ptr<Hists> h_lq_nocut, h_tau_nocut, h_mu_nocut, h_ele_nocut, h_jet_nocut, h_event_nocut, h_lumi_nocut;
@@ -68,26 +67,22 @@ private:
   std::unique_ptr<Hists> h_lq_cleaner, h_tau_cleaner, h_mu_cleaner, h_ele_cleaner, h_jet_cleaner, h_event_cleaner;
   std::unique_ptr<Hists> h_lq_MET50Only, h_tau_MET50Only, h_mu_MET50Only, h_ele_MET50Only, h_jet_MET50Only, h_event_MET50Only;
   std::unique_ptr<Hists> h_lq_MuonOnly, h_tau_MuonOnly, h_mu_MuonOnly, h_ele_MuonOnly, h_jet_MuonOnly, h_event_MuonOnly;
-  std::unique_ptr<Hists> h_lq_TauOnly, h_tau_TauOnly, h_mu_TauOnly, h_ele_TauOnly, h_jet_TauOnly, h_event_TauOnly;
   std::unique_ptr<Hists> h_lq_TwoJetsOnly, h_tau_TwoJetsOnly, h_mu_TwoJetsOnly, h_ele_TwoJetsOnly, h_jet_TwoJetsOnly, h_event_TwoJetsOnly;
   std::unique_ptr<Hists> h_lq_ST350Only, h_tau_ST350Only, h_mu_ST350Only, h_ele_ST350Only, h_jet_ST350Only, h_event_ST350Only;
   std::unique_ptr<Hists> h_lq_PreSel, h_tau_PreSel, h_mu_PreSel, h_ele_PreSel, h_jet_PreSel, h_event_PreSel, h_lumi_PreSel;
 
 
-  //std::unique_ptr<AnalysisModule> jetlepcleantest;
-  std::unique_ptr<CommonModules> common;
 
-  JetId jet_id;
+  std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger, SF_muonIso, tauenergy_module, taures_module;
+  std::unique_ptr<CommonModules> common;
+  // object ids and isolation
+  JetId jet_id, BTagMedium;
   PtEtaCut* pteta;
-  JetId BTagMedium;
-  MuonId MuIso;
-  ElectronId EleIso;
-  bool is_data, OS_sel, do_tauenergy_variation, do_taures_variation;
-  MuonId MuId;
-  ElectronId EleId;
+  MuonId MuIso, MuId;
+  ElectronId EleIso, EleId;
   TauId TauonId;
 
-
+  bool is_data, OS_sel, do_tauenergy_variation, do_taures_variation;
 
 
 };
@@ -97,13 +92,10 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   // In the constructor, the typical tasks are to create
   // other modules like cleaners (1), selections (2) and Hist classes (3).
   // But you can do more and e.g. access the configuration, as shown below.
-    
   cout << "Hello World from LQAnalysisMuPreModule!" << endl;
-    
   // If needed, access the configuration of the module here, e.g.:
   string testvalue = ctx.get("TestKey", "<not set>");
   cout << "TestKey in the configuration was: " << testvalue << endl;
-    
   // If running in SFrame, the keys "dataset_version", "dataset_type" and "dataset_lumi"
   // are set to the according values in the xml file. For CMSSW, these are
   // not set automatically, but can be set in the python config file.
@@ -115,7 +107,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   auto dataset_type = ctx.get("dataset_type");
   is_data = dataset_type == "DATA";
 
-  channel_ = ctx.get("channel", "muon");
+  channel_ = ctx.get("channel");
   if(channel_!="muon" && channel_!="electron")
     throw std::runtime_error("undefined argument for 'channel' (must be 'muon' or 'electron'): "+channel_);
 
@@ -129,7 +121,17 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
     EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5), Electron_MINIIso(0.15,"uncorrected"));
     MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
   }
-  TauonId = AndId<Tau>(/*TauIDDecayModeFinding()*/TauIDMedium(), PtEtaCut(20.0, 2.1));
+
+  //switch tauId depending on whether we're in the signal or control region
+  region_ = ctx.get("Region");
+  if(region_!="SR" && region_!="CR")
+    throw std::runtime_error("undefined argument for 'region' (must be 'SR' or 'CR'): "+channel_);
+  if(region_ == "SR"){
+    TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1));
+  }
+  if(region_ == "CR"){
+    TauonId = AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1));
+  }
   pteta = new PtEtaCut(30, 2.5);
   jet_id = *pteta;
   jetcleaner.reset(new JetCleaner(ctx, jet_id));
@@ -149,29 +151,30 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   //systematics modules
   tauenergy_module.reset(new TauEnergySmearing(ctx));
   taures_module.reset(new TauEnergyResolutionShifter(ctx));
-
   do_tauenergy_variation = (ctx.get("TauEnergyVariation") == "up" || ctx.get("TauEnergyVariation") == "down");
   do_taures_variation = (ctx.get("TauEnergyResolutionVariation") == "up" || ctx.get("TauEnergyResolutionVariation") == "down");
 
   // 2. set up selections:
-  onejet_sel.reset(new NJetSelection(1,-1));
-  njet_sel.reset(new NJetCut(2,-1,50,3.0));
   twojetcut.reset(new NJetSelection(2,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
   nmuon_sel.reset(new NMuonSelection(1,-1));
   nele_sel.reset(new NElectronSelection(1,-1));
   nomuon_sel.reset(new NMuonSelection(0,0));
   lumi_sel.reset(new LumiSelection(ctx));
-  trigger_sel1.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+  trigger_sel1.reset(new TriggerSelection("HLT_IsoMu20_v*"));
   trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu20_v*"));
   trigger_eledat.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
   trigger_elemc.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
+  JetTauCleaner.reset(new JetTauCleaning());
+  metcut.reset(new METCut(50,-1));
+  stcut.reset(new HtSelection(350,-1));
+  /*
   if(channel_ == "muon"){
     SF_muonID.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/MuonID_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1", 1, "tightID", "nominal"));
     SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root", "runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", "nominal"));
     SF_muonIso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1", 1, "iso", "nominal"));
   }
-
+  */
 
   // 3. Set up Hists classes:
   h_lq_nocut.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_NoCuts"));
@@ -210,13 +213,6 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   h_ele_MuonOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_MuonOnly"));
   h_jet_MuonOnly.reset(new JetHists(ctx, "LQPreMod_Jets_MuonOnly"));
   h_event_MuonOnly.reset(new EventHists(ctx, "LQPreMod_Events_MuonOnly"));
-
-  h_lq_TauOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_TauOnly"));
-  h_tau_TauOnly.reset(new TauHists(ctx, "LQPreMod_Taus_TauOnly"));
-  h_mu_TauOnly.reset(new MuonHists(ctx, "LQPreMod_Muons_TauOnly"));
-  h_ele_TauOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_TauOnly"));
-  h_jet_TauOnly.reset(new JetHists(ctx, "LQPreMod_Jets_TauOnly"));
-  h_event_TauOnly.reset(new EventHists(ctx, "LQPreMod_Events_TauOnly"));
 
   h_lq_TwoJetsOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_TwoJetsOnly"));
   h_tau_TwoJetsOnly.reset(new TauHists(ctx, "LQPreMod_Taus_TwoJetsOnly"));
@@ -282,7 +278,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //trigger sel + hists
   if(channel_ == "muon"){
     if(!(trigger_sel1->passes(event) || trigger_sel2->passes(event))) return false;
-    SF_muonTrigger->process(event);
+    //SF_muonTrigger->process(event);
   }
   if(channel_ == "electron"){
     if(is_data){
@@ -293,6 +289,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
     }
   }
 
+  // fill histos after trigger requirement
   h_lq_trigger->fill(event);
   h_tau_trigger->fill(event);
   h_mu_trigger->fill(event);
@@ -309,22 +306,12 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   bool pass_common = common->process(event);
   if(!pass_common) return false;
   if(channel_ == "muon"){
-    SF_muonID->process(event);
-    SF_muonIso->process(event);
+    //SF_muonID->process(event);
+    //SF_muonIso->process(event);
   }
 
-  for(unsigned int i=0; i<event.jets->size(); i++){
-    Jet jet = event.jets->at(i);
-    for(const auto & tau : *event.taus){
-      if(event.jets->size()>0){
-	if(deltaR(tau,jet)<0.4){
-	  event.jets->erase(event.jets->begin()+i);
-	  i--;
-	}
-      }
-    }
-  }
-
+  // remove jets from the jetlist if it overlaps with a tau lepton
+  if(!JetTauCleaner->passes(event)) return false;
   jetcleaner->process(event);
 
 
@@ -336,33 +323,8 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_cleaner->fill(event);
   h_event_cleaner->fill(event);
  
-  /*
-  for(const auto & tau : *event.taus){
-    if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5) return false;
-  }
-  */
 
-  // define met
-  auto met = event.met->pt();
-  // define ht and st
-  double ht = 0.0;
-  for(const auto & jet : *event.jets){
-    ht += jet.pt();
-  }
-  double ht_lep = 0.0;
-  for(const auto & electron : *event.electrons){
-    ht_lep += electron.pt();
-  }
-  for(const auto & muon : *event.muons){
-    ht_lep += muon.pt();
-  }
-  for(const auto & tau : *event.taus){
-    ht_lep += tau.pt();
-  }
-  double st=0.0;
-  st = ht + ht_lep + met;
-
-
+  // require at least one muon or at least one electron (in order to avoid overlap a veto against muons is applied in the electron channel)
   if(channel_ == "muon"){
     if(!nmuon_sel->passes(event)) return false;
   }
@@ -378,16 +340,15 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_MuonOnly->fill(event);
   h_event_MuonOnly->fill(event);
 
-  //  if(!njet_sel->passes(event)) return false;
+  /// require at least two jets
   if(!twojetcut->passes(event)) return false;
   const auto jets = event.jets;
-  if(jets->size() > 0){
+  if(jets->size() > 1){
     const auto & jet1 = (*jets)[0];
-    const auto & jet2 = (*jets)[0];
+    const auto & jet2 = (*jets)[1];
     if(jet1.pt()<50) return false;
-    if(jet2.pt()<50) return false;
+    if(jet2.pt()<40) return false;
   }
-
 
   h_lq_TwoJetsOnly->fill(event);
   h_tau_TwoJetsOnly->fill(event);
@@ -396,7 +357,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_TwoJetsOnly->fill(event);
   h_event_TwoJetsOnly->fill(event);
 
-  if(st<350) return false;
+  if(!stcut->passes(event)) return false;
   h_lq_ST350Only->fill(event);
   h_tau_ST350Only->fill(event);
   h_mu_ST350Only->fill(event);
@@ -404,7 +365,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_jet_ST350Only->fill(event);
   h_event_ST350Only->fill(event);
 
-  if(met<50) return false;
+  if(!metcut->passes(event)) return false;
   h_lq_MET50Only->fill(event);
   h_tau_MET50Only->fill(event);
   h_mu_MET50Only->fill(event);
@@ -413,54 +374,6 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_event_MET50Only->fill(event);
 
   if(!ntau_sel->passes(event)) return false;
-  h_lq_TauOnly->fill(event);
-  h_tau_TauOnly->fill(event);
-  h_mu_TauOnly->fill(event);
-  h_ele_TauOnly->fill(event);
-  h_jet_TauOnly->fill(event);
-  h_event_TauOnly->fill(event);
-  
-
-  // cut events with real taus
-  /*
-  if(!is_data){
-    for(unsigned int i =0; i<event.taus->size(); ++i){
-      Tau tau = event.taus->at(i);
-      for(auto genp : *event.genparticles){
-	double dR = deltaR(tau,genp);
-	if(dR<0.4 && abs(genp.pdgId())==15){
-	  return false;
-	}
-      }
-    }
-  }
-  */
-  // cut events with fake taus
-  /*  
-  if(!is_data){
-    double dR = 1000;
-    for(const auto & tau : *event.taus){
-      for(auto genp : *event.genparticles){
-	//if(abs(genp.pdgId())!=15) continue;
-	if(abs(genp.pdgId())==15){
-	  double tmp = deltaR(tau,genp);
-	  if(tmp<dR){
-	    dR = tmp;
-	  }
-	}
-      }
-    }
-    if(dR<0.4){
-    }
-    else{
-      return false;
-    }
-  }
-  */
-  
-
-
-
   // Preselection histos
   h_lq_PreSel->fill(event);
   h_tau_PreSel->fill(event);

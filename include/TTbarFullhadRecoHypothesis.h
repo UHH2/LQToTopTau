@@ -20,8 +20,16 @@ public:
   LorentzVector tophad2_v4() const{return m_tophad2_v4;} 
   std::vector<Particle> tophad1_jets() const{return m_tophad1_jets;}
   std::vector<Particle> tophad2_jets() const{return m_tophad2_jets;}
+
+  LorentzVector whad1_v4() const{return m_whad1_v4;} 
+
   LorentzVector LQ1_v4() const{return m_LQ1_v4;} 
   LorentzVector LQ2_v4() const{return m_LQ2_v4;} 
+  double chi2() const {return m_chi2;}
+  double tchi2() const {return m_tchi2;}
+  double wchi2() const {return m_wchi2;}
+  LorentzVector WJet1_v4() const {return m_WJet1_v4;}
+  LorentzVector WJet2_v4() const {return m_WJet2_v4;}
 
   /// get the discriminator value for this hypothesis; thows a runtime_error if it does not exist.
   float discriminator(const std::string & l) const {
@@ -39,12 +47,18 @@ public:
   
   void set_tophad1_v4(LorentzVector v4){m_tophad1_v4=v4;} 
   void set_tophad2_v4(LorentzVector v4){m_tophad2_v4=v4;} 
+  void set_whad1_v4(LorentzVector v4){m_whad1_v4=v4;} 
   void set_LQ1_v4(LorentzVector v4){m_LQ1_v4=v4;} 
   void set_LQ2_v4(LorentzVector v4){m_LQ2_v4=v4;} 
+  void set_WJet1_v4(LorentzVector v4){m_WJet1_v4=v4;} 
+  void set_WJet2_v4(LorentzVector v4){m_WJet2_v4=v4;} 
 
   void add_tophad1_jet(const Particle & j){m_tophad1_jets.push_back(j);}
   void add_tophad2_jet(const Particle & j){m_tophad2_jets.push_back(j);}
 
+  void set_chi2(double chi2) {m_chi2=chi2;}
+  void set_tchi2(double chi2) {m_tchi2=chi2;}
+  void set_wchi2(double chi2) {m_wchi2=chi2;}
 
   void set_discriminator(const std::string & label, float discr){
       m_discriminators[label] = discr;
@@ -53,8 +67,15 @@ public:
 private:
   LorentzVector m_tophad1_v4;
   LorentzVector m_tophad2_v4;
+  LorentzVector m_whad1_v4;
   LorentzVector m_LQ1_v4;
   LorentzVector m_LQ2_v4;
+  LorentzVector m_WJet1_v4={0,0,0,0};
+  LorentzVector m_WJet2_v4={0,0,0,0};
+
+  double m_chi2;
+  double m_tchi2;
+  double m_wchi2;
 
   std::vector<Particle> m_tophad1_jets;
   std::vector<Particle> m_tophad2_jets;

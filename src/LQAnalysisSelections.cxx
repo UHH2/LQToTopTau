@@ -95,10 +95,22 @@ JetTauCleaning::JetTauCleaning(){
 }
 bool JetTauCleaning::passes(const Event & event)
 {
+  /*
   for(unsigned int i=0; i<event.jets->size(); i++){
     Jet jet = event.jets->at(i);
     for(const auto & tau : *event.taus){
       if(event.jets->size()>0){
+	if(deltaR(tau,jet)<0.4){
+	  event.jets->erase(event.jets->begin()+i);
+	  i--;
+	}
+      }
+    }
+  }*/
+  for(const auto & tau : *event.taus){
+    for(unsigned int i=0; i<event.jets->size(); i++){
+      if(event.jets->size()>0){
+	Jet jet = event.jets->at(i);
 	if(deltaR(tau,jet)<0.4){
 	  event.jets->erase(event.jets->begin()+i);
 	  i--;
@@ -122,6 +134,7 @@ bool GetFakeTaus::passes(const Event & event)
       }
     }
   }
+  return true;
 }
 
 GetRealTaus::GetRealTaus(){
@@ -144,7 +157,26 @@ bool GetRealTaus::passes(const Event & event)
   else{
     return false;
   }
+  return true;
 }
+
+IsoNonIso::IsoNonIso(){
+}
+bool IsoNonIso::passes(const Event & event){
+  double N_iso = 0;
+  double N_noniso = 0;
+  for(const auto & tau : *event.taus){
+    if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()<1.5){
+      N_iso += 1;
+    }
+    if(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits()>=1.5){
+      N_noniso += 1;
+    }
+  }
+  if(N_iso>0 && N_noniso>0) return false;
+  return true;
+  }
+
 
 
 MbtauSelection::MbtauSelection(double minMbtau, double maxMbtau): minMbtau_(minMbtau),maxMbtau_(maxMbtau) {}
@@ -196,6 +228,18 @@ bool METCut::passes(const Event & event){
   double MET = event.met->pt();
   bool pass = false;
   pass = MET > min_met && (max_met < 0 || MET < max_met);
+  return pass;
+}
+
+MTCut::MTCut(double min_mt_, double max_mt_): min_mt(min_mt_), max_mt(max_mt_){}
+bool MTCut::passes(const Event & event){
+  double MT_muMET =0.;
+  for(const auto & muon : *event.muons){
+     MT_muMET = sqrt(2*muon.pt()*event.met->pt()* (1-cos(deltaPhi(*event.met,muon)) ));
+    break;
+  }
+  bool pass = false;
+  pass = MT_muMET > min_mt && (max_mt < 0 || MT_muMET < max_mt);
   return pass;
 }
 
@@ -264,6 +308,191 @@ ElectronIso::ElectronIso(double iso_):iso(iso_){}
 bool ElectronIso::operator()(const Electron & electron, const uhh2::Event &) const {
 if(electron.relIso()>iso) return false;
 return true;
+}
+
+LQMatch::LQMatch() {}    
+bool LQMatch::passes(const Event & event){
+  int n_ele = 0, n_mu = 0, n_tau = 0, sum = 0, n_j1=0, n_j2=0, n_j3=0, n_j4=0, n_j5=0, n_j6=0;
+  assert(event.genparticles);
+
+  for(const auto & gp : *event.genparticles){
+    if(gp.pdgId() == 6){ 
+      // now get W daughters:
+      auto topd1 = gp.daughter(event.genparticles, 1);
+      auto topd2 = gp.daughter(event.genparticles, 2);
+      auto wd1=gp.daughter(event.genparticles, 1);
+      auto wd2=gp.daughter(event.genparticles, 1);
+      if(abs(topd1->pdgId())==24){
+	wd1 = topd1->daughter(event.genparticles, 1);
+	wd2 = topd1->daughter(event.genparticles, 2);
+      }
+      if(abs(topd2->pdgId())==24){
+	wd1 = topd2->daughter(event.genparticles, 1);
+	wd2 = topd2->daughter(event.genparticles, 2);
+      }
+      if(abs(wd1->pdgId())==11 || abs(wd2->pdgId())==11) n_ele++;
+      if(abs(wd1->pdgId())==13 || abs(wd2->pdgId())==13) n_mu++;
+      if(abs(wd1->pdgId())==15 || abs(wd2->pdgId())==15) n_tau++;
+      for(unsigned int i =0; i<event.jets->size(); ++i){
+	Jet jet = event.jets->at(i);
+	double dR1 = deltaR(jet,*topd2);
+	double dR2 = deltaR(jet,*wd1);
+	double dR3 = deltaR(jet,*wd2);
+	if(dR1<0.4 && abs(topd2->pdgId())<7) n_j1++;
+	if(dR2<0.4 && abs(wd1->pdgId())<7) n_j2++;
+	if(dR3<0.4 && abs(wd2->pdgId())<7) n_j3++;
+      }
+    }
+    if(gp.pdgId() == -6){ 
+      // now get W daughters:
+      auto topd1 = gp.daughter(event.genparticles, 1);
+      auto topd2 = gp.daughter(event.genparticles, 2);
+      auto wd1=gp.daughter(event.genparticles, 1);
+      auto wd2=gp.daughter(event.genparticles, 1);
+      if(abs(topd1->pdgId())==24){
+	wd1 = topd1->daughter(event.genparticles, 1);
+	wd2 = topd1->daughter(event.genparticles, 2);
+      }
+      if(abs(topd2->pdgId())==24){
+	wd1 = topd2->daughter(event.genparticles, 1);
+	wd2 = topd2->daughter(event.genparticles, 2);
+      }
+      if(abs(wd1->pdgId())==11 || abs(wd2->pdgId())==11) n_ele++;
+      if(abs(wd1->pdgId())==13 || abs(wd2->pdgId())==13) n_mu++;
+      if(abs(wd1->pdgId())==15 || abs(wd2->pdgId())==15) n_tau++;
+      for(unsigned int i =0; i<event.jets->size(); ++i){
+	Jet jet = event.jets->at(i);
+	double dR1 = deltaR(jet,*topd2);
+	double dR2 = deltaR(jet,*wd1);
+	double dR3 = deltaR(jet,*wd2);
+	if(dR1<0.4 && abs(topd2->pdgId())<7) n_j4++;
+	if(dR2<0.4 && abs(wd1->pdgId())<7) n_j5++;
+	if(dR3<0.4 && abs(wd2->pdgId())<7) n_j6++;
+      }
+    }
+  }
+
+  sum = n_ele + n_mu + n_tau;
+  if(sum>1) return false;
+  if(! ((n_j1>0 && n_j2>0 && n_j3>0) || (n_j4>0 && n_j5>0 && n_j6>0)) ) return false;
+
+  /*
+  LorentzVector bv4;
+  LorentzVector q1v4;
+  LorentzVector q2v4;
+  float drminb=99, drminq1=99, drminq2=99;
+  int n1=0, n2=0;
+
+  if(n_j1>0 && n_j2>0 && n_j3>0){
+    for(const auto & gp : *event.genparticles){
+      if(gp.pdgId() == 6){ 
+	// now get W daughters:
+	auto topd1 = gp.daughter(event.genparticles, 1);
+	auto topd2 = gp.daughter(event.genparticles, 2);
+	auto wd1=gp.daughter(event.genparticles, 1);
+	auto wd2=gp.daughter(event.genparticles, 1);
+	if(abs(topd1->pdgId())==24){
+	  wd1 = topd1->daughter(event.genparticles, 1);
+	  wd2 = topd1->daughter(event.genparticles, 2);
+	}
+	if(abs(topd2->pdgId())==24){
+	  wd1 = topd2->daughter(event.genparticles, 1);
+	  wd2 = topd2->daughter(event.genparticles, 2);
+	}
+	if(abs(wd1->pdgId())==11 || abs(wd2->pdgId())==11) n1++;
+	if(abs(wd1->pdgId())==13 || abs(wd2->pdgId())==13) n1++;
+	if(abs(wd1->pdgId())==15 || abs(wd2->pdgId())==15) n1++;
+	if(n1==0){
+	  for(unsigned int i =0; i<event.jets->size(); ++i){
+	    Jet jet = event.jets->at(i);
+	    double dR1 = deltaR(jet,*topd2);
+	    double dR2 = deltaR(jet,*wd1);
+	    double dR3 = deltaR(jet,*wd2);
+	    if(dR1<0.4 && abs(topd2->pdgId())<7 && dR1<drminb){
+	      bv4=jet.v4();
+	      drminb=dR1;
+	    }
+	    if(dR2<0.4 && abs(wd1->pdgId())<7 && dR2<drminq1){
+	      q1v4=jet.v4();
+	      drminq1=dR2;
+	    }
+	    if(dR3<0.4 && abs(wd2->pdgId())<7 && dR3<drminq2){
+	      q2v4=jet.v4();
+	      drminq2=dR3;
+	    }
+	  }
+	}
+      }
+    }
+    cout << "1" << endl;
+    if(bv4==q1v4 && bv4!=q2v4) cout << "matchable mass: " <<  (bv4+q2v4).M() << endl;
+    cout << "2" << endl;
+    if(bv4==q2v4 && bv4!=q1v4) cout << "matchable mass: " <<  (bv4+q1v4).M() << endl;
+    cout << "3" << endl;
+    if(bv4==q1v4 && bv4==q2v4) cout << "matchable mass: " <<  bv4.M() << endl;
+    cout << "4" << endl;
+    if(bv4!=q1v4 && bv4!=q2v4 && q1v4!=q2v4){ cout << "matchable mass: " << (bv4+q1v4+q2v4).M() << endl;}
+  }
+
+  drminb=99;
+  drminq1=99;
+  drminq2=99;
+  LorentzVector abv4;
+  LorentzVector aq1v4;
+  LorentzVector aq2v4;
+  if(n_j4>0 && n_j5>0 && n_j6>0){
+    for(const auto & gp : *event.genparticles){
+      if(gp.pdgId() == 6){ 
+	// now get W daughters:
+	auto topd1 = gp.daughter(event.genparticles, 1);
+	auto topd2 = gp.daughter(event.genparticles, 2);
+	auto wd1=gp.daughter(event.genparticles, 1);
+	auto wd2=gp.daughter(event.genparticles, 1);
+	if(abs(topd1->pdgId())==24){
+	  wd1 = topd1->daughter(event.genparticles, 1);
+	  wd2 = topd1->daughter(event.genparticles, 2);
+	}
+	if(abs(topd2->pdgId())==24){
+	  wd1 = topd2->daughter(event.genparticles, 1);
+	  wd2 = topd2->daughter(event.genparticles, 2);
+	}
+	if(abs(wd1->pdgId())==11 || abs(wd2->pdgId())==11) n2++;
+	if(abs(wd1->pdgId())==13 || abs(wd2->pdgId())==13) n2++;
+	if(abs(wd1->pdgId())==15 || abs(wd2->pdgId())==15) n2++;
+	if(n2==0){
+	  for(unsigned int i =0; i<event.jets->size(); ++i){
+	    Jet jet = event.jets->at(i);
+	    double dR1 = deltaR(jet,*topd2);
+	    double dR2 = deltaR(jet,*wd1);
+	    double dR3 = deltaR(jet,*wd2);
+	    if(dR1<0.4 && abs(topd2->pdgId())<7 && dR1<drminb){
+	      abv4=jet.v4();
+	      drminb=dR1;
+	    }
+	    if(dR2<0.4 && abs(wd1->pdgId())<7 && dR2<drminq1){
+	      aq1v4=jet.v4();
+	      drminq1=dR2;
+	    }
+	    if(dR3<0.4 && abs(wd2->pdgId())<7 && dR3<drminq2){
+	      aq2v4=jet.v4();
+	      drminq2=dR3;
+	    }
+	  }
+	}
+      }
+    }
+    cout << "5" << endl;
+    if(abv4==aq1v4 && abv4!=aq2v4) cout << "matchable mass: " <<  (abv4+aq2v4).M() << endl;
+    cout << "6" << endl;
+    if(abv4==aq2v4 && abv4!=aq1v4) cout << "matchable mass: " <<  (abv4+aq1v4).M() << endl;
+    cout << "7" << endl;
+    if(abv4==aq1v4 && abv4==aq2v4) cout << "matchable mass: " <<  abv4.M() << endl;
+    cout << "8" << endl;
+    if(abv4!=aq1v4 && abv4!=aq2v4 && aq1v4!=aq2v4){ cout << "matchable mass: " << (abv4+aq1v4+aq2v4).M() << endl;}
+  }
+  */
+
+  return true;
 }
 
 

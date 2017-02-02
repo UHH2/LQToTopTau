@@ -50,11 +50,7 @@ private:
     
   std::unique_ptr<JetCleaner> jetcleaner;
   std::unique_ptr<MuonIDKinematic> muonidkinematic;
-  std::unique_ptr<MuonCleaner> muoncleaner;
-  std::unique_ptr<MuonCleaner> muoncleaner_iso;
   std::unique_ptr<TauCleaner> taucleaner;
-  std::unique_ptr<ElectronCleaner> electroncleaner;
-  std::unique_ptr<ElectronCleaner> electroncleaner_iso;
   std::unique_ptr<JetLeptonCleaner> jetleptoncleaner;
   
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
@@ -66,7 +62,7 @@ private:
   std::unique_ptr<Hists> h_lq_trigger, h_tau_trigger, h_mu_trigger, h_ele_trigger, h_jet_trigger, h_event_trigger, h_lumi_trigger;
   std::unique_ptr<Hists> h_lq_cleaner, h_tau_cleaner, h_mu_cleaner, h_ele_cleaner, h_jet_cleaner, h_event_cleaner;
   std::unique_ptr<Hists> h_lq_MET50Only, h_tau_MET50Only, h_mu_MET50Only, h_ele_MET50Only, h_jet_MET50Only, h_event_MET50Only;
-  std::unique_ptr<Hists> h_lq_MuonOnly, h_tau_MuonOnly, h_mu_MuonOnly, h_ele_MuonOnly, h_jet_MuonOnly, h_event_MuonOnly;
+  std::unique_ptr<Hists> h_lq_MuonOnly, h_tau_MuonOnly, h_mu_MuonOnly, h_ele_MuonOnly, h_jet_MuonOnly, h_event_MuonOnly, h_lumi_MuonOnly;
   std::unique_ptr<Hists> h_lq_TwoJetsOnly, h_tau_TwoJetsOnly, h_mu_TwoJetsOnly, h_ele_TwoJetsOnly, h_jet_TwoJetsOnly, h_event_TwoJetsOnly;
   std::unique_ptr<Hists> h_lq_ST350Only, h_tau_ST350Only, h_mu_ST350Only, h_ele_ST350Only, h_jet_ST350Only, h_event_ST350Only;
   std::unique_ptr<Hists> h_lq_PreSel, h_tau_PreSel, h_mu_PreSel, h_ele_PreSel, h_jet_PreSel, h_event_PreSel, h_lumi_PreSel;
@@ -76,7 +72,7 @@ private:
   std::unique_ptr<AnalysisModule> SF_muonID, SF_muonTrigger, SF_muonIso, tauenergy_module, taures_module;
   std::unique_ptr<CommonModules> common;
   // object ids and isolation
-  JetId jet_id, BTagMedium;
+  JetId jet_id;
   PtEtaCut* pteta;
   MuonId MuIso, MuId;
   ElectronId EleIso, EleId;
@@ -114,28 +110,30 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
  
   // 1. setup other modules.
   if(channel_ == "muon"){
-    EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
+    EleId = AndId<Electron>(ElectronID_Spring16_medium, PtEtaCut(30.0, 2.5));
     MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
   }
   else if(channel_ == "electron"){
-    EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5), Electron_MINIIso(0.15,"uncorrected"));
+    EleId = AndId<Electron>(ElectronID_Spring16_medium, PtEtaCut(35.0, 2.1), Electron_MINIIso(0.15,"uncorrected"));
     MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.4),MuonIso(0.15));
   }
 
   //switch tauId depending on whether we're in the signal or control region
   region_ = ctx.get("Region");
-  if(region_!="SR" && region_!="CR")
-    throw std::runtime_error("undefined argument for 'region' (must be 'SR' or 'CR'): "+channel_);
+  if(region_!="SR" && region_!="CR" && region_!="CRtwotau")
+    throw std::runtime_error("undefined argument for 'region' (must be 'SR' or 'CR'): "+region_);
   if(region_ == "SR"){
     TauonId = AndId<Tau>(TauIDMedium(), PtEtaCut(20.0, 2.1));
   }
   if(region_ == "CR"){
-    TauonId = AndId<Tau>(TauIDDecayModeFinding(), PtEtaCut(20.0, 2.1));
+    TauonId = AndId<Tau>(TauIDMediumInverted(), PtEtaCut(20.0, 2.1));
+  }
+  if(region_ == "CRtwotau"){
+    TauonId = AndId<Tau>(TauIDMediumNoIso(), PtEtaCut(20.0, 2.1));
   }
   pteta = new PtEtaCut(30, 2.5);
   jet_id = *pteta;
   jetcleaner.reset(new JetCleaner(ctx, jet_id));
-  BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   common.reset(new CommonModules());
   //common->disable_mcpileupreweight();
   //common->disable_metfilters();
@@ -147,7 +145,6 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   common->set_muon_id(MuId);
   common->set_tau_id(TauonId);
   common->init(ctx);
-
   //systematics modules
   tauenergy_module.reset(new TauEnergySmearing(ctx));
   taures_module.reset(new TauEnergyResolutionShifter(ctx));
@@ -161,12 +158,12 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   nele_sel.reset(new NElectronSelection(1,-1));
   nomuon_sel.reset(new NMuonSelection(0,0));
   lumi_sel.reset(new LumiSelection(ctx));
-  trigger_sel1.reset(new TriggerSelection("HLT_IsoMu20_v*"));
-  trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu20_v*"));
-  trigger_eledat.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
+  trigger_sel1.reset(new TriggerSelection("HLT_IsoMu27_v*"));
+  trigger_sel2.reset(new TriggerSelection("HLT_IsoTkMu27_v*"));
+  trigger_eledat.reset(new TriggerSelection("HLT_Ele27_eta2p1_WPLoose_Gsf_v*"));
   trigger_elemc.reset(new TriggerSelection("HLT_Ele23_WPLoose_Gsf_v*"));
   JetTauCleaner.reset(new JetTauCleaning());
-  metcut.reset(new METCut(50,-1));
+  metcut.reset(new METCut(40,-1));
   stcut.reset(new HtSelection(350,-1));
   /*
   if(channel_ == "muon"){
@@ -213,6 +210,7 @@ LQAnalysisMuPreModule::LQAnalysisMuPreModule(Context & ctx){
   h_ele_MuonOnly.reset(new ElectronHists(ctx, "LQPreMod_Electrons_MuonOnly"));
   h_jet_MuonOnly.reset(new JetHists(ctx, "LQPreMod_Jets_MuonOnly"));
   h_event_MuonOnly.reset(new EventHists(ctx, "LQPreMod_Events_MuonOnly"));
+  h_lumi_MuonOnly.reset(new LuminosityHists(ctx, "LQPreMod_Lumi_MuonOnly"));
 
   h_lq_TwoJetsOnly.reset(new LQAnalysisPreHists(ctx, "LQPreMod_LQ_TwoJetsOnly"));
   h_tau_TwoJetsOnly.reset(new TauHists(ctx, "LQPreMod_Taus_TwoJetsOnly"));
@@ -253,11 +251,10 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   // is thrown away.
 
   //cout << "LQAnalysisModule: Starting to process event (runid, eventid) = (" << event.run << ", " << event.event << "); weight = " << event.weight << endl;
-      
+
   if(is_data){
     if(!lumi_sel->passes(event)) return false;
   }
-
   // fill hists before all selection cuts 
   h_lq_nocut->fill(event);
   h_tau_nocut->fill(event);
@@ -278,6 +275,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   //trigger sel + hists
   if(channel_ == "muon"){
     if(!(trigger_sel1->passes(event) || trigger_sel2->passes(event))) return false;
+    //if(!trigger_sel2->passes(event)) return false;
     //SF_muonTrigger->process(event);
   }
   if(channel_ == "electron"){
@@ -285,7 +283,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
       if(!trigger_eledat->passes(event)) return false;
     }
     if(!is_data){
-      if(!trigger_elemc->passes(event)) return false;
+      //if(!trigger_elemc->passes(event)) return false;
     }
   }
 
@@ -339,6 +337,7 @@ bool LQAnalysisMuPreModule::process(Event & event) {
   h_ele_MuonOnly->fill(event);
   h_jet_MuonOnly->fill(event);
   h_event_MuonOnly->fill(event);
+  h_lumi_MuonOnly->fill(event);
 
   /// require at least two jets
   if(!twojetcut->passes(event)) return false;

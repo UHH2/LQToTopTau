@@ -24,7 +24,7 @@ public:
  protected:
     uhh2::Event::Handle<std::vector<TTbarFullhadRecoHypothesis>> h_hyps;
     uhh2::Event::Handle<std::vector<TTbarFullhadRecoHypothesis>> h_hadr_hyps;
-
+    uhh2::Event::Handle<TTbarGen> h_ttbargen;
 
     virtual ~LQAnalysisHists();
 };

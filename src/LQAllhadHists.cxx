@@ -50,6 +50,9 @@ LQAllhadHists::LQAllhadHists(Context & ctx, const string & dirname): Hists(ctx, 
   book <TH1F>("deltaETAmettau1", "DeltaR #tau1, MET", 100, 0, 5);
   book <TH1F>("deltaETAmettau2", "DeltaR #tau2, MET", 100, 0, 5);
 
+  book <TH1F>("tausign", "DiTau, 0: SS, 1: OS", 2,0,2);
+  book <TH1F>("dR_tautau", "deltaR(tau1,tau2)", 100,0,5);
+  book <TH1F>("m_tautau", "M(tau1,tau2)", 100, 0, 500);
 
 
   h_hadr_hyps = ctx.get_handle<std::vector<TTbarFullhadRecoHypothesis>>("HighMassHadronicTTbarFullhadReco");
@@ -128,6 +131,18 @@ void LQAllhadHists::fill(const Event & event){
   hist("M_LQ1")->Fill(M1_LQ,weight);
   hist("M_LQ2")->Fill(M2_LQ,weight);
   */
+
+
+  if(event.taus->size() > 1){
+    const auto & tau1 = (*event.taus)[0];
+    const auto & tau2 = (*event.taus)[1];
+    hist("dR_tautau")->Fill(deltaR(tau1,tau2), weight);
+    if(tau1.charge()==tau2.charge()){
+      hist("tausign")->Fill(0.5, weight);
+    }
+    else{ hist("tausign")->Fill(1.5, weight);}
+    hist("m_tautau")->Fill((tau1.v4()+tau2.v4()).M(),weight);
+  }
 
 
 

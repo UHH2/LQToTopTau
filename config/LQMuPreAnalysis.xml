@@ -1,67 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd"[
-<!ENTITY LQtoTTau200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M200.xml">
-<!ENTITY LQtoTTau300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M300.xml">
-<!ENTITY LQtoTTau400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M400.xml">
-<!ENTITY LQtoTTau500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M500.xml">
-<!ENTITY LQtoTTau600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M600.xml">
-<!ENTITY LQtoTTau700 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M700.xml">
-<!ENTITY LQtoTTau800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M800.xml">
-<!ENTITY LQtoTTau900 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M900.xml">
-<!ENTITY LQtoTTau1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M1000.xml">
-<!ENTITY LQtoTTau1200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M1200.xml">
-<!ENTITY LQtoTTau1400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M1400.xml">
-<!ENTITY LQtoTTau1700 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M1700.xml">
-<!ENTITY LQtoTTau2000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/LQAnalysis/config/MC_LQtoTTau_M2000.xml">
-<!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_TTbar.xml">
-<!ENTITY WJets SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJetsToLNu.xml">
-<!ENTITY WJets_HT100to200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT100To200.xml">
-<!ENTITY WJets_HT200to400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT200To400.xml">
-<!ENTITY WJets_HT400to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT400To600.xml">
-<!ENTITY WJets_HT600to800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT600To800.xml">
-<!ENTITY WJets_HT800to1200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT800To1200.xml">
-<!ENTITY WJets_HT1200to2500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT1200To2500.xml">
-<!ENTITY WJets_HT2500toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WJets_LNu_HT2500ToInf.xml">
-<!ENTITY DYJets10to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_NLO_M10to50.xml">
-<!ENTITY DYJets50toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_NLO_M50.xml">
-<!ENTITY DYJets_HT100to200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_LO_M50_HT0100to0200.xml">
-<!ENTITY DYJets_HT200to400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_LO_M50_HT0200to0400.xml">
-<!ENTITY DYJets_HT400to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_LO_M50_HT0400to0600.xml">
-<!ENTITY DYJets_HT600toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_DYJetsToLL_LO_M50_HT0600toINFT.xml">
-<!ENTITY SingleTop_TTbar_sch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_ST_s-channel-4f.xml">
-<!ENTITY SingleTop_TTbar_tch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_ST_t-channel_4f.xml">
-<!ENTITY SingleTop_T_tWch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_STpos_tW_inc.xml">
-<!ENTITY SingleTop_Tbar_tWch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_STneg_tW_inc.xml">
-<!ENTITY QCDPT15to20 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-15to20_MuEnrichedPt5.xml">
-<!ENTITY QCDPT20to30 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-20to30_MuEnrichedPt5.xml">
-<!ENTITY QCDPT30to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-30to50_MuEnrichedPt5.xml">
-<!ENTITY QCDPT50to80 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-50to80_MuEnrichedPt5.xml">
-<!ENTITY QCDPT80to120 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-80to120_MuEnrichedPt5.xml">
-<!ENTITY QCDPT120to170 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-120to170_MuEnrichedPt5.xml">
-<!ENTITY QCDPT170to300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-170to300_MuEnrichedPt5.xml">
-<!ENTITY QCDPT300to470 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-300to470_MuEnrichedPt5.xml">
-<!ENTITY QCDPT470to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-470to600_MuEnrichedPt5.xml">
-<!ENTITY QCDPT600to800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-600to800_MuEnrichedPt5.xml">
-<!ENTITY QCDPT800to1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-800to1000_MuEnrichedPt5.xml">
-<!ENTITY QCDPT1000toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/QCD_Pt-1000toInf_MuEnrichedPt5.xml">
-<!ENTITY QCDEMPT15to20 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt15to20_EMEnriched.xml">
-<!ENTITY QCDEMPT20to30 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt20to30_EMEnriched.xml">
-<!ENTITY QCDEMPT30to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt30to50_EMEnriched.xml">
-<!ENTITY QCDEMPT50to80 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt50to80_EMEnriched.xml">
-<!ENTITY QCDEMPT80to120 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt80to120_EMEnriched.xml">
-<!ENTITY QCDEMPT120to170 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt120to170_EMEnriched.xml">
-<!ENTITY QCDEMPT170to300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt170to300_EMEnriched.xml">
-<!ENTITY QCDEMPT300toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_QCD_Pt300toInf_EMEnriched.xml">
-<!ENTITY DibosonWW SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WW.xml">
-<!ENTITY DibosonWZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_WZ.xml">
-<!ENTITY DibosonZZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/MC_ZZ.xml">
-<!ENTITY DATA SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/SingleMuon_Run2016B.xml">
-<!ENTITY DATA2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/SingleMuon_Run2015D-16Dec2015-v1.xml">
-<!ENTITY DATAELE1 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/DATA_SingleELE_Run2015C_16Dec2015.xml">
-<!ENTITY DATAELE2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/datasets/RunII_80X_v1/DATA_SingleELE_Run2015D_16Dec2015.xml">
+<!ENTITY LQtoTTau200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M200.xml">
+<!ENTITY LQtoTTau300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M300.xml">
+<!ENTITY LQtoTTau400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M400.xml">
+<!ENTITY LQtoTTau500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M500.xml">
+<!ENTITY LQtoTTau600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M600.xml">
+<!ENTITY LQtoTTau700 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M700.xml">
+<!ENTITY LQtoTTau800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M800.xml">
+<!ENTITY LQtoTTau900 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M900.xml">
+<!ENTITY LQtoTTau1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M1000.xml">
+<!ENTITY LQtoTTau1200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M1200.xml">
+<!ENTITY LQtoTTau1400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M1400.xml">
+<!ENTITY LQtoTTau1700 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M1700.xml">
+<!ENTITY LQtoTTau2000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_LQtoTTau_M2000.xml">
+<!ENTITY TTbar SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_TTbar.xml">
+<!ENTITY TTbar_newTune SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/LQAnalysis/config/MC_TTbar_TuneCUETP8M2T4.xml">
+<!ENTITY TTbarEXT SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_TTbar_ext.xml">
+<!ENTITY WJets SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu.xml">
+<!ENTITY WJets_HT100to200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJets_LNu_HT-100To200.xml">
+<!ENTITY WJets_HT200to400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu_HT-200To400.xml">
+<!ENTITY WJets_HT400to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu_HT-400To600.xml">
+<!ENTITY WJets_HT600to800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJets_LNu_HT-600To800.xml">
+<!ENTITY WJets_HT800to1200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu_HT-800To1200.xml">
+<!ENTITY WJets_HT1200to2500 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu_HT-1200To2500.xml">
+<!ENTITY WJets_HT2500toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WJetsToLNu_HT-2500ToInf.xml">
+<!ENTITY DYJets10to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_DYJetsToLL_NLO_M10to50.xml">
+<!ENTITY DYJets50toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_DYJetsToLL_NLO_M50.xml">
+<!ENTITY DYJets_HT100to200 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DYJetsToLL_M-50_HT-100to200.xml">
+<!ENTITY DYJets_HT200to400 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DYJetsToLL_M-50_HT-200to400.xml">
+<!ENTITY DYJets_HT400to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DYJetsToLL_M-50_HT-400to600.xml">
+<!ENTITY DYJets_HT600toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DYJetsToLL_M-50_HT-600toInf.xml">
+<!ENTITY SingleTop_sch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_ST_s-channel_4f_leptonDecays.xml">
+<!ENTITY SingleTop_top_tch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_ST_t-channel_4f_leptonDecays.xml">
+<!ENTITY SingleTop_antitop_tch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_ST_t-channel_top_4f_leptonDecays.xml">
+<!ENTITY SingleTop_top_tWch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_STpos_tW_inc.xml">
+<!ENTITY SingleTop_antitop_tWch SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_STneg_tW_inc.xml">
+<!ENTITY QCDPT15to20 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD15to20_MuEnrichedPt5.xml">
+<!ENTITY QCDPT20to30 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD20to30_MuEnrichedPt5.xml">
+<!ENTITY QCDPT30to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD30to50_MuEnrichedPt5.xml">
+<!ENTITY QCDPT50to80 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD50to80_MuEnrichedPt5.xml">
+<!ENTITY QCDPT80to120 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD80to120_MuEnrichedPt5.xml">
+<!ENTITY QCDPT120to170 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD120to170_MuEnrichedPt5.xml">
+<!ENTITY QCDPT170to300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD170to300_MuEnrichedPt5.xml">
+<!ENTITY QCDPT300to470 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD300to470_MuEnrichedPt5.xml">
+<!ENTITY QCDPT470to600 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD470to600_MuEnrichedPt5.xml">
+<!ENTITY QCDPT600to800 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD600to800_MuEnrichedPt5.xml">
+<!ENTITY QCDPT800to1000 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD800to1000_MuEnrichedPt5.xml">
+<!ENTITY QCDPT1000toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD1000toInf_MuEnrichedPt5.xml">
+<!ENTITY QCDbcToE30to80 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt30to80_bcToE.xml">
+<!ENTITY QCDbcToE80to170 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt80to170_bcToE.xml">
+<!ENTITY QCDbcToE170to250 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt170to250_bcToE.xml">
+<!ENTITY QCDbcToE250toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt_250toInf_bcToE.xml">
+<!ENTITY QCDEMPT15to20 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-15to20_EMEnriched.xml">
+<!ENTITY QCDEMPT20to30 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-20to30_EMEnriched.xml">
+<!ENTITY QCDEMPT30to50 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-30to50_EMEnriched.xml">
+<!ENTITY QCDEMPT50to80 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-50to80_EMEnriched.xml">
+<!ENTITY QCDEMPT80to120 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-80to120_EMEnriched.xml">
+<!ENTITY QCDEMPT120to170 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-120to170_EMEnriched.xml">
+<!ENTITY QCDEMPT170to300 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-170to300_EMEnriched.xml">
+<!ENTITY QCDEMPT300toInf SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_QCD_Pt-300toInf_EMEnriched.xml">
+<!ENTITY DibosonWW SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WW.xml">
+<!ENTITY DibosonWZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_WZ.xml">
+<!ENTITY DibosonZZ SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/MC_ZZ.xml">
+<!ENTITY DATA_B SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016B.xml">
+<!ENTITY DATA_C SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016C.xml">
+<!ENTITY DATA_D SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016D.xml">
+<!ENTITY DATA_E SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016E.xml">
+<!ENTITY DATA_F SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016F.xml">
+<!ENTITY DATA_G SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleMuon_Run2016G.xml">
+<!ENTITY DATAEle_B SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016B.xml">
+<!ENTITY DATAEle_C SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016C.xml">
+<!ENTITY DATAEle_D SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016D.xml">
+<!ENTITY DATAEle_E SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016E.xml">
+<!ENTITY DATAEle_F SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016F.xml">
+<!ENTITY DATAEle_G SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016G.xml">
+<!ENTITY DATAEle_H SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/datasets/RunII_80X_v2/DATA_SingleElectron_Run2016H.xml">
 <!--
-<!ENTITY DATA1 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu.xml">
-<!ENTITY DATA2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v1/DATA_SingleMu_Run254833.xml">
+<!ENTITY DATA1 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v2/DATA_SingleMu.xml">
+<!ENTITY DATA2 SYSTEM "/nfs/dust/cms/user/mstoev/CMSSW_7_4_9/src/UHH2/common/datasets/RunII_25ns_v2/DATA_SingleMu_Run254833.xml">
 -->
 ]>
 
@@ -75,23 +91,91 @@
   <Library Name="libSUHH2LQAnalysis"/>
   <Package Name="SUHH2LQAnalysis.par" />
 
-  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/MuPreSel_80X/" PostFix="" TargetLumi="2071" > 
-<!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="12" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/MuPreSel_80X/" PostFix="" TargetLumi="3996,5" >  -->
+  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreInclusive_80X_v2/" PostFix="" TargetLumi="27200" > 
+<!--  <Cycle Name="uhh2::AnalysisModuleRunner"  RunMode="PROOF" ProofServer="lite://"  ProofWorkDir="/nfs/dust/cms/user/mstoev/PROOF/" ProofNodes="20" OutputDirectory="/nfs/dust/cms/user/mstoev/sFrame_new/LQAnalysis/Run2/PreTTbarSideBand_80X_v2/" PostFix="" TargetLumi="27200" > -->
     
 <!--
-    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA" Cacheable="False">
-      &DATA;
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_B" Cacheable="False">
+      &DATAEle_B;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_C" Cacheable="False">
+      &DATAEle_C;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_D" Cacheable="False">
+      &DATAEle_D;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_E" Cacheable="False">
+      &DATAEle_E;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_F" Cacheable="False">
+      &DATAEle_F;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_G" Cacheable="False">
+      &DATAEle_G;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
 -->
 <!--
-    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA2" Cacheable="False">
-      &DATA2;
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_H" Cacheable="False">
+      &DATAEle_H;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+-->
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_B" Cacheable="False">
+      &DATA_B;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
--->
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_C" Cacheable="False">
+      &DATA_C;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_D" Cacheable="False">
+      &DATA_D;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_E" Cacheable="False">
+      &DATA_E;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_F" Cacheable="False">
+      &DATA_F;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA_G" Cacheable="False">
+      &DATA_G;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
 
 
     <InputData Lumi="1209.67" NEventsMax="-1" Type="MC" Version="LQtoTTau200" Cacheable="False">
@@ -118,7 +202,7 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>  
     
-    <InputData Lumi="413165.68" NEventsMax="-1" Type="MC" Version="LQtoTTau600" Cacheable="False">
+    <InputData Lumi="428313.61" NEventsMax="-1" Type="MC" Version="LQtoTTau600" Cacheable="False">
       &LQtoTTau600;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
@@ -150,7 +234,7 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>  
     
-    <InputData Lumi="48460000" NEventsMax="-1" Type="MC" Version="LQtoTTau1200" Cacheable="False">
+    <InputData Lumi="49692000" NEventsMax="-1" Type="MC" Version="LQtoTTau1200" Cacheable="False">
       &LQtoTTau1200;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
@@ -176,127 +260,303 @@
     </InputData> 
 
 
-<!--
-    <InputData Lumi="40113.6" NEventsMax="-1" Type="MC" Version="TTbar" Cacheable="False">
+
+    <InputData Lumi="111722.0424" NEventsMax="-1" Type="MC" Version="TTbar_old" Cacheable="False">
       &TTbar;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
--->
 
-<!--
-    <InputData Lumi="14645.70" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="False">
+
+    <InputData Lumi="84623.92878" NEventsMax="-1" Type="MC" Version="TTbar" Cacheable="False">
+      &TTbar_newTune;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+
+
+    <InputData Lumi="61621.747" NEventsMax="-1" Type="MC" Version="DYJetsHT100to200" Cacheable="False">
       &DYJets_HT100to200;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
 
-    <InputData Lumi="19084.47" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="False">
+    <InputData Lumi="190968.19" NEventsMax="-1" Type="MC" Version="DYJetsHT200to400" Cacheable="False">
       &DYJets_HT200to400;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="153065.9" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="False">
+    <InputData Lumi="1344187.522" NEventsMax="-1" Type="MC" Version="DYJetsHT400to600" Cacheable="False">
       &DYJets_HT400to600;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="381390.0" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="False">
+    <InputData Lumi="1905062.991" NEventsMax="-1" Type="MC" Version="DYJetsHT600toInf" Cacheable="False">
       &DYJets_HT600toInf;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
--->
-<!--
-    <InputData Lumi="18140.0" NEventsMax="-1" Type="MC" Version="WJetsHT100to200" Cacheable="False">
+
+
+
+
+    <InputData Lumi="23213.55863" NEventsMax="-1" Type="MC" Version="WJetsHT100to200" Cacheable="False">
       &WJets_HT100to200;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
 
-    <InputData Lumi="45854.3" NEventsMax="-1" Type="MC" Version="WJetsHT200to400" Cacheable="False">
+    <InputData Lumi="45611.06707" NEventsMax="-1" Type="MC" Version="WJetsHT200to400" Cacheable="False">
       &WJets_HT200to400;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="121227.5" NEventsMax="-1" Type="MC" Version="WJetsHT400to600" Cacheable="False">
+    <InputData Lumi="125593.2384" NEventsMax="-1" Type="MC" Version="WJetsHT400to600" Cacheable="False">
       &WJets_HT400to600;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="255344.7" NEventsMax="-1" Type="MC" Version="WJetsHT600to800" Cacheable="False">
+
+
+    <InputData Lumi="988365.4196" NEventsMax="-1" Type="MC" Version="WJetsHT600to800" Cacheable="False">
       &WJets_HT600to800;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1120191.1" NEventsMax="-1" Type="MC" Version="WJetsHT800to1200" Cacheable="False">
+
+    <InputData Lumi="2121285.987" NEventsMax="-1" Type="MC" Version="WJetsHT800to1200" Cacheable="False">
       &WJets_HT800to1200;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="4189005" NEventsMax="-1" Type="MC" Version="WJetsHT1200to2500" Cacheable="False">
+    <InputData Lumi="4320587.156" NEventsMax="-1" Type="MC" Version="WJetsHT1200to2500" Cacheable="False">
       &WJets_HT1200to2500;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="63886636" NEventsMax="-1" Type="MC" Version="WJetsHT2500toInf" Cacheable="False">
+    <InputData Lumi="64445566.59" NEventsMax="-1" Type="MC" Version="WJetsHT2500toInf" Cacheable="False">
       &WJets_HT2500toInf;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
 
-    <InputData Lumi="23567.69" NEventsMax="-1" Type="MC" Version="SingleTop_TTbar_tch" Cacheable="False">
-      &SingleTop_TTbar_tch;
+    <InputData Lumi="1003175.123" NEventsMax="-1" Type="MC" Version="SingleTop_sch" Cacheable="False">
+      &SingleTop_sch;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="1003175.12" NEventsMax="-1" Type="MC" Version="SingleTop_TTbar_sch" Cacheable="False">
-      &SingleTop_TTbar_sch;
+    <InputData Lumi="73972.479" NEventsMax="-1" Type="MC" Version="SingleTop_top_tch" Cacheable="False">
+      &SingleTop_top_tch;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="28044.94" NEventsMax="-1" Type="MC" Version="SingleTop_T_tWch" Cacheable="False">
-      &SingleTop_T_tWch;
+    <InputData Lumi="63775.59" NEventsMax="-1" Type="MC" Version="SingleTop_antitop_tch" Cacheable="False">
+      &SingleTop_antitop_tch;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="27179.78" NEventsMax="-1" Type="MC" Version="SingleTop_Tbar_tWch" Cacheable="False">
-      &SingleTop_Tbar_tWch;
+    <InputData Lumi="28044.944" NEventsMax="-1" Type="MC" Version="SingleTop_top_tWch" Cacheable="False">
+      &SingleTop_top_tWch;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="27668.54" NEventsMax="-1" Type="MC" Version="SingleTop_antitop_tWch" Cacheable="False">
+      &SingleTop_antitop_tWch;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData> 
 
-    <InputData Lumi="8367.4" NEventsMax="-1" Type="MC" Version="DibosonWW" Cacheable="False">
+
+    <InputData Lumi="8367.43" NEventsMax="-1" Type="MC" Version="DibosonWW" Cacheable="False">
       &DibosonWW;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="21217.9" NEventsMax="-1" Type="MC" Version="DibosonWZ" Cacheable="False">
+    <InputData Lumi="21217.908" NEventsMax="-1" Type="MC" Version="DibosonWZ" Cacheable="False">
       &DibosonWZ;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
-    <InputData Lumi="59874.8" NEventsMax="-1" Type="MC" Version="DibosonZZ" Cacheable="False">
+    <InputData Lumi="59874.84" NEventsMax="-1" Type="MC" Version="DibosonZZ" Cacheable="False">
       &DibosonZZ;
       <InputTree Name="AnalysisTree" />
       <OutputTree Name="AnalysisTree" />
     </InputData>
 
+
+
+
+    <InputData Lumi="10.65" NEventsMax="-1" Type="MC" Version="QCDPT20to30" Cacheable="False">
+      &QCDPT20to30;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="17.14" NEventsMax="-1" Type="MC" Version="QCDPT30to50" Cacheable="False">
+      &QCDPT30to50;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="46.59" NEventsMax="-1" Type="MC" Version="QCDPT50to80" Cacheable="False">
+      &QCDPT50to80;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="130.69" NEventsMax="-1" Type="MC" Version="QCDPT80to120" Cacheable="False">
+      &QCDPT80to120;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" /> 
+    </InputData> 
+
+    <InputData Lumi="314.65" NEventsMax="-1" Type="MC" Version="QCDPT120to170" Cacheable="False">
+      &QCDPT120to170;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="902.01" NEventsMax="-1" Type="MC" Version="QCDPT170to300" Cacheable="False">
+      &QCDPT170to300;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="9790.48" NEventsMax="-1" Type="MC" Version="QCDPT300to470" Cacheable="False">
+      &QCDPT300to470;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="48899.41" NEventsMax="-1" Type="MC" Version="QCDPT470to600" Cacheable="False">
+      &QCDPT470to600;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="157888.89" NEventsMax="-1" Type="MC" Version="QCDPT600to800" Cacheable="False">
+      &QCDPT600to800;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="839904.597" NEventsMax="-1" Type="MC" Version="QCDPT800to1000" Cacheable="False">
+      &QCDPT800to1000;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="2393100.91" NEventsMax="-1" Type="MC" Version="QCDPT1000toInf" Cacheable="False">
+      &QCDPT1000toInf;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+
+<!--
+    <InputData Lumi="1.208" NEventsMax="-1" Type="MC" Version="QCDPT15to20" Cacheable="False">
+      &QCDPT15to20;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+-->
+
+<!--
+    <InputData Lumi="2.376465" NEventsMax="-1" Type="MC" Version="QCDPT15to20" Cacheable="False">
+      &QCDEMPT15to20;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+-->
+
+<!--
+    <InputData Lumi="1.71" NEventsMax="-1" Type="MC" Version="QCDEM20to30" Cacheable="False">
+      &QCDEMPT20to30;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="1.16" NEventsMax="-1" Type="MC" Version="QCDEM30to50" Cacheable="False">
+      &QCDEMPT30to50;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="8.02" NEventsMax="-1" Type="MC" Version="QCDEM50to80" Cacheable="False">
+      &QCDEMPT50to80;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="79.56" NEventsMax="-1" Type="MC" Version="QCDEM80to120" Cacheable="False">
+      &QCDEMPT80to120;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" /> 
+    </InputData> 
+
+    <InputData Lumi="457.72" NEventsMax="-1" Type="MC" Version="QCDEM120to170" Cacheable="False">
+      &QCDEMPT120to170;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="612.26" NEventsMax="-1" Type="MC" Version="QCDEM170to300" Cacheable="False">
+      &QCDEMPT170to300;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData> 
+
+    <InputData Lumi="5452.33" NEventsMax="-1" Type="MC" Version="QCDEM300toInf" Cacheable="False">
+      &QCDEMPT300toInf;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+
+    <InputData Lumi="37.21" NEventsMax="-1" Type="MC" Version="QCDbc30to80" Cacheable="False">
+      &QCDbcToE30to80;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="369.7" NEventsMax="-1" Type="MC" Version="QCDbc80to170" Cacheable="False">
+      &QCDbcToE80to170;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+
+    <InputData Lumi="3295.7" NEventsMax="-1" Type="MC" Version="QCDbc170to250" Cacheable="False">
+      &QCDbcToE170to250;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" />
+    </InputData>
+    
+    <InputData Lumi="13870.3" NEventsMax="-1" Type="MC" Version="QCDbc250toInf" Cacheable="False">
+      &QCDbcToE250toInf;
+      <InputTree Name="AnalysisTree" />
+      <OutputTree Name="AnalysisTree" /> 
+    </InputData> 
+-->
+
+
+<!--
     <InputData Lumi="50089944.7" NEventsMax="-1" Type="MC" Version="DYJets10to50" Cacheable="False">
       &DYJets10to50;
       <InputTree Name="AnalysisTree" />
@@ -309,151 +569,6 @@
       <OutputTree Name="AnalysisTree" />
     </InputData>
 -->
-
-<!--
-    <InputData Lumi="1" NEventsMax="-1" Type="MC" Version="QCDPT15to20" Cacheable="False">
-      &QCDPT15to20;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
--->
-
-<!--
-    <InputData Lumi="10.7" NEventsMax="-1" Type="MC" Version="QCDPT20to30" Cacheable="False">
-      &QCDPT20to30;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="18.117" NEventsMax="-1" Type="MC" Version="QCDPT30to50" Cacheable="False">
-      &QCDPT30to50;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-
-    <InputData Lumi="46.579" NEventsMax="-1" Type="MC" Version="QCDPT50to80" Cacheable="False">
-      &QCDPT50to80;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="129.67" NEventsMax="-1" Type="MC" Version="QCDPT80to120" Cacheable="False">
-      &QCDPT80to120;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" /> 
-    </InputData> 
-
-    <InputData Lumi="316.4" NEventsMax="-1" Type="MC" Version="QCDPT120to170" Cacheable="False">
-      &QCDPT120to170;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="913.997" NEventsMax="-1" Type="MC" Version="QCDPT170to300" Cacheable="False">
-      &QCDPT170to300;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
-
-    <InputData Lumi="9790.74" NEventsMax="-1" Type="MC" Version="QCDPT300to470" Cacheable="False">
-      &QCDPT300to470;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="48607.86" NEventsMax="-1" Type="MC" Version="QCDPT470to600" Cacheable="False">
-      &QCDPT470to600;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
-
-    <InputData Lumi="158792.13" NEventsMax="-1" Type="MC" Version="QCDPT600to800" Cacheable="False">
-      &QCDPT600to800;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-
-    <InputData Lumi="778802.46" NEventsMax="-1" Type="MC" Version="QCDPT800to1000" Cacheable="False">
-      &QCDPT800to1000;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-
-
-    <InputData Lumi="2429372" NEventsMax="-1" Type="MC" Version="QCDPT1000toInf" Cacheable="False">
-      &QCDPT1000toInf;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
--->
-
-
-<!--
-    <InputData Lumi="2.376465" NEventsMax="-1" Type="MC" Version="QCDPT15to20" Cacheable="False">
-      &QCDEMPT15to20;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-
-    <InputData Lumi="1.729944" NEventsMax="-1" Type="MC" Version="QCDPT20to30" Cacheable="False">
-      &QCDEMPT20to30;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
--->
-<!--
-    <InputData Lumi="1" NEventsMax="-1" Type="MC" Version="QCDPT30to50" Cacheable="False">
-      &QCDEMPT30to50;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
--->
-<!--
-    <InputData Lumi="7.770795" NEventsMax="-1" Type="MC" Version="QCDPT50to80" Cacheable="False">
-      &QCDEMPT50to80;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="102.9418" NEventsMax="-1" Type="MC" Version="QCDPT80to120" Cacheable="False">
-      &QCDEMPT80to120;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" /> 
-    </InputData> 
-
-    <InputData Lumi="574.97" NEventsMax="-1" Type="MC" Version="QCDPT120to170" Cacheable="False">
-      &QCDEMPT120to170;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-    
-    <InputData Lumi="612.3802" NEventsMax="-1" Type="MC" Version="QCDPT170to300" Cacheable="False">
-      &QCDEMPT170to300;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
-
-    <InputData Lumi="5437.265" NEventsMax="-1" Type="MC" Version="QCDPT300toInf" Cacheable="False">
-      &QCDEMPT300toInf;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData>
-
-
-
-    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA1" Cacheable="False">
-      &DATAELE1;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
-
-    <InputData Lumi="1" NEventsMax="-1" Type="DATA" Version="DATA2" Cacheable="False">
-      &DATAELE2;
-      <InputTree Name="AnalysisTree" />
-      <OutputTree Name="AnalysisTree" />
-    </InputData> 
--->
-
 
    
 <!--
@@ -490,11 +605,12 @@
       <Item Name="TopJetCollection" Value="patJetsHepTopTagCHSPacked_daughters" />  
       <Item Name="GenParticleCollection" Value="GenParticles" />
 
-      <Item Name="lumi_file" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/data/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.root" />
-      <Item Name="lumihists_lumi_per_bin" Value="3."/>
+<!--      <Item Name="lumi_file" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/data/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.root" /> -->
+      <Item Name="lumi_file" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/data/Cert_271036-283685_13TeV_PromptReco_Collisions16_JSON_NoL1T.root" /> 
+      <Item Name="lumihists_lumi_per_bin" Value="1000"/>
 
       <!--
-	 <Item Name="lumi_file" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_v1/Lumifile.root" />
+	 <Item Name="lumi_file" Value="/nfs/dust/cms/user/peiffer/NtupleWriter/Ntuples/RunII_v2/Lumifile.root" />
 	 <Item Name="lumihists_lumi_per_bin" Value="0.2"/>
 	 -->
 
@@ -530,15 +646,15 @@
       <Item Name="use_sframe_weight" Value="false" />
       
       <!-- configuration for MCPileupReweight (run as part of CommonModules): -->
-      <Item Name="pileup_directory" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/data/MyMCPileupHistogram.root" /> 
-      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/data/MyDataPileupHistogram.root" /> 
+      <Item Name="pileup_directory" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/data/MyMCPileupHistogram.root" /> 
+      <Item Name="pileup_directory_data" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_20/src/UHH2/common/data/MyDataPileupHistogram_271036-283685.root" /> 
 <!--
       <Item Name="pileup_directory_data_up" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/data/MyDataPileupHistogram_Golden_72450.root" />
       <Item Name="pileup_directory_data_down" Value="/nfs/dust/cms/user/mstoev/CMSSW_8_0_8/src/UHH2/common/data/MyDataPileupHistogram_Golden_65550.root" />
 -->
 
       <Item Name="channel" Value="muon" />
-      <Item Name="Region" Value="SR" />
+      <Item Name="Region" Value="CRtwotau" />
 
       <Item Name="puvariation" Value="none" />
       <Item Name="jecsmear_direction" Value="nominal" /> <!-- nominal up down -->
@@ -551,4 +667,5 @@
       <Item Name="TestKey" Value="TestKeyValue" />
     </UserConfig>
   </Cycle>
+
 </JobConfiguration>

@@ -25,13 +25,14 @@ LQAnalysisPreHists::LQAnalysisPreHists(Context & ctx, const string & dirname): H
   book<TH1F>("MET_binned", "missing E_{T}", 50,0,1000);
   book<TH1F>("HT", "H_{T} Jets", 50, 0, 3500);
   book<TH1F>("HTLep", "H_{T} Lep", 50, 0, 1000);
-  book<TH1F>("ST", "H_{T}", 50, 0, 5000);
-  book<TH1F>("ST_binned", "H_{T}", 8, bins);
-  book<TH1F>("ST_testbinned", "H_{T}", 32, 800,4000);
+  book<TH1F>("ST", "S_{T}", 50, 0, 5000);
+  book<TH1F>("ST_binned", "S_{T}", 8, bins);
+  book<TH1F>("ST_testbinned", "S_{T}", 32, 800,4000);
 
   book<TH1F>("isolation","tau_iso",20,0,2);
   book<TH1F>("isolation_sideband","tau_iso",15,0,300);
 
+  book<TH1F>("MVA_isolation","MVA based #tau iso [GeV]",20,0,2);
   /*
   double pttoprebins[8]={0,80,130,180,230,300,400,1000};
   double pttopbins[5]={0,70,140,200,1000};
@@ -147,6 +148,7 @@ void LQAnalysisPreHists::fill(const Event & event){
     hist("isolation")->Fill(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits(), weight);
     hist("isolation_sideband")->Fill(tau.byCombinedIsolationDeltaBetaCorrRaw3Hits(), weight);
     hist("pt_tau_binned")->Fill(tau.pt(),weight);
+    hist("MVA_isolation")->Fill(tau.byIsolationMVArun2v1DBnewDMwLTraw(),weight);
   }
   
 

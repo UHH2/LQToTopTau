@@ -21,11 +21,13 @@
 #include "UHH2/LQAnalysis/include/LQAnalysisHists.h"
 #include "UHH2/LQAnalysis/include/LQAnalysisPDFHists.h"
 #include "UHH2/LQAnalysis/include/LQFakeTauHists.h"
+#include "UHH2/common/include/LuminosityHists.h"
 #include "UHH2/common/include/NSelections.h"
 #include "UHH2/common/include/ObjectIdUtils.h"
 #include "UHH2/common/include/EventVariables.h"
 #include "UHH2/common/include/MCWeight.h"
 #include "UHH2/common/include/TauUncerts.h"
+#include "UHH2/common/include/TopPtReweight.h"
 
 #include "UHH2/common/include/TTbarGen.h"
 #include "UHH2/LQAnalysis/include/TTbarFullhadRecoHypothesisDiscriminators.h"
@@ -54,11 +56,15 @@ public:
 private:
   // declare the Selections to use. Use unique_ptr to ensure automatic call of delete in the destructor,
   // to avoid memory leaks.
-  std::unique_ptr<Selection> njet_sel, twojet_sel, fourjet_sel, BTagM, ntau_sel, muon_sel, oppositesign_sel, samesign_sel, samesign_lead, elesamesign_lead, metcut, getfaketaus, getrealtaus, ptleadingjetcut;
+  std::unique_ptr<Selection> njet_sel, twojet_sel, fourjet_sel, BTagM, ntau_sel, ExactlyOneTau, twotau_sel, muon_sel, oppositesign_sel, samesign_sel, samesign_lead, elesamesign_lead, MTcut, metcut, metcut_presel, getfaketaus, getrealtaus, ptleadingjetcut, possible_matches, OneIsoOneNonIso;
   
   // store the Hists collection as member variables. Again, use unique_ptr to avoid memory leaks.
   std::unique_ptr<Hists> lq_PreSelection, electron_PreSelection, muon_PreSelection, jet_PreSelection, tau_PreSelection, event_PreSelection, faketau_PreSelection;
-  std::unique_ptr<Hists> h_lq_LeadingJet150, h_tau_LeadingJet150, h_mu_LeadingJet150, h_ele_LeadingJet150, h_jet_LeadingJet150, h_event_LeadingJet150, h_faketau_LeadingJet150;
+  std::unique_ptr<Hists> lq_TwoTaus, electron_TwoTaus, muon_TwoTaus, jet_TwoTaus, tau_TwoTaus, event_TwoTaus, faketau_TwoTaus;
+  std::unique_ptr<Hists> lq_TwoTaus_final, electron_TwoTaus_final, muon_TwoTaus_final, jet_TwoTaus_final, tau_TwoTaus_final, event_TwoTaus_final, faketau_TwoTaus_final;
+  std::unique_ptr<Hists> h_lq_LeadingJet150, h_tau_LeadingJet150, h_mu_LeadingJet150, h_ele_LeadingJet150, h_jet_LeadingJet150, h_event_LeadingJet150, h_faketau_LeadingJet150, h_lumi_LeadingJet150;
+  std::unique_ptr<Hists> h_lq_LeadingJet150_matchable, h_tau_LeadingJet150_matchable, h_mu_LeadingJet150_matchable, h_ele_LeadingJet150_matchable, h_jet_LeadingJet150_matchable, h_event_LeadingJet150_matchable, h_faketau_LeadingJet150_matchable;
+  std::unique_ptr<Hists> h_lq_LeadingJet150_CorrectMatch, h_tau_LeadingJet150_CorrectMatch, h_mu_LeadingJet150_CorrectMatch, h_ele_LeadingJet150_CorrectMatch, h_jet_LeadingJet150_CorrectMatch, h_event_LeadingJet150_CorrectMatch, h_faketau_LeadingJet150_CorrectMatch;
   std::unique_ptr<Hists> h_lq_ThreeJets, h_tau_ThreeJets, h_mu_ThreeJets, h_ele_ThreeJets, h_jet_ThreeJets, h_event_ThreeJets, h_faketau_ThreeJets;
   std::unique_ptr<Hists> h_lq_OScut, h_tau_OScut, h_mu_OScut, h_ele_OScut, h_jet_OScut, h_event_OScut, h_faketau_OScut;
   std::unique_ptr<Hists> h_lq_OSfourjets, h_tau_OSfourjets, h_mu_OSfourjets, h_ele_OSfourjets, h_jet_OSfourjets, h_event_OSfourjets, h_faketau_OSfourjets;
@@ -71,9 +77,20 @@ private:
   std::unique_ptr<Hists> h_OS_lq_ST400, h_OS_tau_ST400, h_OS_mu_ST400, h_OS_ele_ST400, h_OS_jet_ST400, h_OS_topjet_ST400, h_OS_event_ST400, h_OS_faketau_ST400, h_OS_btageff_ST400;
   std::unique_ptr<Hists> h_OS_lq_lowmasses, h_OS_tau_lowmasses, h_OS_mu_lowmasses, h_OS_ele_lowmasses, h_OS_jet_lowmasses, h_OS_topjet_lowmasses, h_OS_event_lowmasses, h_OS_faketau_lowmasses, h_OS_pdf_lowmasses;
   std::unique_ptr<Hists> h_OS_lq_ST1200, h_OS_tau_ST1200, h_OS_mu_ST1200, h_OS_ele_ST1200, h_OS_jet_ST1200, h_OS_topjet_ST1200, h_OS_event_ST1200, h_OS_faketau_ST1200, h_OS_pdf_ST1200;
+  std::unique_ptr<Hists> h_OS_lq_lowmasses_matchable, h_OS_tau_lowmasses_matchable, h_OS_mu_lowmasses_matchable, h_OS_ele_lowmasses_matchable, h_OS_jet_lowmasses_matchable, h_OS_topjet_lowmasses_matchable, h_OS_event_lowmasses_matchable, h_OS_faketau_lowmasses_matchable;
+  std::unique_ptr<Hists> h_OS_lq_lowmasses_CorrectMatch, h_OS_tau_lowmasses_CorrectMatch, h_OS_mu_lowmasses_CorrectMatch, h_OS_ele_lowmasses_CorrectMatch, h_OS_jet_lowmasses_CorrectMatch, h_OS_topjet_lowmasses_CorrectMatch, h_OS_event_lowmasses_CorrectMatch, h_OS_faketau_lowmasses_CorrectMatch;
+  std::unique_ptr<Hists> h_OS_lq_ST1200_matchable, h_OS_tau_ST1200_matchable, h_OS_mu_ST1200_matchable, h_OS_ele_ST1200_matchable, h_OS_jet_ST1200_matchable, h_OS_topjet_ST1200_matchable, h_OS_event_ST1200_matchable, h_OS_faketau_ST1200_matchable;
+  std::unique_ptr<Hists> h_OS_lq_ST1200_CorrectMatch, h_OS_tau_ST1200_CorrectMatch, h_OS_mu_ST1200_CorrectMatch, h_OS_ele_ST1200_CorrectMatch, h_OS_jet_ST1200_CorrectMatch, h_OS_topjet_ST1200_CorrectMatch, h_OS_event_ST1200_CorrectMatch, h_OS_faketau_ST1200_CorrectMatch;
   std::unique_ptr<Hists> h_SS_lq_ST400, h_SS_tau_ST400, h_SS_mu_ST400, h_SS_ele_ST400, h_SS_jet_ST400, h_SS_topjet_ST400, h_SS_event_ST400, h_SS_faketau_ST400, h_SS_btageff_ST400;
   std::unique_ptr<Hists> h_SS_lq_lowmasses, h_SS_tau_lowmasses, h_SS_mu_lowmasses, h_SS_ele_lowmasses, h_SS_jet_lowmasses, h_SS_topjet_lowmasses, h_SS_event_lowmasses, h_SS_faketau_lowmasses, h_SS_pdf_lowmasses;
   std::unique_ptr<Hists> h_SS_lq_ST1200, h_SS_tau_ST1200, h_SS_mu_ST1200, h_SS_ele_ST1200, h_SS_jet_ST1200, h_SS_topjet_ST1200, h_SS_event_ST1200, h_SS_faketau_ST1200, h_SS_pdf_ST1200;
+  std::unique_ptr<Hists> h_SS_lq_lowmasses_matchable, h_SS_tau_lowmasses_matchable, h_SS_mu_lowmasses_matchable, h_SS_ele_lowmasses_matchable, h_SS_jet_lowmasses_matchable, h_SS_topjet_lowmasses_matchable, h_SS_event_lowmasses_matchable, h_SS_faketau_lowmasses_matchable;
+  std::unique_ptr<Hists> h_SS_lq_lowmasses_CorrectMatch, h_SS_tau_lowmasses_CorrectMatch, h_SS_mu_lowmasses_CorrectMatch, h_SS_ele_lowmasses_CorrectMatch, h_SS_jet_lowmasses_CorrectMatch, h_SS_topjet_lowmasses_CorrectMatch, h_SS_event_lowmasses_CorrectMatch, h_SS_faketau_lowmasses_CorrectMatch;
+  std::unique_ptr<Hists> h_SS_lq_ST1200_matchable, h_SS_tau_ST1200_matchable, h_SS_mu_ST1200_matchable, h_SS_ele_ST1200_matchable, h_SS_jet_ST1200_matchable, h_SS_topjet_ST1200_matchable, h_SS_event_ST1200_matchable, h_SS_faketau_ST1200_matchable;
+  std::unique_ptr<Hists> h_SS_lq_ST1200_CorrectMatch, h_SS_tau_ST1200_CorrectMatch, h_SS_mu_ST1200_CorrectMatch, h_SS_ele_ST1200_CorrectMatch, h_SS_jet_ST1200_CorrectMatch, h_SS_topjet_ST1200_CorrectMatch, h_SS_event_ST1200_CorrectMatch, h_SS_faketau_ST1200_CorrectMatch;
+
+  std::unique_ptr<Hists> h_TopPtReweight;
+
 
   //std::unique_ptr<AnalysisModule> jetlepcleantest;
   std::unique_ptr<CommonModules> common;
@@ -95,7 +112,8 @@ private:
   Event::Handle<std::vector<TTbarFullhadRecoHypothesis>> h_hadr_hyps_new;
 
   CSVBTag::wp wp_btag_medium;
-  std::string channel_, Sys_PU;
+  std::string channel_, Sys_PU, region_;
+  std::unique_ptr<TopPtReweight> toppt_reweight;
 
 };
 
@@ -112,6 +130,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   jetcleaner.reset(new JetCleaner(ctx, 30.0, 2.4));
   BTagMedium = CSVBTag(CSVBTag::WP_MEDIUM);
   wp_btag_medium = CSVBTag::WP_MEDIUM;
+  toppt_reweight.reset(new TopPtReweight(ctx,0.0615,-0.0005,"ttbargen","weight_ttbar",false,1.02033407984698177));
 
   EleId = AndId<Electron>(ElectronID_Spring15_25ns_medium, PtEtaCut(30.0, 2.5));
   MuId = AndId<Muon>(MuonIDTight(), PtEtaCut(30.0, 2.1),MuonIso(0.15));
@@ -140,6 +159,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   taures_module.reset(new TauEnergyResolutionShifter(ctx));
 
   channel_ = ctx.get("channel");
+  region_ = ctx.get("region");
   is_data = ctx.get("dataset_type") == "DATA";
   faketaus = ctx.get("dataset_version") == "TTbar_onlyfakes";
   realtaus = ctx.get("dataset_version") == "TTbar_onlyrealtaus";
@@ -150,7 +170,7 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   auto ss_btag_var=ctx.get("SS_MCBtagEfficiencies");
 
   do_scale_variation = (ctx.get("ScaleVariationMuR") == "up" || ctx.get("ScaleVariationMuR") == "down") || (ctx.get("ScaleVariationMuF") == "up" || ctx.get("ScaleVariationMuF") == "down");
-  do_taueff_variation = (ctx.get("TauIdVariation") == "up" || ctx.get("TauIdVariation") == "down");
+  do_taueff_variation = (ctx.get("TauIdVariation") == "nominal" || ctx.get("TauIdVariation") == "up" || ctx.get("TauIdVariation") == "down");
   do_taucharge_variation = (ctx.get("TauChargeVariation") == "up" || ctx.get("TauChargeVariation") == "down");
   do_tauenergy_variation = (ctx.get("TauEnergyVariation") == "up" || ctx.get("TauEnergyVariation") == "down");
   do_taures_variation = (ctx.get("TauEnergyResolutionVariation") == "up" || ctx.get("TauEnergyResolutionVariation") == "down");
@@ -160,10 +180,12 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   SF_muonTrigger.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root", "runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins", 0.5, "trigger", mutrig_var));
   SF_muonIso.reset(new MCMuonScaleFactor(ctx, "/nfs/dust/cms/user/mstoev/CMSSW_7_6_3/src/UHH2/common/data/MuonIso_Z_RunCD_Reco76X_Feb15.root", "MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1", 1, "iso", Sys_MuonIso));
   
+  */
 
   SF_OS_btag.reset(new MCBTagScaleFactor(ctx,wp_btag_medium,"jets",os_btag_var ,"mujets","incl","MCBtagEfficiencies_OS"));
   SF_SS_btag.reset(new MCBTagScaleFactor(ctx,wp_btag_medium,"jets",ss_btag_var ,"mujets","incl","MCBtagEfficiencies_SS"));
-  */
+
+
   // ttbar GEN
   ttgenprod.reset(new TTbarGenProducer(ctx, "ttbargen", false));
   h_ttbargen = ctx.get_handle<TTbarGen>("ttbargen");
@@ -172,6 +194,8 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   recomodules_new.emplace_back(new HighMassHadronicTTbarReco(ctx));
   recomodules_new.emplace_back(new TTbarFullhadRecoChi2Discriminator(ctx,"HighMassHadronicTTbarFullhadReco"));
   //if(!is_data) recomodules_new.emplace_back(new LQCorrectMatchDiscriminator(ctx,"HighMassHadronicTTbarFullhadReco"));
+  if(!is_data) recomodules_new.emplace_back(new LQCorrectMatchDiscriminator(ctx,"HighMassHadronicTTbarFullhadReco"));
+
 
   pre_modules.push_back(std::unique_ptr<AnalysisModule>(new HTCalculator(ctx)));
 
@@ -180,12 +204,17 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   njet_sel.reset(new NJetSelection(3,-1));
   fourjet_sel.reset(new NJetSelection(4,-1));
   ntau_sel.reset(new NTauSelection(1,-1));
+  ExactlyOneTau.reset(new NTauSelection(1,1));
+  twotau_sel.reset(new NTauSelection(2,-1));
   BTagM.reset(new NJetSelection(1,999,BTagMedium));
   muon_sel.reset(new NMuonSelection(1,-1));
+  metcut_presel.reset(new METCut(50,-1));
   metcut.reset(new METCut(100,-1));
+  MTcut.reset(new MTCut(100,-1));
   ptleadingjetcut.reset(new PtLeadingJetSelection(150,-1));
   getfaketaus.reset(new GetFakeTaus());
   getrealtaus.reset(new GetRealTaus());
+  OneIsoOneNonIso.reset(new IsoNonIso());
   oppositesign_sel.reset(new OppositeSignCut());
   samesign_sel.reset(new SameSignCut());
   if(channel_ == "muon"){
@@ -195,6 +224,8 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
     samesign_lead.reset(new EleTauSameSignCut());
   }
   elesamesign_lead.reset(new EleTauSameSignCut());
+  possible_matches.reset(new LQMatch());
+
 
   // 3. Set up Hists classes:
   electron_PreSelection.reset(new ElectronHists(ctx, "LQMod_Electrons_PreSel"));
@@ -204,6 +235,22 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   event_PreSelection.reset(new EventHists(ctx, "LQMod_Events_PreSel"));
   faketau_PreSelection.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_PreSel"));
   lq_PreSelection.reset(new LQAnalysisHists(ctx, "LQMod_LQ_PreSel"));
+
+  electron_TwoTaus.reset(new ElectronHists(ctx, "LQMod_Electrons_TwoTaus"));
+  muon_TwoTaus.reset(new MuonHists(ctx, "LQMod_Muons_TwoTaus"));
+  tau_TwoTaus.reset(new TauHists(ctx, "LQMod_Taus_TwoTaus"));
+  jet_TwoTaus.reset(new JetHists(ctx, "LQMod_Jets_TwoTaus"));
+  event_TwoTaus.reset(new EventHists(ctx, "LQMod_Events_TwoTaus"));
+  faketau_TwoTaus.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_TwoTaus"));
+  lq_TwoTaus.reset(new LQAnalysisHists(ctx, "LQMod_LQ_TwoTaus"));
+  
+  electron_TwoTaus_final.reset(new ElectronHists(ctx, "LQMod_Electrons_TwoTaus_final"));
+  muon_TwoTaus_final.reset(new MuonHists(ctx, "LQMod_Muons_TwoTaus_final"));
+  tau_TwoTaus_final.reset(new TauHists(ctx, "LQMod_Taus_TwoTaus_final"));
+  jet_TwoTaus_final.reset(new JetHists(ctx, "LQMod_Jets_TwoTaus_final"));
+  event_TwoTaus_final.reset(new EventHists(ctx, "LQMod_Events_TwoTaus_final"));
+  faketau_TwoTaus_final.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_TwoTaus_final"));
+  lq_TwoTaus_final.reset(new LQAnalysisHists(ctx, "LQMod_LQ_TwoTaus_final"));
 
   h_ele_ThreeJets.reset(new ElectronHists(ctx, "LQMod_Electrons_ThreeJets"));
   h_mu_ThreeJets.reset(new MuonHists(ctx, "LQMod_Muons_ThreeJets"));
@@ -220,6 +267,23 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_jet_LeadingJet150.reset(new JetHists(ctx, "LQMod_Jets_LeadingJet150"));
   h_event_LeadingJet150.reset(new EventHists(ctx, "LQMod_Events_LeadingJet150"));
   h_faketau_LeadingJet150.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_LeadingJet150"));
+  h_lumi_LeadingJet150.reset(new LuminosityHists(ctx, "LQMod_Lumi_LeadingJet150"));
+
+  h_lq_LeadingJet150_matchable.reset(new LQAnalysisHists(ctx, "LQMod_LQ_LeadingJet150_matchable"));
+  h_tau_LeadingJet150_matchable.reset(new TauHists(ctx, "LQMod_Taus_LeadingJet150_matchable"));
+  h_mu_LeadingJet150_matchable.reset(new MuonHists(ctx, "LQMod_Muons_LeadingJet150_matchable"));
+  h_ele_LeadingJet150_matchable.reset(new ElectronHists(ctx, "LQMod_Electrons_LeadingJet150_matchable"));
+  h_jet_LeadingJet150_matchable.reset(new JetHists(ctx, "LQMod_Jets_LeadingJet150_matchable"));
+  h_event_LeadingJet150_matchable.reset(new EventHists(ctx, "LQMod_Events_LeadingJet150_matchable"));
+  h_faketau_LeadingJet150_matchable.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_LeadingJet150_matchable"));
+
+  h_lq_LeadingJet150_CorrectMatch.reset(new LQAnalysisHists(ctx, "LQMod_LQ_LeadingJet150_CorrectMatch"));
+  h_tau_LeadingJet150_CorrectMatch.reset(new TauHists(ctx, "LQMod_Taus_LeadingJet150_CorrectMatch"));
+  h_mu_LeadingJet150_CorrectMatch.reset(new MuonHists(ctx, "LQMod_Muons_LeadingJet150_CorrectMatch"));
+  h_ele_LeadingJet150_CorrectMatch.reset(new ElectronHists(ctx, "LQMod_Electrons_LeadingJet150_CorrectMatch"));
+  h_jet_LeadingJet150_CorrectMatch.reset(new JetHists(ctx, "LQMod_Jets_LeadingJet150_CorrectMatch"));
+  h_event_LeadingJet150_CorrectMatch.reset(new EventHists(ctx, "LQMod_Events_LeadingJet150_CorrectMatch"));
+  h_faketau_LeadingJet150_CorrectMatch.reset(new LQFakeTauHists(ctx, "LQMod_FakeTau_LeadingJet150_CorrectMatch"));
 
   h_lq_OScut.reset(new LQAnalysisHists(ctx, "LQMod_LQ_OScut"));
   h_tau_OScut.reset(new TauHists(ctx, "LQMod_Taus_OScut"));
@@ -315,6 +379,42 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_OS_faketau_ST1200.reset(new LQFakeTauHists(ctx, "LQMod_OS_FakeTau_ST1200"));
   h_OS_pdf_ST1200.reset(new LQAnalysisPDFHists(ctx, "LQMod_OS_PDF_ST1200", do_pdf_variations));
 
+  h_OS_ele_lowmasses_matchable.reset(new ElectronHists(ctx, "LQMod_OS_Electrons_LowMasses_matchable"));
+  h_OS_mu_lowmasses_matchable.reset(new MuonHists(ctx, "LQMod_OS_Muons_LowMasses_matchable"));
+  h_OS_jet_lowmasses_matchable.reset(new JetHists(ctx, "LQMod_OS_Jets_LowMasses_matchable"));
+  h_OS_topjet_lowmasses_matchable.reset(new TopJetHists(ctx, "LQMod_OS_TopJets_LowMasses_matchable"));
+  h_OS_event_lowmasses_matchable.reset(new EventHists(ctx, "LQMod_OS_Events_LowMasses_matchable"));
+  h_OS_tau_lowmasses_matchable.reset(new TauHists(ctx, "LQMod_OS_Taus_LowMasses_matchable"));
+  h_OS_lq_lowmasses_matchable.reset(new LQAnalysisHists(ctx, "LQMod_OS_LQ_LowMasses_matchable"));
+  h_OS_faketau_lowmasses_matchable.reset(new LQFakeTauHists(ctx, "LQMod_OS_FakeTau_LowMasses_matchable"));
+
+  h_OS_ele_ST1200_matchable.reset(new ElectronHists(ctx, "LQMod_OS_Electrons_ST1200_matchable"));
+  h_OS_mu_ST1200_matchable.reset(new MuonHists(ctx, "LQMod_OS_Muons_ST1200_matchable"));
+  h_OS_jet_ST1200_matchable.reset(new JetHists(ctx, "LQMod_OS_Jets_ST1200_matchable"));
+  h_OS_topjet_ST1200_matchable.reset(new TopJetHists(ctx, "LQMod_OS_TopJets_ST1200_matchable"));
+  h_OS_event_ST1200_matchable.reset(new EventHists(ctx, "LQMod_OS_Events_ST1200_matchable"));
+  h_OS_tau_ST1200_matchable.reset(new TauHists(ctx, "LQMod_OS_Taus_ST1200_matchable"));
+  h_OS_lq_ST1200_matchable.reset(new LQAnalysisHists(ctx, "LQMod_OS_LQ_ST1200_matchable"));
+  h_OS_faketau_ST1200_matchable.reset(new LQFakeTauHists(ctx, "LQMod_OS_FakeTau_ST1200_matchable"));
+
+  h_OS_ele_lowmasses_CorrectMatch.reset(new ElectronHists(ctx, "LQMod_OS_Electrons_LowMasses_CorrectMatch"));
+  h_OS_mu_lowmasses_CorrectMatch.reset(new MuonHists(ctx, "LQMod_OS_Muons_LowMasses_CorrectMatch"));
+  h_OS_jet_lowmasses_CorrectMatch.reset(new JetHists(ctx, "LQMod_OS_Jets_LowMasses_CorrectMatch"));
+  h_OS_topjet_lowmasses_CorrectMatch.reset(new TopJetHists(ctx, "LQMod_OS_TopJets_LowMasses_CorrectMatch"));
+  h_OS_event_lowmasses_CorrectMatch.reset(new EventHists(ctx, "LQMod_OS_Events_LowMasses_CorrectMatch"));
+  h_OS_tau_lowmasses_CorrectMatch.reset(new TauHists(ctx, "LQMod_OS_Taus_LowMasses_CorrectMatch"));
+  h_OS_lq_lowmasses_CorrectMatch.reset(new LQAnalysisHists(ctx, "LQMod_OS_LQ_LowMasses_CorrectMatch"));
+  h_OS_faketau_lowmasses_CorrectMatch.reset(new LQFakeTauHists(ctx, "LQMod_OS_FakeTau_LowMasses_CorrectMatch"));
+
+  h_OS_ele_ST1200_CorrectMatch.reset(new ElectronHists(ctx, "LQMod_OS_Electrons_ST1200_CorrectMatch"));
+  h_OS_mu_ST1200_CorrectMatch.reset(new MuonHists(ctx, "LQMod_OS_Muons_ST1200_CorrectMatch"));
+  h_OS_jet_ST1200_CorrectMatch.reset(new JetHists(ctx, "LQMod_OS_Jets_ST1200_CorrectMatch"));
+  h_OS_topjet_ST1200_CorrectMatch.reset(new TopJetHists(ctx, "LQMod_OS_TopJets_ST1200_CorrectMatch"));
+  h_OS_event_ST1200_CorrectMatch.reset(new EventHists(ctx, "LQMod_OS_Events_ST1200_CorrectMatch"));
+  h_OS_tau_ST1200_CorrectMatch.reset(new TauHists(ctx, "LQMod_OS_Taus_ST1200_CorrectMatch"));
+  h_OS_lq_ST1200_CorrectMatch.reset(new LQAnalysisHists(ctx, "LQMod_OS_LQ_ST1200_CorrectMatch"));
+  h_OS_faketau_ST1200_CorrectMatch.reset(new LQFakeTauHists(ctx, "LQMod_OS_FakeTau_ST1200_CorrectMatch"));
+
   h_SS_ele_ST400.reset(new ElectronHists(ctx, "LQMod_SS_Electrons_ST400"));
   h_SS_mu_ST400.reset(new MuonHists(ctx, "LQMod_SS_Muons_ST400"));
   h_SS_jet_ST400.reset(new JetHists(ctx, "LQMod_SS_Jets_ST400"));
@@ -344,7 +444,44 @@ LQAnalysisMuModule::LQAnalysisMuModule(Context & ctx){
   h_SS_lq_ST1200.reset(new LQAnalysisHists(ctx, "LQMod_SS_LQ_ST1200"));
   h_SS_faketau_ST1200.reset(new LQFakeTauHists(ctx, "LQMod_SS_FakeTau_ST1200"));
   h_SS_pdf_ST1200.reset(new LQAnalysisPDFHists(ctx, "LQMod_SS_PDF_ST1200", do_pdf_variations));
+  
+  h_SS_ele_lowmasses_matchable.reset(new ElectronHists(ctx, "LQMod_SS_Electrons_LowMasses_matchable"));
+  h_SS_mu_lowmasses_matchable.reset(new MuonHists(ctx, "LQMod_SS_Muons_LowMasses_matchable"));
+  h_SS_jet_lowmasses_matchable.reset(new JetHists(ctx, "LQMod_SS_Jets_LowMasses_matchable"));
+  h_SS_topjet_lowmasses_matchable.reset(new TopJetHists(ctx, "LQMod_SS_TopJets_LowMasses_matchable"));
+  h_SS_event_lowmasses_matchable.reset(new EventHists(ctx, "LQMod_SS_Events_LowMasses_matchable"));
+  h_SS_tau_lowmasses_matchable.reset(new TauHists(ctx, "LQMod_SS_Taus_LowMasses_matchable"));
+  h_SS_lq_lowmasses_matchable.reset(new LQAnalysisHists(ctx, "LQMod_SS_LQ_LowMasses_matchable"));
+  h_SS_faketau_lowmasses_matchable.reset(new LQFakeTauHists(ctx, "LQMod_SS_FakeTau_LowMasses_matchable"));
 
+  h_SS_ele_ST1200_matchable.reset(new ElectronHists(ctx, "LQMod_SS_Electrons_ST1200_matchable"));
+  h_SS_mu_ST1200_matchable.reset(new MuonHists(ctx, "LQMod_SS_Muons_ST1200_matchable"));
+  h_SS_jet_ST1200_matchable.reset(new JetHists(ctx, "LQMod_SS_Jets_ST1200_matchable"));
+  h_SS_topjet_ST1200_matchable.reset(new TopJetHists(ctx, "LQMod_SS_TopJets_ST1200_matchable"));
+  h_SS_event_ST1200_matchable.reset(new EventHists(ctx, "LQMod_SS_Events_ST1200_matchable"));
+  h_SS_tau_ST1200_matchable.reset(new TauHists(ctx, "LQMod_SS_Taus_ST1200_matchable"));
+  h_SS_lq_ST1200_matchable.reset(new LQAnalysisHists(ctx, "LQMod_SS_LQ_ST1200_matchable"));
+  h_SS_faketau_ST1200_matchable.reset(new LQFakeTauHists(ctx, "LQMod_SS_FakeTau_ST1200_matchable"));
+
+  h_SS_ele_lowmasses_CorrectMatch.reset(new ElectronHists(ctx, "LQMod_SS_Electrons_LowMasses_CorrectMatch"));
+  h_SS_mu_lowmasses_CorrectMatch.reset(new MuonHists(ctx, "LQMod_SS_Muons_LowMasses_CorrectMatch"));
+  h_SS_jet_lowmasses_CorrectMatch.reset(new JetHists(ctx, "LQMod_SS_Jets_LowMasses_CorrectMatch"));
+  h_SS_topjet_lowmasses_CorrectMatch.reset(new TopJetHists(ctx, "LQMod_SS_TopJets_LowMasses_CorrectMatch"));
+  h_SS_event_lowmasses_CorrectMatch.reset(new EventHists(ctx, "LQMod_SS_Events_LowMasses_CorrectMatch"));
+  h_SS_tau_lowmasses_CorrectMatch.reset(new TauHists(ctx, "LQMod_SS_Taus_LowMasses_CorrectMatch"));
+  h_SS_lq_lowmasses_CorrectMatch.reset(new LQAnalysisHists(ctx, "LQMod_SS_LQ_LowMasses_CorrectMatch"));
+  h_SS_faketau_lowmasses_CorrectMatch.reset(new LQFakeTauHists(ctx, "LQMod_SS_FakeTau_LowMasses_CorrectMatch"));
+
+  h_SS_ele_ST1200_CorrectMatch.reset(new ElectronHists(ctx, "LQMod_SS_Electrons_ST1200_CorrectMatch"));
+  h_SS_mu_ST1200_CorrectMatch.reset(new MuonHists(ctx, "LQMod_SS_Muons_ST1200_CorrectMatch"));
+  h_SS_jet_ST1200_CorrectMatch.reset(new JetHists(ctx, "LQMod_SS_Jets_ST1200_CorrectMatch"));
+  h_SS_topjet_ST1200_CorrectMatch.reset(new TopJetHists(ctx, "LQMod_SS_TopJets_ST1200_CorrectMatch"));
+  h_SS_event_ST1200_CorrectMatch.reset(new EventHists(ctx, "LQMod_SS_Events_ST1200_CorrectMatch"));
+  h_SS_tau_ST1200_CorrectMatch.reset(new TauHists(ctx, "LQMod_SS_Taus_ST1200_CorrectMatch"));
+  h_SS_lq_ST1200_CorrectMatch.reset(new LQAnalysisHists(ctx, "LQMod_SS_LQ_ST1200_CorrectMatch"));
+  h_SS_faketau_ST1200_CorrectMatch.reset(new LQFakeTauHists(ctx, "LQMod_SS_FakeTau_ST1200_CorrectMatch"));
+
+  h_TopPtReweight.reset(new TopPtReweightHist(ctx, "LQMod_TopPtReweighting", "weight_ttbar"));
 
 }
 
@@ -368,11 +505,18 @@ bool LQAnalysisMuModule::process(Event & event) {
   for (auto & mod : pre_modules) {
     mod->process(event);
   }
+
+  if(!is_data){
+    ttgenprod->process(event);
+  }
   // top reconstruction
   for (auto & th : recomodules_new) {
     th->process(event);
   }
   
+  toppt_reweight->process(event);
+  h_TopPtReweight->fill(event);
+
   //if(!muon_sel->passes(event)) return false;
   if(!ntau_sel->passes(event)) return false;
 
@@ -382,7 +526,6 @@ bool LQAnalysisMuModule::process(Event & event) {
   if(do_taucharge_variation) taucharge_module->process(event);
   if(do_tauenergy_variation) tauenergy_module->process(event);
   if(do_taures_variation) taures_module->process(event);
-
 
 
   // cut events with real taus
@@ -396,6 +539,24 @@ bool LQAnalysisMuModule::process(Event & event) {
   
 
   if (!twojet_sel->passes(event)) return false;
+  const auto jets = event.jets;
+  if(jets->size() > 1){
+    const auto & jet1 = (*jets)[0];
+    const auto & jet2 = (*jets)[1];
+    if(jet1.pt()<50) return false;
+    if(jet2.pt()<50) return false;
+  }
+
+  if(!metcut_presel->passes(event)) return false;
+  /*
+  double chi2 = event.get(h_hadr_hyps_new)[0].chi2();
+  if(chi2>4) return false;
+  */
+
+
+  //if(!possible_matches->passes(event)) return false;
+
+
   electron_PreSelection->fill(event);
   muon_PreSelection->fill(event);
   tau_PreSelection->fill(event);
@@ -434,6 +595,52 @@ bool LQAnalysisMuModule::process(Event & event) {
   h_event_ThreeJets->fill(event);
   h_faketau_ThreeJets->fill(event);
 
+
+  //const auto taus = event.taus;  
+  const auto & tau = (*event.taus)[0];
+
+  if(twotau_sel->passes(event)){
+    const auto & tau2 = (*event.taus)[1];
+    if(region_!="CRtwo" && tau.charge()!=tau2.charge()){
+      electron_TwoTaus->fill(event);
+      muon_TwoTaus->fill(event);
+      tau_TwoTaus->fill(event);
+      jet_TwoTaus->fill(event);
+      event_TwoTaus->fill(event);
+      faketau_TwoTaus->fill(event);
+      lq_TwoTaus->fill(event);
+      if(tau.pt()>65 && tau2.pt()>35){
+	electron_TwoTaus_final->fill(event);
+	muon_TwoTaus_final->fill(event);
+	tau_TwoTaus_final->fill(event);
+	jet_TwoTaus_final->fill(event);
+	event_TwoTaus_final->fill(event);
+	faketau_TwoTaus_final->fill(event);
+	lq_TwoTaus_final->fill(event);
+      }
+    }
+    if(region_=="CRtwo" && tau.pt()<45 && !OneIsoOneNonIso->passes(event)){
+      electron_TwoTaus->fill(event);
+      muon_TwoTaus->fill(event);
+      tau_TwoTaus->fill(event);
+      jet_TwoTaus->fill(event);
+      event_TwoTaus->fill(event);
+      faketau_TwoTaus->fill(event);
+      lq_TwoTaus->fill(event);
+      if(BTagM->passes(event) && !samesign_lead->passes(event) && MTcut->passes(event)){
+	electron_TwoTaus_final->fill(event);
+	muon_TwoTaus_final->fill(event);
+	tau_TwoTaus_final->fill(event);
+	jet_TwoTaus_final->fill(event);
+	event_TwoTaus_final->fill(event);
+	faketau_TwoTaus_final->fill(event);
+	lq_TwoTaus_final->fill(event);
+      }
+    }
+  }
+
+  //if(!ExactlyOneTau->passes(event)) return false;
+
   if(!ptleadingjetcut->passes(event)) return false;
   h_lq_LeadingJet150->fill(event);
   h_tau_LeadingJet150->fill(event);
@@ -442,9 +649,59 @@ bool LQAnalysisMuModule::process(Event & event) {
   h_jet_LeadingJet150->fill(event);
   h_event_LeadingJet150->fill(event);
   h_faketau_LeadingJet150->fill(event);
-  
-  //const auto taus = event.taus;
-  const auto & tau = (*event.taus)[0];
+  h_lumi_LeadingJet150->fill(event);
+
+  /*
+    for(const auto & jet : *event.jets){
+    if(  fabs(event.get(h_hadr_hyps_new)[0].tophad1_v4().phi()-jet.phi()) >2.4  ){
+    cout << "jet pt: " << jet.pt() << endl;
+    cout << "mass:   " << (event.get(h_hadr_hyps_new)[0].tophad1_v4()+jet.v4()).M() << endl;
+    }
+    }
+  */
+  //const auto jets = event.jets;
+  /*
+    for(unsigned int i=0; i<jets->size(); i++){
+    for(unsigned int j=0; j<jets->size(); j++){
+    Jet jet1 = jets->at(i);
+    Jet jet2 = jets->at(j);
+    if(i!=j && fabs(jet1.phi()-jet2.phi()) > 2.5 ){
+    cout << (jet1.v4()+jet2.v4()).M() << endl;
+    }
+    }}
+    cout << endl;
+  */
+
+
+  //cout << "chi2 for t: " <<  event.get(h_hadr_hyps_new)[0].tchi2() << endl;
+  //cout << "chi2 for W: " <<  event.get(h_hadr_hyps_new)[0].wchi2() << endl << endl;
+  //cout << "wmass: " << event.get(h_hadr_hyps_new)[0].whad1_v4().M() << endl;
+
+  if(!is_data){
+    if(possible_matches->passes(event)){
+      h_tau_LeadingJet150_matchable->fill(event);
+      h_mu_LeadingJet150_matchable->fill(event);
+      h_ele_LeadingJet150_matchable->fill(event);
+      h_jet_LeadingJet150_matchable->fill(event);
+      h_event_LeadingJet150_matchable->fill(event);
+      h_faketau_LeadingJet150_matchable->fill(event);
+      h_lq_LeadingJet150_matchable->fill(event);
+
+      if (event.get(h_hadr_hyps_new)[0].discriminator("CorrectMatch") <99){
+	//cout << "--> correctly matched +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ " << endl << endl;
+	h_lq_LeadingJet150_CorrectMatch->fill(event);
+	h_tau_LeadingJet150_CorrectMatch->fill(event);
+	h_mu_LeadingJet150_CorrectMatch->fill(event);
+	h_ele_LeadingJet150_CorrectMatch->fill(event);
+	h_jet_LeadingJet150_CorrectMatch->fill(event);
+	h_event_LeadingJet150_CorrectMatch->fill(event);
+	h_faketau_LeadingJet150_CorrectMatch->fill(event);
+      }
+      //else{ cout << "not matched +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;}
+    }
+  }
+
+
 
   if(!samesign_lead->passes(event)){
     h_lq_OScut->fill(event);
@@ -470,7 +727,7 @@ bool LQAnalysisMuModule::process(Event & event) {
 	h_jet_OSmet->fill(event);
 	h_event_OSmet->fill(event);
 	h_faketau_OSmet->fill(event);
-	if(ht_lep>=200){
+	if(ht_lep>=0){ // was 200 before
 	  h_lq_OShtlep->fill(event);
 	  h_tau_OShtlep->fill(event);
 	  h_mu_OShtlep->fill(event);
@@ -487,7 +744,7 @@ bool LQAnalysisMuModule::process(Event & event) {
 	    h_event_OSpttau->fill(event);
 	    h_faketau_OSpttau->fill(event);
 	    if(BTagM->passes(event)){
-	      //SF_OS_btag->process(event);
+	      SF_OS_btag->process(event);
 	      if(st>=400){
 		h_OS_lq_ST400->fill(event);
 		h_OS_tau_ST400->fill(event);
@@ -497,7 +754,7 @@ bool LQAnalysisMuModule::process(Event & event) {
 		h_OS_topjet_ST400->fill(event);
 		h_OS_event_ST400->fill(event);
 		h_OS_faketau_ST400->fill(event);
-		h_OS_btageff_ST400->fill(event);
+		//h_OS_btageff_ST400->fill(event);
 		if(st<1200){
 		  h_OS_lq_lowmasses->fill(event);
 		  h_OS_tau_lowmasses->fill(event);
@@ -508,6 +765,28 @@ bool LQAnalysisMuModule::process(Event & event) {
 		  h_OS_event_lowmasses->fill(event);
 		  h_OS_faketau_lowmasses->fill(event);
 		  h_OS_pdf_lowmasses->fill(event);
+		  if(!is_data){
+		    if(possible_matches->passes(event)){
+		      h_OS_lq_lowmasses_matchable->fill(event);
+		      h_OS_tau_lowmasses_matchable->fill(event);
+		      h_OS_mu_lowmasses_matchable->fill(event);
+		      h_OS_ele_lowmasses_matchable->fill(event);
+		      h_OS_jet_lowmasses_matchable->fill(event);
+		      h_OS_topjet_lowmasses_matchable->fill(event);
+		      h_OS_event_lowmasses_matchable->fill(event);
+		      h_OS_faketau_lowmasses_matchable->fill(event);
+		      if (event.get(h_hadr_hyps_new)[0].discriminator("CorrectMatch") <99){
+			h_OS_lq_lowmasses_CorrectMatch->fill(event);
+			h_OS_tau_lowmasses_CorrectMatch->fill(event);
+			h_OS_mu_lowmasses_CorrectMatch->fill(event);
+			h_OS_ele_lowmasses_CorrectMatch->fill(event);
+			h_OS_jet_lowmasses_CorrectMatch->fill(event);
+			h_OS_topjet_lowmasses_CorrectMatch->fill(event);
+			h_OS_event_lowmasses_CorrectMatch->fill(event);
+			h_OS_faketau_lowmasses_CorrectMatch->fill(event);
+		      }
+		    }
+		  }
 		}
 		if(st>=1200){
 		  h_OS_lq_ST1200->fill(event);
@@ -519,6 +798,28 @@ bool LQAnalysisMuModule::process(Event & event) {
 		  h_OS_event_ST1200->fill(event);
 		  h_OS_faketau_ST1200->fill(event);
 		  h_OS_pdf_ST1200->fill(event);
+		  if(!is_data){
+		    if(possible_matches->passes(event)){
+		      h_OS_lq_ST1200_matchable->fill(event);
+		      h_OS_tau_ST1200_matchable->fill(event);
+		      h_OS_mu_ST1200_matchable->fill(event);
+		      h_OS_ele_ST1200_matchable->fill(event);
+		      h_OS_jet_ST1200_matchable->fill(event);
+		      h_OS_topjet_ST1200_matchable->fill(event);
+		      h_OS_event_ST1200_matchable->fill(event);
+		      h_OS_faketau_ST1200_matchable->fill(event);
+		      if (event.get(h_hadr_hyps_new)[0].discriminator("CorrectMatch") <99){
+			h_OS_lq_ST1200_CorrectMatch->fill(event);
+			h_OS_tau_ST1200_CorrectMatch->fill(event);
+			h_OS_mu_ST1200_CorrectMatch->fill(event);
+			h_OS_ele_ST1200_CorrectMatch->fill(event);
+			h_OS_jet_ST1200_CorrectMatch->fill(event);
+			h_OS_topjet_ST1200_CorrectMatch->fill(event);
+			h_OS_event_ST1200_CorrectMatch->fill(event);
+			h_OS_faketau_ST1200_CorrectMatch->fill(event);
+		      }
+		    }
+		  }
 		}
 	      }
 	    }
@@ -537,7 +838,9 @@ bool LQAnalysisMuModule::process(Event & event) {
     h_jet_SScut->fill(event);
     h_event_SScut->fill(event);
     h_faketau_SScut->fill(event);
-    if(ht_lep>=180){
+    //if(fourjet_sel->passes(event)){
+    //if(metcut->passes(event)){
+    if(ht_lep>=0){ //180
       h_lq_SShtlep->fill(event);
       h_tau_SShtlep->fill(event);
       h_mu_SShtlep->fill(event);
@@ -545,7 +848,7 @@ bool LQAnalysisMuModule::process(Event & event) {
       h_jet_SShtlep->fill(event);
       h_event_SShtlep->fill(event);
       h_faketau_SShtlep->fill(event);
-      if(tau.pt()>=60){
+      if(tau.pt()>=100){ //60
 	h_lq_SSpttau->fill(event);
 	h_tau_SSpttau->fill(event);
 	h_mu_SSpttau->fill(event);
@@ -554,7 +857,7 @@ bool LQAnalysisMuModule::process(Event & event) {
 	h_event_SSpttau->fill(event);
 	h_faketau_SSpttau->fill(event);
 	if(BTagM->passes(event)){
-	  //SF_SS_btag->process(event);
+	  SF_SS_btag->process(event);
 	  if(st>400){
 	    h_SS_lq_ST400->fill(event);
 	    h_SS_tau_ST400->fill(event);
@@ -564,7 +867,7 @@ bool LQAnalysisMuModule::process(Event & event) {
 	    h_SS_topjet_ST400->fill(event);
 	    h_SS_event_ST400->fill(event);
 	    h_SS_faketau_ST400->fill(event);
-	    h_SS_btageff_ST400->fill(event);
+	    //h_SS_btageff_ST400->fill(event);
 	    if(st<1200){
 	      h_SS_lq_lowmasses->fill(event);
 	      h_SS_tau_lowmasses->fill(event);
@@ -575,6 +878,28 @@ bool LQAnalysisMuModule::process(Event & event) {
 	      h_SS_event_lowmasses->fill(event);
 	      h_SS_faketau_lowmasses->fill(event);
 	      h_SS_pdf_lowmasses->fill(event);
+	      if(!is_data){
+		if(possible_matches->passes(event)){
+		  h_SS_lq_lowmasses_matchable->fill(event);
+		  h_SS_tau_lowmasses_matchable->fill(event);
+		  h_SS_mu_lowmasses_matchable->fill(event);
+		  h_SS_ele_lowmasses_matchable->fill(event);
+		  h_SS_jet_lowmasses_matchable->fill(event);
+		  h_SS_topjet_lowmasses_matchable->fill(event);
+		  h_SS_event_lowmasses_matchable->fill(event);
+		  h_SS_faketau_lowmasses_matchable->fill(event);
+		  if (event.get(h_hadr_hyps_new)[0].discriminator("CorrectMatch") <99){
+		    h_SS_lq_lowmasses_CorrectMatch->fill(event);
+		    h_SS_tau_lowmasses_CorrectMatch->fill(event);
+		    h_SS_mu_lowmasses_CorrectMatch->fill(event);
+		    h_SS_ele_lowmasses_CorrectMatch->fill(event);
+		    h_SS_jet_lowmasses_CorrectMatch->fill(event);
+		    h_SS_topjet_lowmasses_CorrectMatch->fill(event);
+		    h_SS_event_lowmasses_CorrectMatch->fill(event);
+		    h_SS_faketau_lowmasses_CorrectMatch->fill(event);
+		  }
+		}
+	      }
 	    }
 	    if(st>=1200){
 	      h_SS_lq_ST1200->fill(event);
@@ -586,14 +911,36 @@ bool LQAnalysisMuModule::process(Event & event) {
 	      h_SS_event_ST1200->fill(event);
 	      h_SS_faketau_ST1200->fill(event);
 	      h_SS_pdf_ST1200->fill(event);
+	      if(!is_data){
+		if(possible_matches->passes(event)){
+		  h_SS_lq_ST1200_matchable->fill(event);
+		  h_SS_tau_ST1200_matchable->fill(event);
+		  h_SS_mu_ST1200_matchable->fill(event);
+		  h_SS_ele_ST1200_matchable->fill(event);
+		  h_SS_jet_ST1200_matchable->fill(event);
+		  h_SS_topjet_ST1200_matchable->fill(event);
+		  h_SS_event_ST1200_matchable->fill(event);
+		  h_SS_faketau_ST1200_matchable->fill(event);
+		  if (event.get(h_hadr_hyps_new)[0].discriminator("CorrectMatch") <99){
+		    h_SS_lq_ST1200_CorrectMatch->fill(event);
+		    h_SS_tau_ST1200_CorrectMatch->fill(event);
+		    h_SS_mu_ST1200_CorrectMatch->fill(event);
+		    h_SS_ele_ST1200_CorrectMatch->fill(event);
+		    h_SS_jet_ST1200_CorrectMatch->fill(event);
+		    h_SS_topjet_ST1200_CorrectMatch->fill(event);
+		    h_SS_event_ST1200_CorrectMatch->fill(event);
+		    h_SS_faketau_ST1200_CorrectMatch->fill(event);
+		  }
+		}
+	      }
 	    }
 	  }
 	}
       }
     }
   }
-
-
+  //}//
+  //}//
 
   /*
   if(!is_data){

@@ -49,6 +49,14 @@ namespace uhh2 {
   private:
   };
 
+  class LQMatch: public Selection{
+  public:
+    LQMatch();
+    ~LQMatch(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
+
   class JetTauCleaning: public Selection{
   public:
     JetTauCleaning();
@@ -69,6 +77,14 @@ namespace uhh2 {
   public:
     GetRealTaus();
     ~GetRealTaus(){};
+    virtual bool passes(const Event & event);
+  private:
+  };
+
+  class IsoNonIso: public Selection{
+  public:
+    IsoNonIso();
+    ~IsoNonIso(){};
     virtual bool passes(const Event & event);
   private:
   };
@@ -106,6 +122,14 @@ namespace uhh2 {
     virtual bool passes(const Event &);
   private:
     double min_met, max_met;
+  };
+
+  class MTCut: public Selection {
+  public:
+    explicit MTCut(double min_mt=0., double max_mt=-1);
+    virtual bool passes(const Event &);
+  private:
+    double min_mt, max_mt;
   };
 
   class HtSelection: public uhh2::Selection {

@@ -74,6 +74,7 @@ void LQAnalysisPDFHists::fill(const Event & event){
     if(event.genInfo->systweights().size()){
       for(int i=0; i<100; i++){
 	if(use_pdf_weights){
+	  //cout << event.genInfo->systweights().size() << endl;
 	  double pdf_weight = event.genInfo->systweights().at(i+9);
 	  double fillweight = weight * pdf_weight/event.genInfo->originalXWGTUP();
 	  const char* name = histo_names[i].c_str();
